@@ -188,8 +188,21 @@ export default function DrawingCanvas({
     onAnalyzingChange?.(true);
 
     try {
-      // Get canvas as base64 image
-      const imageData = canvas.toDataURL('image/png');
+      // Create a new canvas with white background for better recognition
+      const tempCanvas = document.createElement('canvas');
+      tempCanvas.width = canvas.width;
+      tempCanvas.height = canvas.height;
+      const tempCtx = tempCanvas.getContext('2d');
+      if (tempCtx) {
+        // Fill with white background
+        tempCtx.fillStyle = '#FFFFFF';
+        tempCtx.fillRect(0, 0, tempCanvas.width, tempCanvas.height);
+        // Draw the original canvas content on top
+        tempCtx.drawImage(canvas, 0, 0);
+      }
+
+      // Get canvas as base64 image (with white background)
+      const imageData = tempCanvas.toDataURL('image/png');
 
       // Send to recognition API
       const response = await fetch('/api/handwriting', {

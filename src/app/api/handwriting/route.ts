@@ -58,33 +58,34 @@ export async function POST(request: NextRequest) {
     const expectedText = isWord ? expectedLetter : expectedLetter.toUpperCase();
 
     const prompt = isWord
-      ? `You are a handwriting recognition system for children's Malay spelling practice.
+      ? `You are a handwriting recognition system for children learning to spell.
 
-TASK: Look at this handwritten image and recognize what WORD the child wrote.
+TASK: Recognize the handwritten word in this image.
 
-IMPORTANT:
-1. First, identify what word is actually written in the image
-2. The expected correct answer is: "${expectedText}"
-3. Compare what you see with the expected answer
+The child is trying to write: "${expectedText}"
 
-Recognition rules:
-- Read the handwritten text carefully letter by letter
-- Accept messy but readable handwriting
-- The word must match "${expectedText}" to be correct
-- Minor imperfections in letter shapes are OK if the word is recognizable
-- If the child wrote a different word, mark isCorrect as false
+Instructions:
+1. Look at the handwritten text in the image
+2. Identify what word the child wrote (read each letter)
+3. Compare with "${expectedText}" (case-insensitive)
 
-Respond ONLY with this JSON format:
+Be GENEROUS - this is for young children:
+- Accept messy handwriting if readable
+- Accept if letters are imperfect but recognizable
+- "ayam", "Ayam", "AYAM" are all correct for "${expectedText}"
+- Focus on whether the child spelled the word correctly
+
+Return JSON:
 {
-  "recognizedLetter": "[THE ACTUAL WORD YOU SEE WRITTEN]",
-  "isCorrect": [true if it matches "${expectedText}", false otherwise],
-  "confidence": [0.0 to 1.0],
-  "feedbackMs": "[Malay feedback]",
-  "feedbackZh": "[Chinese feedback]",
-  "feedbackEn": "[English feedback]"
+  "recognizedLetter": "[word you see]",
+  "isCorrect": true/false,
+  "confidence": 0.8,
+  "feedbackMs": "feedback in Malay",
+  "feedbackZh": "feedback in Chinese",
+  "feedbackEn": "feedback in English"
 }
 
-If blank or unreadable, use recognizedLetter: "?" and isCorrect: false.`
+If you can read "${expectedText}" or very close to it, set isCorrect: true.`
       : `You are a handwriting recognition system for children learning to write letters.
 
 TASK: Look at this handwritten image and recognize what LETTER the child wrote.
@@ -189,14 +190,26 @@ If blank or unreadable, use recognizedLetter: "?" and isCorrect: false.`;
         parsed = JSON.parse(jsonMatch[0]);
       }
 
+      const recognizedText = (parsed.recognizedLetter || '?').toLowerCase().trim();
+      const expectedLower = expectedLetter.toLowerCase().trim();
+
+      // Double-check: if AI recognized the word correctly, ensure isCorrect is true
+      // This handles cases where AI might incorrectly mark a correct answer as wrong
+      const isMatch = recognizedText === expectedLower ||
+        recognizedText.replace(/\s/g, '') === expectedLower.replace(/\s/g, '');
+
+      const isCorrect = parsed.isCorrect === true || isMatch;
+
+      console.log(`[Handwriting] Expected: "${expectedLower}", Recognized: "${recognizedText}", AI said: ${parsed.isCorrect}, Final: ${isCorrect}`);
+
       const result: HandwritingResponse = {
-        isCorrect: parsed.isCorrect === true,
+        isCorrect,
         recognizedLetter: parsed.recognizedLetter || '?',
         confidence: parsed.confidence || 0.5,
         feedback: {
-          ms: parsed.feedbackMs || (parsed.isCorrect ? 'Bagus!' : 'Cuba lagi!'),
-          zh: parsed.feedbackZh || (parsed.isCorrect ? '很好！' : '再试一次！'),
-          en: parsed.feedbackEn || (parsed.isCorrect ? 'Good job!' : 'Try again!'),
+          ms: parsed.feedbackMs || (isCorrect ? 'Bagus!' : 'Cuba lagi!'),
+          zh: parsed.feedbackZh || (isCorrect ? '很好！' : '再试一次！'),
+          en: parsed.feedbackEn || (isCorrect ? 'Good job!' : 'Try again!'),
         },
       };
 
