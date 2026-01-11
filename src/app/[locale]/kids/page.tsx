@@ -123,7 +123,7 @@ export default async function KidsPage({
               ))
             ) : (
               <div className="col-span-full text-center py-8">
-                <div className="text-6xl mb-4">👶</div>
+                <div className="text-6xl mb-4">🧒</div>
                 <p className="text-white text-lg">
                   {t('kids.noKids')}
                 </p>
