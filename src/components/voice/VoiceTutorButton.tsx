@@ -1,5 +1,6 @@
 'use client';
 
+import { useState } from 'react';
 import { useVoiceTutor } from '@/hooks/useVoiceTutor';
 import type { Locale } from '@/types';
 
@@ -18,7 +19,16 @@ export default function VoiceTutorButton({
   className = '',
   showText = false,
 }: VoiceTutorButtonProps) {
-  const { speak, stop, isLoading, isSpeaking } = useVoiceTutor({ locale });
+  const [isUnavailable, setIsUnavailable] = useState(false);
+  const { speak, stop, isLoading, isSpeaking, error } = useVoiceTutor({
+    locale,
+    onError: (err) => {
+      // If TTS is not configured, hide the button
+      if (err.includes('not configured') || err.includes('unavailable')) {
+        setIsUnavailable(true);
+      }
+    }
+  });
 
   const sizeClasses = {
     sm: 'w-8 h-8 text-lg',
@@ -34,6 +44,11 @@ export default function VoiceTutorButton({
     }
   };
 
+  // Don't render if TTS is unavailable
+  if (isUnavailable) {
+    return null;
+  }
+
   return (
     <button
       onClick={handleClick}
@@ -46,18 +61,22 @@ export default function VoiceTutorButton({
           ? 'bg-gray-300 cursor-wait'
           : isSpeaking
             ? 'bg-red-500 hover:bg-red-600 animate-pulse'
-            : 'bg-[#5DADE2] hover:bg-[#4A9ACF]'
+            : error
+              ? 'bg-gray-400 cursor-not-allowed'
+              : 'bg-[#5DADE2] hover:bg-[#4A9ACF]'
         }
         text-white shadow-md hover:shadow-lg
         disabled:opacity-50
         ${className}
       `}
-      title={isSpeaking ? 'Stop' : 'Listen'}
+      title={error ? 'Voice unavailable' : isSpeaking ? 'Stop' : 'Listen'}
     >
       {isLoading ? (
         <span className="animate-spin">⏳</span>
       ) : isSpeaking ? (
         <span>⏹️</span>
+      ) : error ? (
+        <span className="opacity-50">🔇</span>
       ) : (
         <span>🔊</span>
       )}
