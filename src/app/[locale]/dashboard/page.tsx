@@ -2,8 +2,28 @@ import { createClient } from '@/lib/supabase/server';
 import { redirect } from 'next/navigation';
 import { getTranslations } from 'next-intl/server';
 import Link from 'next/link';
+import Image from 'next/image';
 import LanguageSwitcher from '@/components/i18n/LanguageSwitcher';
-import type { Kid, Subject, Locale } from '@/types';
+import type { Kid, Subject, Locale, EquipmentSlot, EquipmentTier } from '@/types';
+
+// Equipment image base URL
+const EQUIPMENT_IMAGE_BASE = 'https://glwxvgxgquwfgwbwqbiz.supabase.co/storage/v1/object/public/images/equipment';
+
+// Get equipment image URL based on tier and slot
+function getEquipmentImageUrl(tier: EquipmentTier, slot: EquipmentSlot): string {
+  const tierToSwordPrefix: Record<EquipmentTier, string> = {
+    leather: 'wooden',
+    chain: 'stone',
+    iron: 'iron',
+    gold: 'gold',
+    diamond: 'diamond',
+  };
+
+  if (slot === 'weapon') {
+    return `${EQUIPMENT_IMAGE_BASE}/${tierToSwordPrefix[tier]}_sword.png`;
+  }
+  return `${EQUIPMENT_IMAGE_BASE}/${tier}_${slot}.png`;
+}
 
 // Grade display mapping
 const gradeLabels: Record<string, { ms: string; zh: string; en: string }> = {
@@ -64,6 +84,19 @@ export default async function DashboardPage({
   if (kidError || !kid) {
     redirect(`/${locale}/kids`);
   }
+
+  // Fetch kid's equipped items
+  const { data: equipped } = await supabase
+    .from('kid_equipped')
+    .select(`
+      helmet:helmet_id(id, tier, slot),
+      chestplate:chestplate_id(id, tier, slot),
+      leggings:leggings_id(id, tier, slot),
+      boots:boots_id(id, tier, slot),
+      weapon:weapon_id(id, tier, slot)
+    `)
+    .eq('kid_id', kidId)
+    .single();
 
   // Calculate correct level based on XP and fix if mismatched
   // Level formula: XP thresholds are 0, 100, 300, 600, 1000... (triangular numbers * 100)
@@ -316,17 +349,77 @@ export default async function DashboardPage({
 
                 {/* Equipment slots preview */}
                 <div className="grid grid-cols-2 gap-2">
-                  <div className="w-12 h-12 bg-gray-300 rounded border-2 border-gray-400 flex items-center justify-center text-xl" title={t('character.helmet')}>
-                    🪖
+                  <div
+                    className={`w-12 h-12 rounded border-2 flex items-center justify-center ${
+                      equipped?.helmet ? 'bg-gray-100 border-[#5D8731]' : 'bg-gray-300 border-gray-400'
+                    }`}
+                    title={t('character.helmet')}
+                  >
+                    {equipped?.helmet ? (
+                      <Image
+                        src={getEquipmentImageUrl(equipped.helmet.tier as EquipmentTier, 'helmet')}
+                        alt="Helmet"
+                        width={32}
+                        height={32}
+                        className="object-contain"
+                      />
+                    ) : (
+                      <span className="text-xl text-gray-400">🪖</span>
+                    )}
                   </div>
-                  <div className="w-12 h-12 bg-gray-300 rounded border-2 border-gray-400 flex items-center justify-center text-xl" title={t('character.weapon')}>
-                    ⚔️
+                  <div
+                    className={`w-12 h-12 rounded border-2 flex items-center justify-center ${
+                      equipped?.weapon ? 'bg-gray-100 border-[#5D8731]' : 'bg-gray-300 border-gray-400'
+                    }`}
+                    title={t('character.weapon')}
+                  >
+                    {equipped?.weapon ? (
+                      <Image
+                        src={getEquipmentImageUrl(equipped.weapon.tier as EquipmentTier, 'weapon')}
+                        alt="Weapon"
+                        width={32}
+                        height={32}
+                        className="object-contain"
+                      />
+                    ) : (
+                      <span className="text-xl text-gray-400">⚔️</span>
+                    )}
                   </div>
-                  <div className="w-12 h-12 bg-gray-300 rounded border-2 border-gray-400 flex items-center justify-center text-xl" title={t('character.chestplate')}>
-                    🦺
+                  <div
+                    className={`w-12 h-12 rounded border-2 flex items-center justify-center ${
+                      equipped?.chestplate ? 'bg-gray-100 border-[#5D8731]' : 'bg-gray-300 border-gray-400'
+                    }`}
+                    title={t('character.chestplate')}
+                  >
+                    {equipped?.chestplate ? (
+                      <Image
+                        src={getEquipmentImageUrl(equipped.chestplate.tier as EquipmentTier, 'chestplate')}
+                        alt="Chestplate"
+                        width={32}
+                        height={32}
+                        className="object-contain"
+                      />
+                    ) : (
+                      <span className="text-xl text-gray-400">🦺</span>
+                    )}
                   </div>
-                  <div className="w-12 h-12 bg-gray-300 rounded border-2 border-gray-400 flex items-center justify-center text-xl" title={t('character.boots')}>
-                    👢
+                  <div
+                    className={`w-12 h-12 rounded border-2 flex items-center justify-center ${
+                      equipped?.boots ? 'bg-gray-100 border-[#5D8731]' : 'bg-gray-300 border-gray-400'
+                    }`}
+                    title={t('character.boots')}
+                  >
+                    {equipped?.boots ? (
+                      <Image
+                        src={getEquipmentImageUrl(equipped.boots.tier as EquipmentTier, 'boots')}
+                        alt="Boots"
+                        width={32}
+                        height={32}
+                        className="object-contain"
+                      />
+                    ) : (
+                      <span className="text-xl text-gray-400">👢</span>
+                    )}
                   </div>
                 </div>
 

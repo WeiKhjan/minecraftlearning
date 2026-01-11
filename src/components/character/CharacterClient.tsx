@@ -6,7 +6,36 @@ import Image from 'next/image';
 import { createClient } from '@/lib/supabase/client';
 import type { Kid, Equipment, KidInventory, Locale, EquipmentSlot, EquipmentTier } from '@/types';
 
-// Equipment slot emojis
+// Equipment image base URL
+const EQUIPMENT_IMAGE_BASE = 'https://glwxvgxgquwfgwbwqbiz.supabase.co/storage/v1/object/public/images/equipment';
+
+// Get equipment image URL based on tier and slot
+function getEquipmentImageUrl(tier: EquipmentTier, slot: EquipmentSlot): string {
+  // Map slot to actual equipment piece name
+  const slotToName: Record<EquipmentSlot, string> = {
+    helmet: 'helmet',
+    chestplate: 'chestplate',
+    leggings: 'leggings',
+    boots: 'boots',
+    weapon: 'sword',
+  };
+
+  // Map tier to sword prefix
+  const tierToSwordPrefix: Record<EquipmentTier, string> = {
+    leather: 'wooden',
+    chain: 'stone',
+    iron: 'iron',
+    gold: 'gold',
+    diamond: 'diamond',
+  };
+
+  if (slot === 'weapon') {
+    return `${EQUIPMENT_IMAGE_BASE}/${tierToSwordPrefix[tier]}_sword.png`;
+  }
+  return `${EQUIPMENT_IMAGE_BASE}/${tier}_${slotToName[slot]}.png`;
+}
+
+// Fallback emojis for when no equipment is equipped
 const slotEmojis: Record<EquipmentSlot, string> = {
   helmet: '🪖',
   chestplate: '🦺',
@@ -248,7 +277,17 @@ export default function CharacterClient({
                     }}
                     title={weaponEquipped ? getEquipmentName(weaponEquipped, locale) : translations.weapon}
                   >
-                    <span className="text-2xl">{weaponEquipped ? '⚔️' : '🔲'}</span>
+                    {weaponEquipped ? (
+                      <Image
+                        src={getEquipmentImageUrl(weaponEquipped.tier, 'weapon')}
+                        alt={getEquipmentName(weaponEquipped, locale)}
+                        width={40}
+                        height={40}
+                        className="object-contain"
+                      />
+                    ) : (
+                      <span className="text-2xl">🔲</span>
+                    )}
                   </button>
                 </div>
 
@@ -267,7 +306,13 @@ export default function CharacterClient({
                 >
                   {helmetEquipped ? (
                     <>
-                      <span className="text-3xl">🪖</span>
+                      <Image
+                        src={getEquipmentImageUrl(helmetEquipped.tier, 'helmet')}
+                        alt={getEquipmentName(helmetEquipped, locale)}
+                        width={48}
+                        height={48}
+                        className="object-contain"
+                      />
                       <div
                         className="absolute bottom-1 w-8 h-4 rounded"
                         style={{ backgroundColor: '#FBBF24' }}
@@ -295,7 +340,13 @@ export default function CharacterClient({
                 >
                   {chestplateEquipped ? (
                     <div className="flex flex-col items-center">
-                      <span className="text-4xl">🦺</span>
+                      <Image
+                        src={getEquipmentImageUrl(chestplateEquipped.tier, 'chestplate')}
+                        alt={getEquipmentName(chestplateEquipped, locale)}
+                        width={56}
+                        height={56}
+                        className="object-contain"
+                      />
                       <span
                         className="text-xs font-bold mt-1 px-2 py-0.5 rounded"
                         style={{
@@ -344,7 +395,13 @@ export default function CharacterClient({
                   title={leggingsEquipped ? getEquipmentName(leggingsEquipped, locale) : translations.leggings}
                 >
                   {leggingsEquipped ? (
-                    <span className="text-3xl">👖</span>
+                    <Image
+                      src={getEquipmentImageUrl(leggingsEquipped.tier, 'leggings')}
+                      alt={getEquipmentName(leggingsEquipped, locale)}
+                      width={48}
+                      height={48}
+                      className="object-contain"
+                    />
                   ) : (
                     <div className="flex gap-1">
                       <div className="w-6 h-20 bg-[#2563EB] rounded-b-md" />
@@ -367,7 +424,13 @@ export default function CharacterClient({
                   title={bootsEquipped ? getEquipmentName(bootsEquipped, locale) : translations.boots}
                 >
                   {bootsEquipped ? (
-                    <span className="text-2xl">👢</span>
+                    <Image
+                      src={getEquipmentImageUrl(bootsEquipped.tier, 'boots')}
+                      alt={getEquipmentName(bootsEquipped, locale)}
+                      width={32}
+                      height={32}
+                      className="object-contain"
+                    />
                   ) : (
                     <>
                       <div className="w-8 h-6 bg-[#92400E] rounded-md" />
@@ -395,7 +458,17 @@ export default function CharacterClient({
                         : 'bg-gray-200 text-gray-500'
                   }`}
                 >
-                  <span>{slotEmojis[slot]}</span>
+                  {item ? (
+                    <Image
+                      src={getEquipmentImageUrl(item.tier, slot)}
+                      alt={slotNames[slot]}
+                      width={16}
+                      height={16}
+                      className="object-contain"
+                    />
+                  ) : (
+                    <span>{slotEmojis[slot]}</span>
+                  )}
                   <span>{slotNames[slot]}</span>
                   {item && (
                     <span
@@ -462,10 +535,16 @@ export default function CharacterClient({
                       className="w-full flex items-center gap-3 p-3 bg-white hover:bg-gray-50 rounded-lg border-2 border-gray-200 hover:border-[#5D8731] transition-all disabled:opacity-50"
                     >
                       <div
-                        className="w-10 h-10 rounded flex items-center justify-center text-xl"
+                        className="w-10 h-10 rounded flex items-center justify-center"
                         style={{ backgroundColor: tierColors[equipment.tier] + '40' }}
                       >
-                        {slotEmojis[equipment.slot]}
+                        <Image
+                          src={getEquipmentImageUrl(equipment.tier, equipment.slot)}
+                          alt={getEquipmentName(equipment, locale)}
+                          width={32}
+                          height={32}
+                          className="object-contain"
+                        />
                       </div>
                       <div className="flex-1 text-left">
                         <p className="font-bold" style={{ color: rarityColors[equipment.rarity] }}>
@@ -499,10 +578,16 @@ export default function CharacterClient({
                     className="flex items-center gap-3 p-3 bg-white rounded-lg border border-gray-200"
                   >
                     <div
-                      className="w-10 h-10 rounded flex items-center justify-center text-xl"
+                      className="w-10 h-10 rounded flex items-center justify-center"
                       style={{ backgroundColor: tierColors[inv.equipment.tier] + '40' }}
                     >
-                      {slotEmojis[inv.equipment.slot]}
+                      <Image
+                        src={getEquipmentImageUrl(inv.equipment.tier, inv.equipment.slot)}
+                        alt={getEquipmentName(inv.equipment, locale)}
+                        width={32}
+                        height={32}
+                        className="object-contain"
+                      />
                     </div>
                     <div className="flex-1">
                       <p className="font-bold" style={{ color: rarityColors[inv.equipment.rarity] }}>
@@ -538,14 +623,20 @@ export default function CharacterClient({
                   return (
                     <div
                       key={equipment.id}
-                      className={`aspect-square rounded flex items-center justify-center text-xl lg:text-2xl relative ${
+                      className={`aspect-square rounded flex items-center justify-center relative ${
                         owned
                           ? 'bg-gray-100'
                           : 'bg-gray-300 opacity-50'
                       }`}
                       title={getEquipmentName(equipment, locale)}
                     >
-                      {slotEmojis[equipment.slot]}
+                      <Image
+                        src={getEquipmentImageUrl(equipment.tier, equipment.slot)}
+                        alt={getEquipmentName(equipment, locale)}
+                        width={32}
+                        height={32}
+                        className="object-contain"
+                      />
                       {!canUse && (
                         <div className="absolute inset-0 bg-black/50 flex items-center justify-center rounded">
                           <span className="text-xs text-white">Lv.{equipment.required_level}</span>
@@ -602,13 +693,18 @@ export default function CharacterClient({
                 return item ? (
                   <span
                     key={slot}
-                    className="text-xs px-1.5 py-0.5 rounded"
+                    className="px-1.5 py-0.5 rounded flex items-center justify-center"
                     style={{
                       backgroundColor: tierColors[item.tier] + '30',
-                      color: tierColors[item.tier],
                     }}
                   >
-                    {slotEmojis[slot]}
+                    <Image
+                      src={getEquipmentImageUrl(item.tier, slot)}
+                      alt={slotNames[slot]}
+                      width={20}
+                      height={20}
+                      className="object-contain"
+                    />
                   </span>
                 ) : null;
               })}
