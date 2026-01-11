@@ -113,9 +113,9 @@ Respond ONLY with this JSON format:
 
 If blank or unreadable, use recognizedLetter: "?" and isCorrect: false.`;
 
-    // Use Gemini Vision for handwriting recognition
+    // Use Gemini 3.0 Flash Preview for handwriting recognition (OCR)
     const response = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`,
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.0-flash-preview:generateContent?key=${apiKey}`,
       {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
