@@ -3,18 +3,20 @@
 import { useState, useEffect, useRef } from 'react';
 import VoiceTutorButton from '@/components/voice/VoiceTutorButton';
 import DrawingCanvas from './DrawingCanvas';
+import LoadingOverlay from '@/components/ui/LoadingOverlay';
 import type { ActivityContent, Locale } from '@/types';
 
 interface AlphabetActivityProps {
   content: ActivityContent;
   kidName: string;
+  avatarUrl?: string | null;
   locale: Locale;
   onComplete: (score: number) => void;
 }
 
 type InputMode = 'tap' | 'draw' | 'type';
 
-export default function AlphabetActivity({ content, locale, onComplete }: AlphabetActivityProps) {
+export default function AlphabetActivity({ content, avatarUrl, locale, onComplete }: AlphabetActivityProps) {
   const data = content.data as { letters: string[]; instruction: { ms: string; zh: string; en: string } };
   const letters = data.letters;
 
@@ -26,7 +28,14 @@ export default function AlphabetActivity({ content, locale, onComplete }: Alphab
   const [feedback, setFeedback] = useState<{ type: 'correct' | 'wrong'; letter: string } | null>(null);
   const [drawFeedback, setDrawFeedback] = useState<{ type: 'correct' | 'wrong'; message: string } | null>(null);
   const [typedLetter, setTypedLetter] = useState('');
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
+
+  const analyzingMessage = {
+    ms: 'Menganalisis tulisan anda...',
+    zh: '正在分析您的书写...',
+    en: 'Analyzing your writing...',
+  };
 
   // Shuffle letters on mount
   useEffect(() => {
@@ -176,6 +185,14 @@ export default function AlphabetActivity({ content, locale, onComplete }: Alphab
 
   return (
     <div className="space-y-6">
+      {/* Loading Overlay */}
+      <LoadingOverlay
+        isLoading={isAnalyzing}
+        avatarUrl={avatarUrl}
+        locale={locale}
+        message={analyzingMessage[locale]}
+      />
+
       {/* Mode Toggle */}
       <div className="flex justify-center">
         <div className="inline-flex bg-gray-200 rounded-lg p-1">
@@ -300,6 +317,7 @@ export default function AlphabetActivity({ content, locale, onComplete }: Alphab
           locale={locale}
           onRecognized={handleDrawRecognized}
           disabled={currentIndex >= letters.length}
+          onAnalyzingChange={setIsAnalyzing}
         />
       ) : inputMode === 'type' ? (
         /* Type Mode - Keyboard Input */

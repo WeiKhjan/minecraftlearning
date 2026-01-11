@@ -9,6 +9,7 @@ interface DrawingCanvasProps {
   onRecognized: (isCorrect: boolean, recognizedLetter: string) => void;
   disabled?: boolean;
   contentType?: 'letter' | 'word';  // Type of content
+  onAnalyzingChange?: (isAnalyzing: boolean) => void;  // Callback for parent loading overlay
 }
 
 interface Point {
@@ -22,6 +23,7 @@ export default function DrawingCanvas({
   onRecognized,
   disabled = false,
   contentType,
+  onAnalyzingChange,
 }: DrawingCanvasProps) {
   // Auto-detect content type if not provided
   const isWord = contentType === 'word' || expectedLetter.length > 1;
@@ -177,6 +179,7 @@ export default function DrawingCanvas({
     if (!canvas || !hasDrawn) return;
 
     setIsAnalyzing(true);
+    onAnalyzingChange?.(true);
 
     try {
       // Get canvas as base64 image
@@ -209,8 +212,9 @@ export default function DrawingCanvas({
       onRecognized(false, '?');
     } finally {
       setIsAnalyzing(false);
+      onAnalyzingChange?.(false);
     }
-  }, [hasDrawn, expectedLetter, locale, isWord, onRecognized]);
+  }, [hasDrawn, expectedLetter, locale, isWord, onRecognized, onAnalyzingChange]);
 
   return (
     <div className="space-y-4">

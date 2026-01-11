@@ -2,16 +2,18 @@
 
 import { useState } from 'react';
 import VoiceTutorButton from '@/components/voice/VoiceTutorButton';
+import LoadingOverlay from '@/components/ui/LoadingOverlay';
 import type { ActivityContent, Locale, SpeakingContent } from '@/types';
 
 interface SpeakingActivityProps {
   content: ActivityContent;
   kidName: string;
+  avatarUrl?: string | null;
   locale: Locale;
   onComplete: (score: number) => void;
 }
 
-export default function SpeakingActivity({ content, kidName, locale, onComplete }: SpeakingActivityProps) {
+export default function SpeakingActivity({ content, kidName, avatarUrl, locale, onComplete }: SpeakingActivityProps) {
   const data = content.data as SpeakingContent;
   const phrases = data.phrases;
 
@@ -20,6 +22,12 @@ export default function SpeakingActivity({ content, kidName, locale, onComplete 
   const [completedPhrases, setCompletedPhrases] = useState<Set<number>>(new Set());
 
   const currentPhrase = phrases[currentIndex];
+
+  const recordingMessage = {
+    ms: 'Sedang merakam... Sebut sekarang!',
+    zh: '正在录音...现在说！',
+    en: 'Recording... Speak now!',
+  };
 
   // Replace {name} placeholder with kid's name
   const getText = (text: string) => text.replace('{name}', kidName);
@@ -70,6 +78,14 @@ export default function SpeakingActivity({ content, kidName, locale, onComplete 
 
   return (
     <div className="space-y-6">
+      {/* Loading Overlay during recording */}
+      <LoadingOverlay
+        isLoading={isRecording}
+        avatarUrl={avatarUrl}
+        locale={locale}
+        message={recordingMessage[locale]}
+      />
+
       {/* Instruction */}
       <p className="text-center text-gray-600">
         {locale === 'ms' ? 'Tekan butang dan sebut frasa dengan kuat' :

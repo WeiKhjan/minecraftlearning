@@ -149,6 +149,7 @@ export default function WritingActivity({ content, avatarUrl, locale, onComplete
         onRecognized={handleRecognized}
         disabled={feedback !== null}
         contentType={isLetterMode ? 'letter' : 'word'}
+        onAnalyzingChange={setIsAnalyzing}
       />
 
       {/* Completed Items */}

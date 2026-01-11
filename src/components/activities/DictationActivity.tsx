@@ -78,6 +78,12 @@ export default function DictationActivity({ content, avatarUrl, locale, onComple
     en: 'Analyzing your writing...',
   };
 
+  const speakingMessage = {
+    ms: 'Memainkan audio...',
+    zh: '正在播放音频...',
+    en: 'Playing audio...',
+  };
+
   const instructionText = {
     ms: 'Dengar perkataan dan tulis',
     zh: '听单词并写出来',
@@ -99,10 +105,10 @@ export default function DictationActivity({ content, avatarUrl, locale, onComple
   return (
     <div className="space-y-6">
       <LoadingOverlay
-        isLoading={isAnalyzing}
+        isLoading={isAnalyzing || isSpeaking}
         avatarUrl={avatarUrl}
         locale={locale}
-        message={analyzingMessage[locale]}
+        message={isAnalyzing ? analyzingMessage[locale] : speakingMessage[locale]}
       />
 
       {/* Instruction */}
@@ -187,6 +193,7 @@ export default function DictationActivity({ content, avatarUrl, locale, onComple
         onRecognized={handleRecognized}
         disabled={feedback !== null || !hasPlayed}
         contentType="word"
+        onAnalyzingChange={setIsAnalyzing}
       />
 
       {/* Hint - show after playing */}
