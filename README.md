@@ -85,11 +85,52 @@ Plan equipment rewards based on progression through Temas:
 
 | Tier | Equipment | Suggested Usage |
 |------|-----------|-----------------|
-| Leather | Helmet, Chestplate, Leggings, Boots | Tutorial/Tema 0 |
-| Chain | Helmet, Chestplate, Leggings, Boots | Tema 1 Unit 1-2 early activities |
-| Iron | Helmet, Chestplate, Leggings, Boots | Tema 1 Unit 2-3 mid activities |
-| Gold | Helmet, Chestplate, Leggings, Boots | Tema 1 Unit 3 late activities |
-| Diamond | Helmet, Chestplate, Leggings, Boots | Tema 2+ |
+| Leather | Helmet, Chestplate, Leggings, Boots, Wooden Sword | Tutorial/Tema 0 |
+| Chain | Helmet, Chestplate, Leggings, Boots, Stone Sword | Tema 1 Unit 1-2 early activities |
+| Iron | Helmet, Chestplate, Leggings, Boots, Iron Sword | Tema 1 Unit 2-3 mid activities |
+| Gold | Helmet, Chestplate, Leggings, Boots, Gold Sword | Tema 1 Unit 3 late activities |
+| Diamond | Helmet, Chestplate, Leggings, Boots, Diamond Sword | Tema 2+ |
+
+### Equipment Images
+
+Equipment images are AI-generated Minecraft 8-bit pixel art style using Gemini 2.5 Flash. All 25 equipment pieces (5 tiers × 5 pieces) have been pre-generated and stored in Supabase.
+
+**Storage location**: `{SUPABASE_URL}/storage/v1/object/public/images/equipment/{equipment_id}.png`
+
+**Equipment IDs**:
+| Tier | Helmet | Chestplate | Leggings | Boots | Sword |
+|------|--------|------------|----------|-------|-------|
+| Leather | `leather_helmet` | `leather_chestplate` | `leather_leggings` | `leather_boots` | `wooden_sword` |
+| Chain | `chain_helmet` | `chain_chestplate` | `chain_leggings` | `chain_boots` | `stone_sword` |
+| Iron | `iron_helmet` | `iron_chestplate` | `iron_leggings` | `iron_boots` | `iron_sword` |
+| Gold | `gold_helmet` | `gold_chestplate` | `gold_leggings` | `gold_boots` | `gold_sword` |
+| Diamond | `diamond_helmet` | `diamond_chestplate` | `diamond_leggings` | `diamond_boots` | `diamond_sword` |
+
+**Regenerating Equipment Images** (if needed):
+
+Use the equipment generation API at `src/app/api/generate-equipment/route.ts`:
+
+```bash
+# Check equipment list
+curl https://your-app.vercel.app/api/generate-equipment
+
+# Generate in batches of 5
+curl -X POST https://your-app.vercel.app/api/generate-equipment \
+  -H "Content-Type: application/json" \
+  -d '{"startIndex": 0, "count": 5}'
+
+# Continue with next batches (0-4, 5-9, 10-14, 15-19, 20-24)
+curl -X POST https://your-app.vercel.app/api/generate-equipment \
+  -H "Content-Type: application/json" \
+  -d '{"startIndex": 5, "count": 5}'
+```
+
+**Adding New Equipment Tiers** (e.g., Netherite):
+
+1. Edit `src/app/api/generate-equipment/route.ts` and add new items to `EQUIPMENT_LIST`
+2. Run the generation API for the new items
+3. Update `src/types/index.ts` to add the new tier to `EquipmentTier` type
+4. Update components (`CharacterClient.tsx`, `dashboard/page.tsx`) to handle the new tier colors
 
 ### Step-by-Step: Adding New Lessons
 
@@ -249,10 +290,11 @@ END $$;
 
 1. **Batch size**: Generate images in batches of 5 to avoid API timeouts
 2. **Rate limiting**: The API has 2-second delays between image generations
-3. **Image style**: Images are generated in kawaii/cute cartoon style for children
+3. **Image style**: Vocabulary images are kawaii/cute cartoon style; equipment images are Minecraft 8-bit pixel art
 4. **Multilingual**: Always provide names/descriptions in ms, zh, en
-5. **Equipment progression**: Plan rewards to give sense of progression
+5. **Equipment progression**: Plan rewards to give sense of progression (see Equipment Reward Tiers table)
 6. **Writing + Dictation**: For writing activities, also create a dictation activity with same words
+7. **Equipment images**: All 25 equipment images are pre-generated. Use equipment IDs from the table above for `equipment_reward` field
 
 ## License
 
