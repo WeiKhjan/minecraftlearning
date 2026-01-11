@@ -126,5 +126,24 @@
     "ms": "Bahasa Malaysia",
     "zh": "中文",
     "en": "English"
+  },
+  "kids": {
+    "selectKid": "选择孩子",
+    "selectKidDescription": "选择孩子的档案开始学习",
+    "noKids": "还没有孩子档案。添加您的第一个孩子！",
+    "addKid": "添加孩子",
+    "addNewKid": "添加新孩子",
+    "selectAvatar": "选择头像",
+    "kidName": "孩子姓名",
+    "enterKidName": "输入孩子姓名",
+    "school": "学校",
+    "enterSchool": "输入学校名称（可选）",
+    "grade": "年级",
+    "createKid": "创建档案",
+    "clickToPlay": "点击孩子档案开始学习"
+  },
+  "errors": {
+    "notAuthenticated": "请登录以继续",
+    "createKidFailed": "创建孩子档案失败。请重试。"
   }
 }

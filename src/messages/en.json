@@ -126,5 +126,24 @@
     "ms": "Bahasa Malaysia",
     "zh": "中文",
     "en": "English"
+  },
+  "kids": {
+    "selectKid": "Select Child",
+    "selectKidDescription": "Choose a child profile to start learning",
+    "noKids": "No child profiles yet. Add your first child!",
+    "addKid": "Add Child",
+    "addNewKid": "Add New Child",
+    "selectAvatar": "Select Avatar",
+    "kidName": "Child's Name",
+    "enterKidName": "Enter child's name",
+    "school": "School",
+    "enterSchool": "Enter school name (optional)",
+    "grade": "Grade",
+    "createKid": "Create Profile",
+    "clickToPlay": "Click on a child profile to start learning"
+  },
+  "errors": {
+    "notAuthenticated": "Please login to continue",
+    "createKidFailed": "Failed to create child profile. Please try again."
   }
 }

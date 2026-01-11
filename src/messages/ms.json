@@ -126,5 +126,24 @@
     "ms": "Bahasa Malaysia",
     "zh": "中文",
     "en": "English"
+  },
+  "kids": {
+    "selectKid": "Pilih Anak",
+    "selectKidDescription": "Pilih profil anak untuk mula belajar",
+    "noKids": "Tiada profil anak lagi. Tambah anak pertama anda!",
+    "addKid": "Tambah Anak",
+    "addNewKid": "Tambah Anak Baru",
+    "selectAvatar": "Pilih Avatar",
+    "kidName": "Nama Anak",
+    "enterKidName": "Masukkan nama anak",
+    "school": "Sekolah",
+    "enterSchool": "Masukkan nama sekolah (pilihan)",
+    "grade": "Darjah",
+    "createKid": "Cipta Profil",
+    "clickToPlay": "Klik pada profil anak untuk mula belajar"
+  },
+  "errors": {
+    "notAuthenticated": "Sila log masuk untuk meneruskan",
+    "createKidFailed": "Gagal mencipta profil anak. Sila cuba lagi."
   }
 }
