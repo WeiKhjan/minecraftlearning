@@ -27,7 +27,13 @@ type ActivityState = 'ready' | 'listening' | 'analyzing' | 'feedback' | 'correct
 
 export default function SyllableActivity({ content, avatarUrl, locale, onComplete }: SyllableActivityProps) {
   const data = (content?.data || {}) as SyllableContent;
-  const syllables = data.syllables || [];
+
+  // Support both formats: flat syllables array OR words array with syllables
+  const isWordMode = Array.isArray(data.words) && data.words.length > 0;
+  const items = isWordMode
+    ? data.words!.map(w => w.word)
+    : (data.syllables || []);
+  const words = isWordMode ? data.words! : [];
 
   const [currentIndex, setCurrentIndex] = useState(0);
   const [readSyllables, setReadSyllables] = useState<Set<number>>(new Set());
@@ -39,7 +45,8 @@ export default function SyllableActivity({ content, avatarUrl, locale, onComplet
   // Ref to track latest transcript (avoids stale closure)
   const latestTranscriptRef = useRef<string>('');
 
-  const currentSyllable = syllables[currentIndex];
+  const currentItem = items[currentIndex];
+  const currentWord = isWordMode ? words[currentIndex] : null;
 
   // Voice tutor for playing correct pronunciation
   const { speak: playCorrectSound, isSpeaking: isPlayingSound } = useVoiceTutor({
@@ -110,10 +117,10 @@ export default function SyllableActivity({ content, avatarUrl, locale, onComplet
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          expected: currentSyllable,
+          expected: currentItem,
           spoken: spokenText,
           locale,
-          contentType: 'syllable', // Tell AI this is Malay suku kata lesson
+          contentType: isWordMode ? 'word' : 'syllable', // Tell AI this is Malay suku kata or word lesson
         }),
       });
 
@@ -152,7 +159,7 @@ export default function SyllableActivity({ content, avatarUrl, locale, onComplet
         },
       });
     }
-  }, [currentSyllable, locale, attempts]);
+  }, [currentItem, locale, attempts, isWordMode]);
 
   // Start listening
   const handleStartListening = useCallback(() => {
@@ -164,24 +171,24 @@ export default function SyllableActivity({ content, avatarUrl, locale, onComplet
   }, [resetTranscript, startListening]);
 
 
-  // Move to next syllable
+  // Move to next item
   const handleMoveToNext = useCallback(() => {
     const newRead = new Set(readSyllables);
     newRead.add(currentIndex);
     setReadSyllables(newRead);
 
-    if (currentIndex < syllables.length - 1) {
+    if (currentIndex < items.length - 1) {
       setCurrentIndex(currentIndex + 1);
       setActivityState('ready');
       setFeedback(null);
       setAttempts(0);
     } else {
-      // All syllables completed
+      // All items completed
       setActivityState('completed');
-      const finalScore = Math.round(totalScore / syllables.length);
+      const finalScore = Math.round(totalScore / items.length);
       setTimeout(() => onComplete(Math.max(finalScore, 60)), 1000);
     }
-  }, [readSyllables, currentIndex, syllables.length, totalScore, onComplete]);
+  }, [readSyllables, currentIndex, items.length, totalScore, onComplete]);
 
   // Click on grid to jump to syllable
   const handleSyllableClick = (index: number) => {
@@ -214,42 +221,61 @@ export default function SyllableActivity({ content, avatarUrl, locale, onComplet
 
       {/* Instruction */}
       <p className="text-center text-gray-600">
-        {locale === 'ms' ? 'Tekan butang mikrofon dan baca suku kata dengan kuat' :
-          locale === 'zh' ? '按麦克风按钮并大声朗读音节' :
-          'Press the microphone button and read the syllable aloud'}
+        {isWordMode
+          ? (locale === 'ms' ? 'Tekan butang mikrofon dan sebut perkataan dengan kuat' :
+              locale === 'zh' ? '按麦克风按钮并大声说出单词' :
+              'Press the microphone button and say the word aloud')
+          : (locale === 'ms' ? 'Tekan butang mikrofon dan baca suku kata dengan kuat' :
+              locale === 'zh' ? '按麦克风按钮并大声朗读音节' :
+              'Press the microphone button and read the syllable aloud')}
       </p>
 
       {/* Progress */}
       <div className="flex justify-center items-center gap-2">
         <span className="text-sm text-gray-500">
-          {readSyllables.size}/{syllables.length}
+          {readSyllables.size}/{items.length}
         </span>
         <div className="w-48 h-2 bg-gray-200 rounded-full">
           <div
             className="h-2 bg-[#5D8731] rounded-full transition-all"
-            style={{ width: `${(readSyllables.size / syllables.length) * 100}%` }}
+            style={{ width: `${(readSyllables.size / items.length) * 100}%` }}
           />
         </div>
       </div>
 
-      {/* Current Syllable Display */}
-      {currentIndex < syllables.length && activityState !== 'completed' && (
+      {/* Current Item Display */}
+      {currentIndex < items.length && activityState !== 'completed' && (
         <div className={`text-white text-center py-8 rounded-lg relative transition-all ${
           activityState === 'correct' ? 'bg-green-500' :
           activityState === 'feedback' ? 'bg-orange-500' :
           'bg-[#5D8731]'
         }`}>
-          {/* Syllable */}
+          {/* Word with Image (word mode) or Syllable (simple mode) */}
+          {isWordMode && currentWord?.image && (
+            <div className="mb-4">
+              <img
+                src={currentWord.image}
+                alt={currentWord.word}
+                className="w-32 h-32 mx-auto object-contain rounded-lg bg-white/10"
+              />
+            </div>
+          )}
           <div className="flex items-center justify-center gap-4 mb-4">
-            <p className="text-6xl font-bold">{currentSyllable}</p>
+            <p className="text-6xl font-bold">{currentItem}</p>
             <VoiceTutorButton
-              text={currentSyllable}
+              text={currentItem}
               locale={locale}
               size="md"
-              contentType="syllable"
-              audioUrl={data.audio_urls?.[currentIndex]}
+              contentType={isWordMode ? 'word' : 'syllable'}
+              audioUrl={isWordMode ? currentWord?.audio_url : data.audio_urls?.[currentIndex]}
             />
           </div>
+          {/* Show syllables breakdown in word mode */}
+          {isWordMode && currentWord?.syllables && (
+            <p className="text-lg opacity-80 mb-2">
+              ({currentWord.syllables.join(' - ')})
+            </p>
+          )}
 
           {/* State-based content */}
           {activityState === 'ready' && (
@@ -370,11 +396,12 @@ export default function SyllableActivity({ content, avatarUrl, locale, onComplet
         </div>
       )}
 
-      {/* Syllable Grid */}
-      <div className="grid grid-cols-7 gap-2">
-        {syllables.map((syllable, index) => {
+      {/* Item Grid */}
+      <div className={`grid gap-2 ${isWordMode ? 'grid-cols-3 sm:grid-cols-5' : 'grid-cols-7'}`}>
+        {items.map((item, index) => {
           const isRead = readSyllables.has(index);
           const isCurrent = index === currentIndex;
+          const wordData = isWordMode ? words[index] : null;
 
           return (
             <button
@@ -382,7 +409,8 @@ export default function SyllableActivity({ content, avatarUrl, locale, onComplet
               onClick={() => handleSyllableClick(index)}
               disabled={isRead}
               className={`
-                py-3 px-2 rounded font-bold text-lg transition-all
+                py-3 px-2 rounded font-bold transition-all
+                ${isWordMode ? 'text-sm' : 'text-lg'}
                 ${isRead
                   ? 'bg-green-500 text-white cursor-default'
                   : isCurrent
@@ -391,7 +419,14 @@ export default function SyllableActivity({ content, avatarUrl, locale, onComplet
                 }
               `}
             >
-              {syllable}
+              {isWordMode && wordData?.image && (
+                <img
+                  src={wordData.image}
+                  alt={item}
+                  className="w-12 h-12 mx-auto object-contain mb-1"
+                />
+              )}
+              {item}
               {isRead && <span className="ml-1">✓</span>}
             </button>
           );
@@ -403,9 +438,13 @@ export default function SyllableActivity({ content, avatarUrl, locale, onComplet
         <div className="text-center space-y-4 animate-bounce-in">
           <p className="text-6xl">🎉</p>
           <p className="text-green-600 font-bold text-xl">
-            {locale === 'ms' ? 'Tahniah! Anda telah membaca semua suku kata!' :
-              locale === 'zh' ? '恭喜！你已经读完所有音节！' :
-              'Congratulations! You have read all syllables!'}
+            {isWordMode
+              ? (locale === 'ms' ? 'Tahniah! Anda telah membaca semua perkataan!' :
+                  locale === 'zh' ? '恭喜！你已经读完所有单词！' :
+                  'Congratulations! You have read all words!')
+              : (locale === 'ms' ? 'Tahniah! Anda telah membaca semua suku kata!' :
+                  locale === 'zh' ? '恭喜！你已经读完所有音节！' :
+                  'Congratulations! You have read all syllables!')}
           </p>
         </div>
       )}

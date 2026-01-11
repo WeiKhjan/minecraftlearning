@@ -115,8 +115,19 @@ export interface MatchingContent {
 }
 
 export interface SyllableContent {
-  syllables: string[];
+  // Simple format: flat array of syllables
+  syllables?: string[];
   audio_urls?: string[]; // Pre-generated audio URLs for each syllable
+  // Word format: array of word objects with syllables
+  words?: {
+    word: string;
+    syllables: string[];
+    meaning_ms?: string;
+    meaning_zh?: string;
+    meaning_en?: string;
+    image?: string;
+    audio_url?: string;
+  }[];
 }
 
 export interface WritingContent {
