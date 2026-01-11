@@ -120,19 +120,20 @@ Requirements:
 Make it perfect for teaching young children vocabulary!`;
 
   try {
-    // Try Gemini 2.0 Flash image generation
+    // Use Gemini 2.5 Flash Image (same as avatar generation)
     const response = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp-image-generation:generateImages?key=${apiKey}`,
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-image:generateContent?key=${apiKey}`,
       {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          prompt: prompt,
-          config: {
-            numberOfImages: 1,
-            outputOptions: {
-              mimeType: 'image/png',
+          contents: [
+            {
+              parts: [{ text: prompt }],
             },
+          ],
+          generationConfig: {
+            responseModalities: ['TEXT', 'IMAGE'],
           },
         }),
       }
@@ -143,38 +144,22 @@ Make it perfect for teaching young children vocabulary!`;
 
     if (response.ok) {
       const data = await response.json();
-      imageData = data.generatedImages?.[0]?.image?.imageBytes;
-    }
-
-    // Fallback to alternative model if needed
-    if (!imageData) {
-      const altResponse = await fetch(
-        `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`,
-        {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            contents: [{ parts: [{ text: prompt }] }],
-            generationConfig: { responseModalities: ['TEXT', 'IMAGE'] },
-          }),
-        }
-      );
-
-      if (altResponse.ok) {
-        const altData = await altResponse.json();
-        const parts = altData.candidates?.[0]?.content?.parts || [];
-        for (const part of parts) {
-          if (part.inlineData) {
-            imageData = part.inlineData.data;
-            mimeType = part.inlineData.mimeType || 'image/png';
-            break;
-          }
+      const parts = data.candidates?.[0]?.content?.parts || [];
+      for (const part of parts) {
+        if (part.inlineData) {
+          imageData = part.inlineData.data;
+          mimeType = part.inlineData.mimeType || 'image/png';
+          break;
         }
       }
+    } else {
+      const errorText = await response.text();
+      console.error('Gemini error:', errorText);
+      return { word, error: `API error: ${response.status}` };
     }
 
     if (!imageData) {
-      return { word, error: 'No image generated' };
+      return { word, error: 'No image in response' };
     }
 
     // Upload to Supabase
