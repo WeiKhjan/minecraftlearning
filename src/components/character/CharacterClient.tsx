@@ -11,7 +11,6 @@ const EQUIPMENT_IMAGE_BASE = 'https://glwxvgxgquwfgwbwqbiz.supabase.co/storage/v
 
 // Get equipment image URL based on tier and slot
 function getEquipmentImageUrl(tier: EquipmentTier, slot: EquipmentSlot): string {
-  // Map slot to actual equipment piece name
   const slotToName: Record<EquipmentSlot, string> = {
     helmet: 'helmet',
     chestplate: 'chestplate',
@@ -20,7 +19,6 @@ function getEquipmentImageUrl(tier: EquipmentTier, slot: EquipmentSlot): string 
     weapon: 'sword',
   };
 
-  // Map tier to sword prefix
   const tierToSwordPrefix: Record<EquipmentTier, string> = {
     leather: 'wooden',
     chain: 'stone',
@@ -35,15 +33,6 @@ function getEquipmentImageUrl(tier: EquipmentTier, slot: EquipmentSlot): string 
   return `${EQUIPMENT_IMAGE_BASE}/${tier}_${slotToName[slot]}.png`;
 }
 
-// Fallback emojis for when no equipment is equipped
-const slotEmojis: Record<EquipmentSlot, string> = {
-  helmet: '🪖',
-  chestplate: '🦺',
-  leggings: '👖',
-  boots: '👢',
-  weapon: '⚔️',
-};
-
 // Tier colors for equipment
 const tierColors: Record<EquipmentTier, string> = {
   leather: '#8B4513',
@@ -53,13 +42,13 @@ const tierColors: Record<EquipmentTier, string> = {
   diamond: '#5DADE2',
 };
 
-// Tier gradient colors for body parts
-const tierGradients: Record<EquipmentTier, { main: string; highlight: string; shadow: string }> = {
-  leather: { main: '#8B4513', highlight: '#A0522D', shadow: '#5D3A1A' },
-  chain: { main: '#A9A9A9', highlight: '#C0C0C0', shadow: '#808080' },
-  iron: { main: '#C0C0C0', highlight: '#E0E0E0', shadow: '#909090' },
-  gold: { main: '#FFD700', highlight: '#FFE44D', shadow: '#C4A600' },
-  diamond: { main: '#5DADE2', highlight: '#85C1E9', shadow: '#3498DB' },
+// Tier background colors (lighter)
+const tierBgColors: Record<EquipmentTier, string> = {
+  leather: '#D4A574',
+  chain: '#D0D0D0',
+  iron: '#E8E8E8',
+  gold: '#FFF3B0',
+  diamond: '#B8E4F0',
 };
 
 // Rarity colors
@@ -108,6 +97,71 @@ function getEquipmentName(equipment: Equipment | null | undefined, locale: Local
   }
 }
 
+// Minecraft-style slot component
+function EquipmentSlotBox({
+  item,
+  slot,
+  slotName,
+  isSelected,
+  onClick,
+  locale,
+}: {
+  item: Equipment | null;
+  slot: EquipmentSlot;
+  slotName: string;
+  isSelected: boolean;
+  onClick: () => void;
+  locale: Locale;
+}) {
+  return (
+    <button
+      onClick={onClick}
+      className={`
+        relative w-16 h-16 sm:w-20 sm:h-20
+        bg-[#8B8B8B] rounded-sm
+        border-4 transition-all duration-150
+        hover:scale-105 hover:brightness-110
+        ${isSelected
+          ? 'border-[#5DADE2] ring-2 ring-[#5DADE2] ring-offset-2'
+          : 'border-t-[#FFFFFF] border-l-[#FFFFFF] border-r-[#555555] border-b-[#555555]'
+        }
+      `}
+      style={{
+        boxShadow: 'inset -2px -2px 0 #373737, inset 2px 2px 0 #C6C6C6',
+        backgroundColor: item ? tierBgColors[item.tier] : '#8B8B8B',
+      }}
+      title={item ? getEquipmentName(item, locale) : slotName}
+    >
+      {/* Inner darker area */}
+      <div className="absolute inset-1 bg-[#373737]/30 rounded-sm flex items-center justify-center">
+        {item ? (
+          <Image
+            src={getEquipmentImageUrl(item.tier, slot)}
+            alt={getEquipmentName(item, locale)}
+            width={48}
+            height={48}
+            className="object-contain drop-shadow-lg"
+          />
+        ) : (
+          <div className="text-[#555555]/50 text-xs font-bold text-center leading-tight">
+            {slotName}
+          </div>
+        )}
+      </div>
+
+      {/* Tier indicator */}
+      {item && (
+        <div
+          className="absolute -bottom-1 -right-1 w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold text-white border-2 border-white shadow-md"
+          style={{ backgroundColor: tierColors[item.tier] }}
+        >
+          {item.tier.charAt(0).toUpperCase()}
+        </div>
+      )}
+    </button>
+  );
+}
+
 export default function CharacterClient({
   kid,
   equipped,
@@ -148,7 +202,6 @@ export default function CharacterClient({
     setIsUpdating(true);
     const supabase = createClient();
 
-    // Upsert equipped item
     const updateData: Record<string, string | null> = {
       kid_id: kid.id,
       [`${equipment.slot}_id`]: equipment.id,
@@ -228,13 +281,6 @@ export default function CharacterClient({
   // Get owned equipment IDs
   const ownedEquipmentIds = new Set(inventory.map(inv => inv.equipment_id));
 
-  // Get equipment for each slot
-  const helmetEquipped = getEquippedItem('helmet');
-  const chestplateEquipped = getEquippedItem('chestplate');
-  const leggingsEquipped = getEquippedItem('leggings');
-  const bootsEquipped = getEquippedItem('boots');
-  const weaponEquipped = getEquippedItem('weapon');
-
   // Localized labels
   const generateLabel = locale === 'ms' ? 'Jana Avatar AI' :
     locale === 'zh' ? '生成AI头像' : 'Generate AI Avatar';
@@ -244,264 +290,142 @@ export default function CharacterClient({
     locale === 'zh' ? '生成中...' : 'Generating...';
   const aiAvatarTitle = locale === 'ms' ? 'Avatar AI' :
     locale === 'zh' ? 'AI头像' : 'AI Avatar';
+  const clickToEquipLabel = locale === 'ms' ? 'Klik slot untuk melengkapkan' :
+    locale === 'zh' ? '点击插槽装备' : 'Click slot to equip';
 
   return (
-    <div className="space-y-4 lg:space-y-0 lg:grid lg:grid-cols-3 lg:gap-4 lg:h-[calc(100vh-120px)]">
-      {/* Character Display */}
-      <div className="minecraft-card lg:col-span-1 lg:overflow-hidden">
-          <h2 className="text-lg font-bold text-gray-800 mb-2 text-center">
+    <div className="space-y-4 lg:space-y-0 lg:grid lg:grid-cols-2 lg:gap-6 lg:h-[calc(100vh-120px)]">
+
+      {/* Left Panel - Character & Equipment */}
+      <div className="minecraft-card lg:col-span-1 p-4 sm:p-6">
+        {/* Header with name and level */}
+        <div className="flex items-center justify-between mb-6">
+          <h2 className="text-xl sm:text-2xl font-bold text-gray-800 minecraft-font">
             {kid.name}
           </h2>
+          <div className="flex items-center gap-2 bg-gradient-to-r from-yellow-400 to-yellow-500 px-4 py-2 rounded-lg shadow-md">
+            <span className="text-yellow-900 font-bold text-lg">Lv.{kid.level}</span>
+          </div>
+        </div>
 
-          {/* Full Body Character Avatar */}
-          <div className="flex justify-center mb-2 lg:mb-4">
-            <div className="relative">
-              {/* Level Badge */}
-              <div className="absolute -top-2 -right-2 bg-yellow-500 text-white text-xs px-2 py-1 rounded font-bold z-20">
-                Lv.{kid.level}
-              </div>
+        {/* Main Equipment Layout - RPG Style Grid */}
+        <div className="flex flex-col items-center gap-6">
 
-              {/* Character Body Container */}
-              <div className="flex flex-col items-center">
-                {/* Weapon (left side) */}
-                <div className="absolute left-[-40px] top-[70px] z-10">
-                  <button
-                    onClick={() => setSelectedSlot(selectedSlot === 'weapon' ? null : 'weapon')}
-                    className={`w-12 h-24 rounded-lg flex items-center justify-center transition-all hover:scale-105 ${
-                      selectedSlot === 'weapon' ? 'ring-4 ring-[#5DADE2]' : ''
-                    }`}
-                    style={{
-                      backgroundColor: weaponEquipped
-                        ? tierGradients[weaponEquipped.tier].main
-                        : '#9CA3AF',
-                    }}
-                    title={weaponEquipped ? getEquipmentName(weaponEquipped, locale) : translations.weapon}
-                  >
-                    {weaponEquipped ? (
-                      <Image
-                        src={getEquipmentImageUrl(weaponEquipped.tier, 'weapon')}
-                        alt={getEquipmentName(weaponEquipped, locale)}
-                        width={40}
-                        height={40}
-                        className="object-contain"
-                      />
-                    ) : (
-                      <span className="text-2xl">🔲</span>
-                    )}
-                  </button>
+          {/* Character Avatar Display */}
+          <div className="relative">
+            {/* Avatar Frame - Minecraft style */}
+            <div
+              className="w-32 h-32 sm:w-40 sm:h-40 rounded-lg overflow-hidden border-4"
+              style={{
+                borderColor: '#555555',
+                boxShadow: 'inset -3px -3px 0 #373737, inset 3px 3px 0 #C6C6C6, 0 4px 12px rgba(0,0,0,0.3)',
+                background: 'linear-gradient(135deg, #6B8E23 0%, #556B2F 100%)',
+              }}
+            >
+              {generatedAvatar ? (
+                <Image
+                  src={generatedAvatar}
+                  alt={`${kid.name}'s Avatar`}
+                  width={160}
+                  height={160}
+                  className="w-full h-full object-cover"
+                  unoptimized={generatedAvatar.startsWith('data:')}
+                />
+              ) : (
+                <div className="w-full h-full flex items-center justify-center">
+                  <span className="text-6xl">{kid.avatar_seed || '😊'}</span>
                 </div>
-
-                {/* Head/Helmet */}
-                <button
-                  onClick={() => setSelectedSlot(selectedSlot === 'helmet' ? null : 'helmet')}
-                  className={`w-20 h-20 rounded-lg flex items-center justify-center transition-all hover:scale-105 relative ${
-                    selectedSlot === 'helmet' ? 'ring-4 ring-[#5DADE2]' : ''
-                  }`}
-                  style={{
-                    backgroundColor: helmetEquipped
-                      ? tierGradients[helmetEquipped.tier].main
-                      : '#FBBF24',
-                  }}
-                  title={helmetEquipped ? getEquipmentName(helmetEquipped, locale) : translations.helmet}
-                >
-                  {helmetEquipped ? (
-                    <>
-                      <Image
-                        src={getEquipmentImageUrl(helmetEquipped.tier, 'helmet')}
-                        alt={getEquipmentName(helmetEquipped, locale)}
-                        width={48}
-                        height={48}
-                        className="object-contain"
-                      />
-                      <div
-                        className="absolute bottom-1 w-8 h-4 rounded"
-                        style={{ backgroundColor: '#FBBF24' }}
-                      >
-                        <span className="text-xs">{kid.avatar_seed || '😊'}</span>
-                      </div>
-                    </>
-                  ) : (
-                    <span className="text-4xl">{kid.avatar_seed || '😊'}</span>
-                  )}
-                </button>
-
-                {/* Torso/Chestplate */}
-                <button
-                  onClick={() => setSelectedSlot(selectedSlot === 'chestplate' ? null : 'chestplate')}
-                  className={`w-24 h-28 -mt-1 rounded-lg flex items-center justify-center transition-all hover:scale-105 relative ${
-                    selectedSlot === 'chestplate' ? 'ring-4 ring-[#5DADE2]' : ''
-                  }`}
-                  style={{
-                    backgroundColor: chestplateEquipped
-                      ? tierGradients[chestplateEquipped.tier].main
-                      : '#5D8731',
-                  }}
-                  title={chestplateEquipped ? getEquipmentName(chestplateEquipped, locale) : translations.chestplate}
-                >
-                  {chestplateEquipped ? (
-                    <div className="flex flex-col items-center">
-                      <Image
-                        src={getEquipmentImageUrl(chestplateEquipped.tier, 'chestplate')}
-                        alt={getEquipmentName(chestplateEquipped, locale)}
-                        width={56}
-                        height={56}
-                        className="object-contain"
-                      />
-                      <span
-                        className="text-xs font-bold mt-1 px-2 py-0.5 rounded"
-                        style={{
-                          backgroundColor: tierGradients[chestplateEquipped.tier].shadow,
-                          color: 'white'
-                        }}
-                      >
-                        {chestplateEquipped.tier.charAt(0).toUpperCase()}
-                      </span>
-                    </div>
-                  ) : (
-                    <div className="w-full h-full flex items-center justify-center">
-                      <div className="w-16 h-20 bg-[#4A7229] rounded-md" />
-                    </div>
-                  )}
-                  {/* Arms */}
-                  <div
-                    className="absolute left-[-12px] top-2 w-3 h-20 rounded-full"
-                    style={{
-                      backgroundColor: chestplateEquipped
-                        ? tierGradients[chestplateEquipped.tier].shadow
-                        : '#4A7229',
-                    }}
-                  />
-                  <div
-                    className="absolute right-[-12px] top-2 w-3 h-20 rounded-full"
-                    style={{
-                      backgroundColor: chestplateEquipped
-                        ? tierGradients[chestplateEquipped.tier].shadow
-                        : '#4A7229',
-                    }}
-                  />
-                </button>
-
-                {/* Legs/Leggings */}
-                <button
-                  onClick={() => setSelectedSlot(selectedSlot === 'leggings' ? null : 'leggings')}
-                  className={`w-20 h-24 -mt-1 rounded-b-lg flex items-center justify-center transition-all hover:scale-105 relative ${
-                    selectedSlot === 'leggings' ? 'ring-4 ring-[#5DADE2]' : ''
-                  }`}
-                  style={{
-                    backgroundColor: leggingsEquipped
-                      ? tierGradients[leggingsEquipped.tier].main
-                      : '#3B82F6',
-                  }}
-                  title={leggingsEquipped ? getEquipmentName(leggingsEquipped, locale) : translations.leggings}
-                >
-                  {leggingsEquipped ? (
-                    <Image
-                      src={getEquipmentImageUrl(leggingsEquipped.tier, 'leggings')}
-                      alt={getEquipmentName(leggingsEquipped, locale)}
-                      width={48}
-                      height={48}
-                      className="object-contain"
-                    />
-                  ) : (
-                    <div className="flex gap-1">
-                      <div className="w-6 h-20 bg-[#2563EB] rounded-b-md" />
-                      <div className="w-6 h-20 bg-[#2563EB] rounded-b-md" />
-                    </div>
-                  )}
-                </button>
-
-                {/* Feet/Boots */}
-                <button
-                  onClick={() => setSelectedSlot(selectedSlot === 'boots' ? null : 'boots')}
-                  className={`w-24 h-10 -mt-1 rounded-b-lg flex items-center justify-center gap-2 transition-all hover:scale-105 ${
-                    selectedSlot === 'boots' ? 'ring-4 ring-[#5DADE2]' : ''
-                  }`}
-                  style={{
-                    backgroundColor: bootsEquipped
-                      ? tierGradients[bootsEquipped.tier].main
-                      : '#78350F',
-                  }}
-                  title={bootsEquipped ? getEquipmentName(bootsEquipped, locale) : translations.boots}
-                >
-                  {bootsEquipped ? (
-                    <Image
-                      src={getEquipmentImageUrl(bootsEquipped.tier, 'boots')}
-                      alt={getEquipmentName(bootsEquipped, locale)}
-                      width={32}
-                      height={32}
-                      className="object-contain"
-                    />
-                  ) : (
-                    <>
-                      <div className="w-8 h-6 bg-[#92400E] rounded-md" />
-                      <div className="w-8 h-6 bg-[#92400E] rounded-md" />
-                    </>
-                  )}
-                </button>
-              </div>
+              )}
             </div>
           </div>
 
-          {/* Equipment Slot Legend */}
-          <div className="flex flex-wrap justify-center gap-1 lg:gap-2 mt-2 text-xs">
-            {slots.map(slot => {
-              const item = getEquippedItem(slot);
-              return (
-                <div
-                  key={slot}
-                  onClick={() => setSelectedSlot(selectedSlot === slot ? null : slot)}
-                  className={`flex items-center gap-1 px-2 py-1 rounded cursor-pointer transition-all ${
-                    selectedSlot === slot
-                      ? 'bg-[#5DADE2] text-white'
-                      : item
-                        ? 'bg-[#5D8731]/20 text-[#5D8731]'
-                        : 'bg-gray-200 text-gray-500'
-                  }`}
-                >
-                  {item ? (
-                    <Image
-                      src={getEquipmentImageUrl(item.tier, slot)}
-                      alt={slotNames[slot]}
-                      width={16}
-                      height={16}
-                      className="object-contain"
-                    />
-                  ) : (
-                    <span>{slotEmojis[slot]}</span>
-                  )}
-                  <span>{slotNames[slot]}</span>
-                  {item && (
-                    <span
-                      className="w-2 h-2 rounded-full"
-                      style={{ backgroundColor: tierColors[item.tier] }}
-                    />
-                  )}
-                </div>
-              );
-            })}
+          {/* Equipment Slots Grid - Classic RPG Layout */}
+          <div className="w-full max-w-sm">
+            {/* Top row - Helmet */}
+            <div className="flex justify-center mb-3">
+              <EquipmentSlotBox
+                item={getEquippedItem('helmet')}
+                slot="helmet"
+                slotName={translations.helmet}
+                isSelected={selectedSlot === 'helmet'}
+                onClick={() => setSelectedSlot(selectedSlot === 'helmet' ? null : 'helmet')}
+                locale={locale}
+              />
+            </div>
+
+            {/* Middle row - Weapon, Chestplate, (empty for symmetry) */}
+            <div className="flex justify-center gap-3 mb-3">
+              <EquipmentSlotBox
+                item={getEquippedItem('weapon')}
+                slot="weapon"
+                slotName={translations.weapon}
+                isSelected={selectedSlot === 'weapon'}
+                onClick={() => setSelectedSlot(selectedSlot === 'weapon' ? null : 'weapon')}
+                locale={locale}
+              />
+              <EquipmentSlotBox
+                item={getEquippedItem('chestplate')}
+                slot="chestplate"
+                slotName={translations.chestplate}
+                isSelected={selectedSlot === 'chestplate'}
+                onClick={() => setSelectedSlot(selectedSlot === 'chestplate' ? null : 'chestplate')}
+                locale={locale}
+              />
+              {/* Empty slot for visual balance */}
+              <div className="w-16 h-16 sm:w-20 sm:h-20" />
+            </div>
+
+            {/* Bottom row - Leggings, Boots */}
+            <div className="flex justify-center gap-3">
+              <EquipmentSlotBox
+                item={getEquippedItem('leggings')}
+                slot="leggings"
+                slotName={translations.leggings}
+                isSelected={selectedSlot === 'leggings'}
+                onClick={() => setSelectedSlot(selectedSlot === 'leggings' ? null : 'leggings')}
+                locale={locale}
+              />
+              <EquipmentSlotBox
+                item={getEquippedItem('boots')}
+                slot="boots"
+                slotName={translations.boots}
+                isSelected={selectedSlot === 'boots'}
+                onClick={() => setSelectedSlot(selectedSlot === 'boots' ? null : 'boots')}
+                locale={locale}
+              />
+            </div>
           </div>
+
+          {/* Instruction text */}
+          <p className="text-sm text-gray-500 text-center">
+            {clickToEquipLabel}
+          </p>
 
           {/* Unequip Button */}
           {selectedSlot && getEquippedItem(selectedSlot) && (
             <button
               onClick={() => handleUnequip(selectedSlot)}
               disabled={isUpdating}
-              className="mt-2 w-full px-3 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg disabled:opacity-50 text-sm"
+              className="w-full max-w-xs px-4 py-3 bg-red-500 hover:bg-red-600 text-white rounded-lg disabled:opacity-50 font-bold transition-all shadow-md"
             >
               {translations.unequip} {slotNames[selectedSlot]}
             </button>
           )}
+        </div>
       </div>
 
-      {/* Inventory Panel */}
-      <div className="minecraft-card lg:col-span-1 lg:overflow-hidden">
+      {/* Right Panel - Inventory & AI Avatar */}
+      <div className="space-y-4 lg:space-y-4">
+
+        {/* Inventory Panel */}
+        <div className="minecraft-card p-4 sm:p-6 lg:max-h-[55%] lg:overflow-hidden">
           {/* Tabs */}
-          <div className="flex gap-2 mb-3">
+          <div className="flex gap-2 mb-4">
             <button
               onClick={() => setActiveTab('equipped')}
-              className={`flex-1 py-1.5 rounded-lg font-bold transition-all text-sm ${
+              className={`flex-1 py-2.5 rounded-lg font-bold transition-all ${
                 activeTab === 'equipped'
-                  ? 'bg-[#5D8731] text-white'
+                  ? 'bg-[#5D8731] text-white shadow-md'
                   : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
               }`}
             >
@@ -509,9 +433,9 @@ export default function CharacterClient({
             </button>
             <button
               onClick={() => setActiveTab('inventory')}
-              className={`flex-1 py-1.5 rounded-lg font-bold transition-all text-sm ${
+              className={`flex-1 py-2.5 rounded-lg font-bold transition-all ${
                 activeTab === 'inventory'
-                  ? 'bg-[#5D8731] text-white'
+                  ? 'bg-[#5D8731] text-white shadow-md'
                   : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
               }`}
             >
@@ -521,28 +445,29 @@ export default function CharacterClient({
 
           {/* Equipment Selection (when slot selected) */}
           {selectedSlot && activeTab === 'equipped' && (
-            <div className="space-y-2">
-              <h3 className="font-bold text-gray-700 text-sm">
+            <div className="space-y-3">
+              <h3 className="font-bold text-gray-700 flex items-center gap-2">
+                <span className="w-3 h-3 rounded-full bg-[#5DADE2]"></span>
                 {slotNames[selectedSlot]}
               </h3>
-              <div className="space-y-2 max-h-48 lg:max-h-[calc(100vh-280px)] overflow-y-auto">
+              <div className="space-y-2 max-h-40 lg:max-h-48 overflow-y-auto pr-2">
                 {getInventoryForSlot(selectedSlot).length > 0 ? (
                   getInventoryForSlot(selectedSlot).map(equipment => (
                     <button
                       key={equipment.id}
                       onClick={() => handleEquip(equipment)}
                       disabled={isUpdating}
-                      className="w-full flex items-center gap-3 p-3 bg-white hover:bg-gray-50 rounded-lg border-2 border-gray-200 hover:border-[#5D8731] transition-all disabled:opacity-50"
+                      className="w-full flex items-center gap-4 p-3 bg-white hover:bg-gray-50 rounded-lg border-2 border-gray-200 hover:border-[#5D8731] transition-all disabled:opacity-50 shadow-sm"
                     >
                       <div
-                        className="w-10 h-10 rounded flex items-center justify-center"
-                        style={{ backgroundColor: tierColors[equipment.tier] + '40' }}
+                        className="w-12 h-12 rounded-lg flex items-center justify-center shadow-inner"
+                        style={{ backgroundColor: tierBgColors[equipment.tier] }}
                       >
                         <Image
                           src={getEquipmentImageUrl(equipment.tier, equipment.slot)}
                           alt={getEquipmentName(equipment, locale)}
-                          width={32}
-                          height={32}
+                          width={40}
+                          height={40}
                           className="object-contain"
                         />
                       </div>
@@ -550,17 +475,21 @@ export default function CharacterClient({
                         <p className="font-bold" style={{ color: rarityColors[equipment.rarity] }}>
                           {getEquipmentName(equipment, locale)}
                         </p>
-                        <p className="text-xs text-gray-500">
+                        <p className="text-xs text-gray-500 flex items-center gap-1">
+                          <span
+                            className="w-2 h-2 rounded-full"
+                            style={{ backgroundColor: tierColors[equipment.tier] }}
+                          />
                           {equipment.tier.charAt(0).toUpperCase() + equipment.tier.slice(1)}
                         </p>
                       </div>
-                      <span className="text-[#5D8731] font-bold">
+                      <span className="text-[#5D8731] font-bold bg-[#5D8731]/10 px-3 py-1 rounded-full text-sm">
                         {translations.equip}
                       </span>
                     </button>
                   ))
                 ) : (
-                  <p className="text-gray-500 text-center py-4">
+                  <p className="text-gray-500 text-center py-6 bg-gray-50 rounded-lg">
                     {translations.noEquipment}
                   </p>
                 )}
@@ -570,22 +499,22 @@ export default function CharacterClient({
 
           {/* Full Inventory */}
           {activeTab === 'inventory' && (
-            <div className="space-y-2 max-h-48 lg:max-h-[calc(100vh-280px)] overflow-y-auto">
+            <div className="space-y-2 max-h-40 lg:max-h-48 overflow-y-auto pr-2">
               {inventory.length > 0 ? (
                 inventory.map(inv => (
                   <div
                     key={inv.id}
-                    className="flex items-center gap-3 p-3 bg-white rounded-lg border border-gray-200"
+                    className="flex items-center gap-4 p-3 bg-white rounded-lg border border-gray-200 shadow-sm"
                   >
                     <div
-                      className="w-10 h-10 rounded flex items-center justify-center"
-                      style={{ backgroundColor: tierColors[inv.equipment.tier] + '40' }}
+                      className="w-12 h-12 rounded-lg flex items-center justify-center shadow-inner"
+                      style={{ backgroundColor: tierBgColors[inv.equipment.tier] }}
                     >
                       <Image
                         src={getEquipmentImageUrl(inv.equipment.tier, inv.equipment.slot)}
                         alt={getEquipmentName(inv.equipment, locale)}
-                        width={32}
-                        height={32}
+                        width={40}
+                        height={40}
                         className="object-contain"
                       />
                     </div>
@@ -593,14 +522,18 @@ export default function CharacterClient({
                       <p className="font-bold" style={{ color: rarityColors[inv.equipment.rarity] }}>
                         {getEquipmentName(inv.equipment, locale)}
                       </p>
-                      <p className="text-xs text-gray-500">
+                      <p className="text-xs text-gray-500 flex items-center gap-1">
+                        <span
+                          className="w-2 h-2 rounded-full"
+                          style={{ backgroundColor: tierColors[inv.equipment.tier] }}
+                        />
                         {slotNames[inv.equipment.slot as EquipmentSlot]} • {inv.equipment.tier}
                       </p>
                     </div>
                   </div>
                 ))
               ) : (
-                <p className="text-gray-500 text-center py-8">
+                <p className="text-gray-500 text-center py-8 bg-gray-50 rounded-lg">
                   {translations.noEquipment}
                 </p>
               )}
@@ -609,11 +542,11 @@ export default function CharacterClient({
 
           {/* All Equipment Preview */}
           {activeTab === 'equipped' && !selectedSlot && (
-            <div className="space-y-2">
-              <h3 className="font-bold text-gray-700 mb-2 text-sm">
-                {locale === 'ms' ? 'Klik pada badan untuk menukar peralatan' :
-                  locale === 'zh' ? '点击身体部位更换装备' :
-                  'Click on body parts to change equipment'}
+            <div className="space-y-3">
+              <h3 className="font-bold text-gray-700 text-sm">
+                {locale === 'ms' ? 'Koleksi Peralatan' :
+                  locale === 'zh' ? '装备收藏' :
+                  'Equipment Collection'}
               </h3>
               <div className="grid grid-cols-5 gap-2">
                 {allEquipment.slice(0, 10).map(equipment => {
@@ -623,23 +556,28 @@ export default function CharacterClient({
                   return (
                     <div
                       key={equipment.id}
-                      className={`aspect-square rounded flex items-center justify-center relative ${
+                      className={`aspect-square rounded-lg flex items-center justify-center relative border-2 transition-all ${
                         owned
-                          ? 'bg-gray-100'
-                          : 'bg-gray-300 opacity-50'
+                          ? 'border-[#5D8731] bg-gray-50'
+                          : 'border-gray-300 bg-gray-200 opacity-60'
                       }`}
                       title={getEquipmentName(equipment, locale)}
                     >
                       <Image
                         src={getEquipmentImageUrl(equipment.tier, equipment.slot)}
                         alt={getEquipmentName(equipment, locale)}
-                        width={32}
-                        height={32}
+                        width={36}
+                        height={36}
                         className="object-contain"
                       />
                       {!canUse && (
-                        <div className="absolute inset-0 bg-black/50 flex items-center justify-center rounded">
-                          <span className="text-xs text-white">Lv.{equipment.required_level}</span>
+                        <div className="absolute inset-0 bg-black/60 flex items-center justify-center rounded-lg">
+                          <span className="text-xs text-white font-bold">Lv.{equipment.required_level}</span>
+                        </div>
+                      )}
+                      {owned && (
+                        <div className="absolute -top-1 -right-1 w-4 h-4 bg-[#5D8731] rounded-full flex items-center justify-center">
+                          <span className="text-white text-[10px]">✓</span>
                         </div>
                       )}
                     </div>
@@ -648,101 +586,99 @@ export default function CharacterClient({
               </div>
             </div>
           )}
-      </div>
+        </div>
 
-      {/* AI Generated Avatar Section */}
-      <div className="minecraft-card lg:col-span-1 lg:overflow-hidden">
-        <h2 className="text-lg font-bold text-gray-800 mb-3 text-center">
-          {aiAvatarTitle}
-        </h2>
+        {/* AI Generated Avatar Section */}
+        <div className="minecraft-card p-4 sm:p-6">
+          <h2 className="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
+            <span className="text-xl">✨</span>
+            {aiAvatarTitle}
+          </h2>
 
-        <div className="flex flex-col items-center gap-3">
-          {/* Generated Avatar Display */}
-          <div className="w-40 h-40 lg:w-48 lg:h-48 bg-gray-100 rounded-xl overflow-hidden flex items-center justify-center border-4 border-[#5D8731]">
-            {generatedAvatar ? (
-              <Image
-                src={generatedAvatar}
-                alt={`${kid.name}'s AI Avatar`}
-                width={192}
-                height={192}
-                className="w-full h-full object-cover"
-                unoptimized={generatedAvatar.startsWith('data:')}
-              />
-            ) : (
-              <div className="text-center text-gray-400 p-2">
-                <span className="text-4xl block mb-1">🎨</span>
-                <p className="text-xs">
-                  {locale === 'ms' ? 'Tiada avatar dijana' :
-                    locale === 'zh' ? '尚未生成头像' :
-                    'No avatar yet'}
-                </p>
-              </div>
-            )}
-          </div>
-
-          {/* Current Equipment Summary */}
-          <div className="bg-gray-50 rounded-lg p-2 w-full">
-            <p className="text-xs text-gray-500 mb-1">
-              {locale === 'ms' ? 'Peralatan:' :
-                locale === 'zh' ? '装备：' :
-                'Equipment:'}
-            </p>
-            <div className="flex flex-wrap gap-1">
-              {slots.map(slot => {
-                const item = getEquippedItem(slot);
-                return item ? (
-                  <span
-                    key={slot}
-                    className="px-1.5 py-0.5 rounded flex items-center justify-center"
-                    style={{
-                      backgroundColor: tierColors[item.tier] + '30',
-                    }}
-                  >
-                    <Image
-                      src={getEquipmentImageUrl(item.tier, slot)}
-                      alt={slotNames[slot]}
-                      width={20}
-                      height={20}
-                      className="object-contain"
-                    />
-                  </span>
-                ) : null;
-              })}
-              {!slots.some(slot => getEquippedItem(slot)) && (
-                <span className="text-xs text-gray-400">
-                  {locale === 'ms' ? 'Tiada' :
-                    locale === 'zh' ? '无' :
-                    'None'}
-                </span>
+          <div className="flex items-start gap-4">
+            {/* Generated Avatar Display */}
+            <div
+              className="w-24 h-24 sm:w-28 sm:h-28 rounded-lg overflow-hidden flex-shrink-0 border-4"
+              style={{
+                borderColor: '#5D8731',
+                boxShadow: 'inset -2px -2px 0 #373737, inset 2px 2px 0 #8BC34A',
+              }}
+            >
+              {generatedAvatar ? (
+                <Image
+                  src={generatedAvatar}
+                  alt={`${kid.name}'s AI Avatar`}
+                  width={112}
+                  height={112}
+                  className="w-full h-full object-cover"
+                  unoptimized={generatedAvatar.startsWith('data:')}
+                />
+              ) : (
+                <div className="w-full h-full bg-gray-100 flex items-center justify-center">
+                  <span className="text-3xl text-gray-400">🎨</span>
+                </div>
               )}
             </div>
-          </div>
 
-          {/* Error Message */}
-          {generateError && (
-            <div className="bg-red-50 text-red-600 text-xs p-2 rounded-lg w-full">
-              {generateError}
+            <div className="flex-1 space-y-3">
+              {/* Current Equipment Summary */}
+              <div className="flex flex-wrap gap-1.5">
+                {slots.map(slot => {
+                  const item = getEquippedItem(slot);
+                  return item ? (
+                    <div
+                      key={slot}
+                      className="w-8 h-8 rounded flex items-center justify-center"
+                      style={{ backgroundColor: tierBgColors[item.tier] }}
+                      title={slotNames[slot]}
+                    >
+                      <Image
+                        src={getEquipmentImageUrl(item.tier, slot)}
+                        alt={slotNames[slot]}
+                        width={24}
+                        height={24}
+                        className="object-contain"
+                      />
+                    </div>
+                  ) : (
+                    <div
+                      key={slot}
+                      className="w-8 h-8 rounded bg-gray-200 flex items-center justify-center"
+                      title={slotNames[slot]}
+                    >
+                      <span className="text-gray-400 text-xs">-</span>
+                    </div>
+                  );
+                })}
+              </div>
+
+              {/* Error Message */}
+              {generateError && (
+                <div className="bg-red-50 text-red-600 text-xs p-2 rounded-lg">
+                  {generateError}
+                </div>
+              )}
+
+              {/* Generate Button */}
+              <button
+                onClick={handleGenerateAvatar}
+                disabled={isGenerating}
+                className="w-full px-4 py-2.5 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white rounded-lg font-bold text-sm transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-md"
+              >
+                {isGenerating ? (
+                  <>
+                    <span className="animate-spin">⏳</span>
+                    {generatingLabel}
+                  </>
+                ) : (
+                  <>
+                    <span>✨</span>
+                    {generatedAvatar ? regenerateLabel : generateLabel}
+                  </>
+                )}
+              </button>
             </div>
-          )}
-
-          {/* Generate Button */}
-          <button
-            onClick={handleGenerateAvatar}
-            disabled={isGenerating}
-            className="w-full px-4 py-2 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white rounded-lg font-bold text-sm transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
-          >
-            {isGenerating ? (
-              <>
-                <span className="animate-spin">⏳</span>
-                {generatingLabel}
-              </>
-            ) : (
-              <>
-                <span>✨</span>
-                {generatedAvatar ? regenerateLabel : generateLabel}
-              </>
-            )}
-          </button>
+          </div>
         </div>
       </div>
     </div>
