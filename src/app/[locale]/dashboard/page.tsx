@@ -86,7 +86,7 @@ export default async function DashboardPage({
   }
 
   // Fetch kid's equipped items
-  const { data: equipped } = await supabase
+  const { data: equippedRaw } = await supabase
     .from('kid_equipped')
     .select(`
       helmet:helmet_id(id, tier, slot),
@@ -97,6 +97,21 @@ export default async function DashboardPage({
     `)
     .eq('kid_id', kidId)
     .single();
+
+  // Helper to extract equipment from Supabase response (handles both object and array formats)
+  const getEquipment = (item: unknown): { id: string; tier: EquipmentTier; slot: string } | null => {
+    if (!item) return null;
+    if (Array.isArray(item)) return item[0] || null;
+    return item as { id: string; tier: EquipmentTier; slot: string };
+  };
+
+  const equipped = equippedRaw ? {
+    helmet: getEquipment(equippedRaw.helmet),
+    chestplate: getEquipment(equippedRaw.chestplate),
+    leggings: getEquipment(equippedRaw.leggings),
+    boots: getEquipment(equippedRaw.boots),
+    weapon: getEquipment(equippedRaw.weapon),
+  } : null;
 
   // Calculate correct level based on XP and fix if mismatched
   // Level formula: XP thresholds are 0, 100, 300, 600, 1000... (triangular numbers * 100)
@@ -357,7 +372,7 @@ export default async function DashboardPage({
                   >
                     {equipped?.helmet ? (
                       <Image
-                        src={getEquipmentImageUrl(equipped.helmet.tier as EquipmentTier, 'helmet')}
+                        src={getEquipmentImageUrl(equipped.helmet.tier, 'helmet')}
                         alt="Helmet"
                         width={32}
                         height={32}
@@ -375,7 +390,7 @@ export default async function DashboardPage({
                   >
                     {equipped?.weapon ? (
                       <Image
-                        src={getEquipmentImageUrl(equipped.weapon.tier as EquipmentTier, 'weapon')}
+                        src={getEquipmentImageUrl(equipped.weapon.tier, 'weapon')}
                         alt="Weapon"
                         width={32}
                         height={32}
@@ -393,7 +408,7 @@ export default async function DashboardPage({
                   >
                     {equipped?.chestplate ? (
                       <Image
-                        src={getEquipmentImageUrl(equipped.chestplate.tier as EquipmentTier, 'chestplate')}
+                        src={getEquipmentImageUrl(equipped.chestplate.tier, 'chestplate')}
                         alt="Chestplate"
                         width={32}
                         height={32}
@@ -411,7 +426,7 @@ export default async function DashboardPage({
                   >
                     {equipped?.boots ? (
                       <Image
-                        src={getEquipmentImageUrl(equipped.boots.tier as EquipmentTier, 'boots')}
+                        src={getEquipmentImageUrl(equipped.boots.tier, 'boots')}
                         alt="Boots"
                         width={32}
                         height={32}
