@@ -52,7 +52,7 @@ export default function NewKidPage() {
     const { error: insertError } = await supabase.from('kids').insert({
       parent_id: user.id,
       name: name.trim(),
-      school: school.trim() || null,
+      school: school.trim(),
       grade,
       preferred_language: locale,
       avatar_seed: avatar,
@@ -131,13 +131,14 @@ export default function NewKidPage() {
             {/* School Input */}
             <div>
               <label htmlFor="school" className="block text-sm font-medium text-gray-700 mb-1">
-                {t('kids.school')}
+                {t('kids.school')} *
               </label>
               <input
                 type="text"
                 id="school"
                 value={school}
                 onChange={(e) => setSchool(e.target.value)}
+                required
                 placeholder={t('kids.enterSchool')}
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#5D8731] focus:border-transparent"
               />
@@ -180,7 +181,7 @@ export default function NewKidPage() {
               </Link>
               <button
                 type="submit"
-                disabled={loading || !name.trim()}
+                disabled={loading || !name.trim() || !school.trim()}
                 className="flex-1 minecraft-button disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {loading ? t('common.loading') : t('kids.createKid')}

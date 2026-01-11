@@ -137,7 +137,7 @@
     "kidName": "Child's Name",
     "enterKidName": "Enter child's name",
     "school": "School",
-    "enterSchool": "Enter school name (optional)",
+    "enterSchool": "Enter school name",
     "grade": "Grade",
     "createKid": "Create Profile",
     "clickToPlay": "Click on a child profile to start learning"
