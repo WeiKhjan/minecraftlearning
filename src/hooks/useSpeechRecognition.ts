@@ -81,6 +81,8 @@ export function useSpeechRecognition({
   const [isSupported, setIsSupported] = useState(false);
 
   const recognitionRef = useRef<SpeechRecognition | null>(null);
+  const interimTranscriptRef = useRef<string>('');
+  const hasCalledResultRef = useRef<boolean>(false);
 
   // Check browser support
   useEffect(() => {
@@ -120,6 +122,8 @@ export function useSpeechRecognition({
 
     setError(null);
     setTranscript('');
+    interimTranscriptRef.current = '';
+    hasCalledResultRef.current = false;
 
     // Abort any existing recognition first
     if (recognitionRef.current) {
@@ -144,18 +148,31 @@ export function useSpeechRecognition({
 
       recognitionRef.current.onresult = (event: SpeechRecognitionEvent) => {
         let finalTranscript = '';
+        let interimTranscript = '';
 
         for (let i = event.resultIndex; i < event.results.length; i++) {
           const result = event.results[i];
+          const transcriptText = result[0].transcript;
           if (result.isFinal) {
-            finalTranscript += result[0].transcript;
+            finalTranscript += transcriptText;
+          } else {
+            interimTranscript += transcriptText;
           }
         }
 
+        // Store interim results for fallback
+        if (interimTranscript) {
+          interimTranscriptRef.current = interimTranscript.trim().toLowerCase();
+          console.log('[SpeechRecognition] Interim:', interimTranscriptRef.current);
+          setTranscript(interimTranscriptRef.current);
+        }
+
         if (finalTranscript) {
-          console.log('[SpeechRecognition] Result:', finalTranscript);
-          setTranscript(finalTranscript.trim().toLowerCase());
-          onResult?.(finalTranscript.trim().toLowerCase());
+          const finalText = finalTranscript.trim().toLowerCase();
+          console.log('[SpeechRecognition] Final result:', finalText);
+          setTranscript(finalText);
+          hasCalledResultRef.current = true;
+          onResult?.(finalText);
         }
       };
 
@@ -192,6 +209,12 @@ export function useSpeechRecognition({
       recognitionRef.current.onend = () => {
         console.log('[SpeechRecognition] Ended');
         setIsListening(false);
+
+        // If we have interim results but no final result was called, use interim
+        if (!hasCalledResultRef.current && interimTranscriptRef.current) {
+          console.log('[SpeechRecognition] Using interim result as final:', interimTranscriptRef.current);
+          onResult?.(interimTranscriptRef.current);
+        }
       };
 
       recognitionRef.current.start();
