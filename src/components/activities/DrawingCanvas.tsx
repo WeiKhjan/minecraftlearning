@@ -4,10 +4,11 @@ import { useRef, useState, useEffect, useCallback } from 'react';
 import type { Locale } from '@/types';
 
 interface DrawingCanvasProps {
-  expectedLetter: string;
+  expectedLetter: string;  // Can be letter or word
   locale: Locale;
   onRecognized: (isCorrect: boolean, recognizedLetter: string) => void;
   disabled?: boolean;
+  contentType?: 'letter' | 'word';  // Type of content
 }
 
 interface Point {
@@ -20,7 +21,10 @@ export default function DrawingCanvas({
   locale,
   onRecognized,
   disabled = false,
+  contentType,
 }: DrawingCanvasProps) {
+  // Auto-detect content type if not provided
+  const isWord = contentType === 'word' || expectedLetter.length > 1;
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [isDrawing, setIsDrawing] = useState(false);
   const [hasDrawn, setHasDrawn] = useState(false);
@@ -28,14 +32,18 @@ export default function DrawingCanvas({
   const lastPointRef = useRef<Point | null>(null);
   const prevLetterRef = useRef<string>(expectedLetter);
 
-  // Draw faint guide letter
-  const drawGuideLetter = useCallback((ctx: CanvasRenderingContext2D, letter: string, width: number, height: number) => {
+  // Draw faint guide text (letter or word)
+  const drawGuideText = useCallback((ctx: CanvasRenderingContext2D, text: string, width: number, height: number, forWord: boolean) => {
     ctx.save();
-    ctx.font = `bold ${Math.min(width, height) * 0.6}px Arial`;
+    // Smaller font size for words to fit
+    const fontSize = forWord
+      ? Math.min(width / (text.length * 0.6), height * 0.4)
+      : Math.min(width, height) * 0.6;
+    ctx.font = `bold ${fontSize}px Arial`;
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
     ctx.fillStyle = 'rgba(200, 200, 200, 0.3)';
-    ctx.fillText(letter.toUpperCase(), width / 2, height / 2);
+    ctx.fillText(forWord ? text : text.toUpperCase(), width / 2, height / 2);
     ctx.restore();
   }, []);
 
@@ -60,16 +68,16 @@ export default function DrawingCanvas({
     ctx.lineCap = 'round';
     ctx.lineJoin = 'round';
 
-    // Clear canvas and draw new guide letter
+    // Clear canvas and draw new guide text
     ctx.clearRect(0, 0, rect.width, rect.height);
-    drawGuideLetter(ctx, expectedLetter, rect.width, rect.height);
+    drawGuideText(ctx, expectedLetter, rect.width, rect.height, isWord);
 
     // Reset hasDrawn when letter changes
     if (prevLetterRef.current !== expectedLetter) {
       setHasDrawn(false);
       prevLetterRef.current = expectedLetter;
     }
-  }, [expectedLetter, drawGuideLetter]);
+  }, [expectedLetter, drawGuideText, isWord]);
 
   // Get point from event
   const getPoint = useCallback((e: React.TouchEvent | React.MouseEvent): Point | null => {
@@ -158,10 +166,10 @@ export default function DrawingCanvas({
     canvas.height = rect.height * dpr;
     ctx.scale(dpr, dpr);
 
-    // Redraw guide letter with current expectedLetter
-    drawGuideLetter(ctx, expectedLetter, rect.width, rect.height);
+    // Redraw guide text with current expectedLetter
+    drawGuideText(ctx, expectedLetter, rect.width, rect.height, isWord);
     setHasDrawn(false);
-  }, [expectedLetter, drawGuideLetter]);
+  }, [expectedLetter, drawGuideText, isWord]);
 
   // Submit drawing for recognition
   const handleSubmit = useCallback(async () => {
@@ -182,6 +190,7 @@ export default function DrawingCanvas({
           image: imageData,
           expectedLetter,
           locale,
+          contentType: isWord ? 'word' : 'letter',
         }),
       });
 
@@ -201,17 +210,17 @@ export default function DrawingCanvas({
     } finally {
       setIsAnalyzing(false);
     }
-  }, [hasDrawn, expectedLetter, locale, onRecognized]);
+  }, [hasDrawn, expectedLetter, locale, isWord, onRecognized]);
 
   return (
     <div className="space-y-4">
-      {/* Canvas */}
+      {/* Canvas - taller for words */}
       <div className="relative">
         <canvas
           ref={canvasRef}
-          className={`w-full h-48 bg-white rounded-lg border-4 ${
+          className={`w-full bg-white rounded-lg border-4 ${
             disabled ? 'border-gray-300 opacity-50' : 'border-[#5D8731]'
-          } touch-none`}
+          } touch-none ${isWord ? 'h-56' : 'h-48'}`}
           style={{ touchAction: 'none' }}
           onMouseDown={handleStart}
           onMouseMove={handleMove}
@@ -240,9 +249,14 @@ export default function DrawingCanvas({
 
       {/* Instructions */}
       <p className="text-center text-sm text-gray-500">
-        {locale === 'ms' ? 'Tulis huruf di atas' :
-          locale === 'zh' ? '在上面写字母' :
-          'Write the letter above'}
+        {isWord
+          ? (locale === 'ms' ? 'Tulis perkataan di atas' :
+              locale === 'zh' ? '在上面写单词' :
+              'Write the word above')
+          : (locale === 'ms' ? 'Tulis huruf di atas' :
+              locale === 'zh' ? '在上面写字母' :
+              'Write the letter above')
+        }
       </p>
 
       {/* Buttons */}

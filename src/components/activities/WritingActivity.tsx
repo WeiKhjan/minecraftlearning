@@ -2,35 +2,38 @@
 
 import { useState } from 'react';
 import VoiceTutorButton from '@/components/voice/VoiceTutorButton';
+import DrawingCanvas from './DrawingCanvas';
+import LoadingOverlay from '@/components/ui/LoadingOverlay';
 import type { ActivityContent, Locale, WritingContent } from '@/types';
 
 interface WritingActivityProps {
   content: ActivityContent;
   kidName: string;
+  avatarUrl?: string | null;
   locale: Locale;
   onComplete: (score: number) => void;
 }
 
-export default function WritingActivity({ content, locale, onComplete }: WritingActivityProps) {
+export default function WritingActivity({ content, avatarUrl, locale, onComplete }: WritingActivityProps) {
   const data = content.data as WritingContent;
   const characters = data.characters || [];
   const words = data.words || [];
   const items = characters.length > 0 ? characters : words.map(w => w.word);
+  const isLetterMode = characters.length > 0;
 
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [userInput, setUserInput] = useState('');
   const [completedItems, setCompletedItems] = useState<Set<number>>(new Set());
   const [mistakes, setMistakes] = useState(0);
   const [feedback, setFeedback] = useState<'correct' | 'wrong' | null>(null);
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
 
   const currentItem = items[currentIndex];
   const currentWord = words.length > 0 ? words[currentIndex] : null;
 
-  const handleSubmit = () => {
-    const expected = currentItem.toLowerCase().trim();
-    const actual = userInput.toLowerCase().trim();
+  const handleRecognized = (isCorrect: boolean, recognizedText: string) => {
+    setIsAnalyzing(false);
 
-    if (actual === expected) {
+    if (isCorrect) {
       // Correct
       setFeedback('correct');
       const newCompleted = new Set(completedItems);
@@ -39,7 +42,6 @@ export default function WritingActivity({ content, locale, onComplete }: Writing
 
       setTimeout(() => {
         setFeedback(null);
-        setUserInput('');
         if (currentIndex + 1 < items.length) {
           setCurrentIndex(currentIndex + 1);
         } else {
@@ -47,12 +49,12 @@ export default function WritingActivity({ content, locale, onComplete }: Writing
           const score = Math.max(0, 100 - (mistakes * 10));
           onComplete(score);
         }
-      }, 500);
+      }, 1000);
     } else {
       // Wrong
       setMistakes(mistakes + 1);
       setFeedback('wrong');
-      setTimeout(() => setFeedback(null), 500);
+      setTimeout(() => setFeedback(null), 1000);
     }
   };
 
@@ -66,11 +68,26 @@ export default function WritingActivity({ content, locale, onComplete }: Writing
     }
   };
 
+  // Analyzing message
+  const analyzingMessage = {
+    ms: 'Menganalisis tulisan anda...',
+    zh: '正在分析您的书写...',
+    en: 'Analyzing your writing...',
+  };
+
   return (
     <div className="space-y-6">
+      {/* Loading Overlay during analysis */}
+      <LoadingOverlay
+        isLoading={isAnalyzing}
+        avatarUrl={avatarUrl}
+        locale={locale}
+        message={analyzingMessage[locale]}
+      />
+
       {/* Instruction */}
       <p className="text-center text-gray-600">
-        {characters.length > 0
+        {isLetterMode
           ? (locale === 'ms' ? 'Tulis huruf yang ditunjukkan' :
               locale === 'zh' ? '写出显示的字母' :
               'Write the letter shown')
@@ -94,51 +111,45 @@ export default function WritingActivity({ content, locale, onComplete }: Writing
       </div>
 
       {/* Current Item Display */}
-      <div className={`text-center py-8 rounded-lg transition-all ${
+      <div className={`text-center py-6 rounded-lg transition-all ${
         feedback === 'correct' ? 'bg-green-500' :
         feedback === 'wrong' ? 'bg-red-500' :
         'bg-[#5D8731]'
       } text-white`}>
         <div className="flex items-center justify-center gap-4">
-          <p className="text-6xl font-bold">{currentItem}</p>
+          <p className={`font-bold ${isLetterMode ? 'text-6xl' : 'text-4xl'}`}>{currentItem}</p>
           <VoiceTutorButton
             text={currentItem}
             locale={locale}
             size="md"
-            contentType="word"
+            contentType={isLetterMode ? 'letter' : 'word'}
           />
         </div>
         {currentWord && (
           <p className="text-sm opacity-80 mt-2">({getWordMeaning()})</p>
         )}
+
+        {/* Feedback message */}
+        {feedback === 'correct' && (
+          <p className="mt-2 text-lg font-bold animate-bounce">
+            {locale === 'ms' ? 'Betul! Bagus!' : locale === 'zh' ? '正确！很好！' : 'Correct! Great!'}
+          </p>
+        )}
+        {feedback === 'wrong' && (
+          <p className="mt-2 text-lg font-bold">
+            {locale === 'ms' ? 'Cuba lagi!' : locale === 'zh' ? '再试一次！' : 'Try again!'}
+          </p>
+        )}
       </div>
 
-      {/* Writing Input */}
-      <div className="space-y-4">
-        <input
-          type="text"
-          value={userInput}
-          onChange={(e) => setUserInput(e.target.value)}
-          onKeyDown={(e) => e.key === 'Enter' && handleSubmit()}
-          placeholder={locale === 'ms' ? 'Tulis di sini...' :
-            locale === 'zh' ? '在这里写...' :
-            'Write here...'}
-          className={`w-full text-center text-3xl py-4 border-4 rounded-lg transition-all ${
-            feedback === 'correct' ? 'border-green-500 bg-green-50' :
-            feedback === 'wrong' ? 'border-red-500 bg-red-50' :
-            'border-gray-300 focus:border-[#5D8731]'
-          }`}
-          autoFocus
-        />
-
-        <button
-          onClick={handleSubmit}
-          disabled={!userInput.trim()}
-          className="w-full minecraft-button py-3 disabled:opacity-50"
-        >
-          {locale === 'ms' ? 'Semak' : locale === 'zh' ? '检查' : 'Check'}
-        </button>
-      </div>
+      {/* Drawing Canvas */}
+      <DrawingCanvas
+        expectedLetter={currentItem}
+        locale={locale}
+        onRecognized={handleRecognized}
+        disabled={feedback !== null}
+        contentType={isLetterMode ? 'letter' : 'word'}
+      />
 
       {/* Completed Items */}
       {completedItems.size > 0 && (
