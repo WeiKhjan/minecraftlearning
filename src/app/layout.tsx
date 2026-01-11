@@ -17,6 +17,22 @@ export const metadata: Metadata = {
   description: 'A gamified learning platform for Malaysian primary school kids',
   keywords: ['education', 'learning', 'kids', 'minecraft', 'malaysia', 'primary school'],
   authors: [{ name: 'MYLearnt' }],
+  openGraph: {
+    title: 'MYLearnt',
+    description: 'A gamified learning platform for Malaysian primary school kids',
+    images: ['/logo.jpeg'],
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'MYLearnt',
+    description: 'A gamified learning platform for Malaysian primary school kids',
+    images: ['/logo.jpeg'],
+  },
+  icons: {
+    icon: '/logo.jpeg',
+    apple: '/logo.jpeg',
+  },
 };
 
 export const viewport = {

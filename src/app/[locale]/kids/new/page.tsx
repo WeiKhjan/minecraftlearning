@@ -75,8 +75,8 @@ export default function NewKidPage() {
     <main className="min-h-screen bg-gradient-to-b from-[#87CEEB] to-[#5DADE2] flex flex-col">
       {/* Header */}
       <header className="w-full p-4 flex justify-between items-center">
-        <Link href="/kids" className="text-2xl font-bold text-white drop-shadow-lg">
-          MYLearnt
+        <Link href="/kids">
+          <img src="/logo.jpeg" alt="MYLearnt" className="h-12 w-auto rounded-lg" />
         </Link>
         <LanguageSwitcher />
       </header>

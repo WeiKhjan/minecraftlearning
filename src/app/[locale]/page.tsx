@@ -25,10 +25,13 @@ export default function LandingPage() {
 
       {/* Content */}
       <div className="relative z-20 flex flex-col flex-1">
-        {/* Language Switcher */}
-        <div className="w-full p-4 flex justify-end">
+        {/* Header */}
+        <header className="w-full p-4 flex justify-between items-center">
+          <Link href="/">
+            <img src="/logo.jpeg" alt="MYLearnt" className="h-12 w-auto rounded-lg" />
+          </Link>
           <LanguageSwitcher />
-        </div>
+        </header>
 
         {/* Main Content */}
         <div className="flex-1 flex flex-col items-center justify-center px-4">

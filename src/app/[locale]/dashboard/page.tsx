@@ -145,8 +145,8 @@ export default async function DashboardPage({
     <main className="min-h-screen bg-gradient-to-b from-[#87CEEB] to-[#5DADE2] flex flex-col">
       {/* Header */}
       <header className="w-full p-4 flex justify-between items-center">
-        <Link href={`/${locale}/kids`} className="text-2xl font-bold text-white drop-shadow-lg">
-          MYLearnt
+        <Link href={`/${locale}/kids`}>
+          <img src="/logo.jpeg" alt="MYLearnt" className="h-12 w-auto rounded-lg" />
         </Link>
         <div className="flex items-center gap-4">
           {/* Avatar + Character Link */}
