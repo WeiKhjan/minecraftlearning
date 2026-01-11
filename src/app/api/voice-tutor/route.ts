@@ -10,15 +10,18 @@ const VOICE_CONFIG = {
 // Language-specific system prompts for generating tutoring text
 const TUTOR_PROMPTS = {
   ms: `Anda adalah guru yang mesra untuk kanak-kanak sekolah rendah Malaysia.
-Beri penerangan ringkas dan mudah difahami. Gunakan bahasa yang ceria dan menggalakkan.
+PENTING: Terus beri penerangan tentang kandungan yang diminta. Jangan mulakan dengan salam atau perkenalan.
+Beri penerangan ringkas dan mudah difahami dalam 2-3 ayat.
 Jangan gunakan format markdown atau simbol khas. Hanya teks biasa untuk dibaca dengan kuat.`,
 
   zh: `你是一位友善的马来西亚小学教师。
-用简单易懂的语言解释。使用活泼鼓励的语气。
+重要：直接解释所要求的内容。不要以问候或介绍开始。
+用简单易懂的语言在2-3句话内解释。
 不要使用markdown格式或特殊符号。只用可以朗读的纯文本。`,
 
   en: `You are a friendly tutor for Malaysian primary school children.
-Give brief, easy-to-understand explanations. Use cheerful and encouraging language.
+IMPORTANT: Directly explain the requested content. Do not start with greetings or introductions.
+Give brief, easy-to-understand explanations in 2-3 sentences.
 Do not use markdown formatting or special symbols. Only plain text that can be read aloud.`,
 };
 
@@ -61,6 +64,7 @@ export async function POST(request: NextRequest) {
     } else {
       // Generate educational guidance text using Gemini
       const tutorPrompt = generateTutorPrompt(content, contentType, context, locale);
+      console.log('[voice-tutor] Generating text with prompt:', tutorPrompt);
 
       const textResponse = await fetch(
         `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${apiKey}`,
@@ -78,8 +82,8 @@ export async function POST(request: NextRequest) {
               parts: [{ text: TUTOR_PROMPTS[locale] }],
             },
             generationConfig: {
-              temperature: 0.7,
-              maxOutputTokens: 150, // Keep responses short for children
+              temperature: 0.5,
+              maxOutputTokens: 300,
             },
           }),
         }
@@ -190,19 +194,19 @@ function generateTutorPrompt(
 ): string {
   const prompts = {
     letter: {
-      ms: `Terangkan huruf "${content}" untuk kanak-kanak. Sebut huruf itu, bunyinya, dan beri satu contoh perkataan yang bermula dengan huruf itu. Dalam 1-2 ayat sahaja.`,
-      zh: `向孩子解释字母"${content}"。说出字母、发音，并给出一个以该字母开头的单词例子。只用1-2句话。`,
-      en: `Explain the letter "${content}" to a child. Say the letter, its sound, and give one example word that starts with it. Keep it to 1-2 sentences.`,
+      ms: `Huruf "${content}". Terus terangkan: sebut nama huruf, bunyinya, dan satu contoh perkataan. Contoh format: "Huruf A, bunyi 'ah', seperti 'ayam'."`,
+      zh: `字母"${content}"。直接解释：说出字母名称、发音和一个例词。格式示例："字母A，发音'啊'，比如'苹果'。"`,
+      en: `Letter "${content}". Directly explain: say the letter name, its sound, and one example word. Example format: "Letter A, sounds like 'ah', like in 'apple'."`,
     },
     word: {
-      ms: `Sebut perkataan "${content}" dan terangkan maksudnya secara ringkas untuk kanak-kanak. Dalam 1-2 ayat.`,
-      zh: `读出单词"${content}"并简单地向孩子解释它的意思。只用1-2句话。`,
-      en: `Say the word "${content}" and briefly explain its meaning to a child. Keep it to 1-2 sentences.`,
+      ms: `Perkataan "${content}". Terus terangkan: sebut perkataan dan maksudnya dalam 1-2 ayat.`,
+      zh: `单词"${content}"。直接解释：读出单词并用1-2句话说明意思。`,
+      en: `Word "${content}". Directly explain: say the word and its meaning in 1-2 sentences.`,
     },
     syllable: {
-      ms: `Ajar cara menyebut suku kata "${content}". Pecahkan bunyi dan sebut perlahan-lahan. Dalam 1-2 ayat.`,
-      zh: `教孩子如何发音音节"${content}"。分解声音并慢慢说。只用1-2句话。`,
-      en: `Teach how to pronounce the syllable "${content}". Break down the sounds and say it slowly. Keep it to 1-2 sentences.`,
+      ms: `Suku kata "${content}". Terus ajar: pecahkan bunyi dan sebut perlahan. Contoh: "Suku kata 'ba', bunyi 'b' dan 'a' bersama, 'ba'."`,
+      zh: `音节"${content}"。直接教：分解声音并慢慢说。例如："音节'ba'，'b'和'a'一起，'ba'。"`,
+      en: `Syllable "${content}". Directly teach: break down the sounds and say slowly. Example: "Syllable 'ba', sounds 'b' and 'a' together, 'ba'."`,
     },
     sentence: {
       ms: `Baca ayat ini dengan jelas: "${content}"`,
@@ -210,9 +214,9 @@ function generateTutorPrompt(
       en: `Read this sentence clearly: "${content}"`,
     },
     instruction: {
-      ms: `Beri arahan ini dengan cara yang ceria: ${content}`,
-      zh: `用欢快的方式给出这个指示：${content}`,
-      en: `Give this instruction in a cheerful way: ${content}`,
+      ms: `${content}`,
+      zh: `${content}`,
+      en: `${content}`,
     },
     feedback: {
       ms: `${content}`,
