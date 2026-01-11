@@ -162,6 +162,20 @@
   }
   body {
     @apply bg-background text-foreground;
+    font-family: 'Minecraft', monospace;
+  }
+  /* Apply Minecraft font to all headings */
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Minecraft', monospace;
+    text-shadow: 2px 2px 0px rgba(0, 0, 0, 0.3);
+  }
+  /* Buttons get the Minecraft font */
+  button {
+    font-family: 'Minecraft', monospace;
+  }
+  /* Labels and form elements */
+  label, input, select, textarea {
+    font-family: 'Minecraft', monospace;
   }
 }
 
