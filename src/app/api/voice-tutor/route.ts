@@ -153,6 +153,8 @@ export async function POST(request: NextRequest) {
     const audioData = ttsData.candidates?.[0]?.content?.parts?.[0]?.inlineData?.data;
     const mimeType = ttsData.candidates?.[0]?.content?.parts?.[0]?.inlineData?.mimeType || 'audio/mp3';
 
+    console.log('[voice-tutor] TTS response mimeType:', mimeType, 'audio data length:', audioData?.length);
+
     if (!audioData) {
       console.error('No audio in TTS response:', JSON.stringify(ttsData, null, 2));
       return NextResponse.json(
@@ -162,6 +164,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Return base64 audio data and the generated text
+    console.log('[voice-tutor] Success - returning audio with mimeType:', mimeType, 'text:', textToSpeak?.substring(0, 50));
     return NextResponse.json({
       audio: audioData,
       mimeType: mimeType,

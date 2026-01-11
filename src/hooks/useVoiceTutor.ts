@@ -5,6 +5,50 @@ import type { Locale } from '@/types';
 
 type ContentType = 'letter' | 'word' | 'syllable' | 'sentence' | 'instruction' | 'feedback';
 
+// Helper function to convert PCM audio data to WAV format
+function pcmToWav(pcmData: Uint8Array, sampleRate: number, numChannels: number): ArrayBuffer {
+  const bytesPerSample = 2; // 16-bit audio
+  const blockAlign = numChannels * bytesPerSample;
+  const byteRate = sampleRate * blockAlign;
+  const dataSize = pcmData.length;
+  const headerSize = 44;
+  const totalSize = headerSize + dataSize;
+
+  const buffer = new ArrayBuffer(totalSize);
+  const view = new DataView(buffer);
+
+  // RIFF header
+  writeString(view, 0, 'RIFF');
+  view.setUint32(4, totalSize - 8, true);
+  writeString(view, 8, 'WAVE');
+
+  // fmt chunk
+  writeString(view, 12, 'fmt ');
+  view.setUint32(16, 16, true); // chunk size
+  view.setUint16(20, 1, true); // PCM format
+  view.setUint16(22, numChannels, true);
+  view.setUint32(24, sampleRate, true);
+  view.setUint32(28, byteRate, true);
+  view.setUint16(32, blockAlign, true);
+  view.setUint16(34, bytesPerSample * 8, true); // bits per sample
+
+  // data chunk
+  writeString(view, 36, 'data');
+  view.setUint32(40, dataSize, true);
+
+  // Copy PCM data
+  const outputArray = new Uint8Array(buffer);
+  outputArray.set(pcmData, headerSize);
+
+  return buffer;
+}
+
+function writeString(view: DataView, offset: number, str: string) {
+  for (let i = 0; i < str.length; i++) {
+    view.setUint8(offset + i, str.charCodeAt(i));
+  }
+}
+
 interface UseVoiceTutorOptions {
   locale: Locale;
   onError?: (error: string) => void;
@@ -50,27 +94,53 @@ export function useVoiceTutor({ locale, onError }: UseVoiceTutorOptions): UseVoi
 
   // Play audio from base64 data
   const playAudio = useCallback(async (audioData: string, mimeType: string) => {
-    const byteCharacters = atob(audioData);
-    const byteNumbers = new Array(byteCharacters.length);
-    for (let i = 0; i < byteCharacters.length; i++) {
-      byteNumbers[i] = byteCharacters.charCodeAt(i);
+    try {
+      console.log('[VoiceTutor] Playing audio, mimeType:', mimeType, 'data length:', audioData?.length);
+
+      const byteCharacters = atob(audioData);
+      const byteNumbers = new Array(byteCharacters.length);
+      for (let i = 0; i < byteCharacters.length; i++) {
+        byteNumbers[i] = byteCharacters.charCodeAt(i);
+      }
+      const byteArray = new Uint8Array(byteNumbers);
+
+      // Gemini TTS returns audio/L16 (PCM) format - convert to WAV for browser compatibility
+      let blob: Blob;
+      if (mimeType === 'audio/L16' || mimeType?.includes('pcm') || mimeType?.includes('L16')) {
+        // Convert PCM to WAV
+        const wavData = pcmToWav(byteArray, 24000, 1); // 24kHz mono
+        blob = new Blob([wavData], { type: 'audio/wav' });
+        console.log('[VoiceTutor] Converted PCM to WAV');
+      } else {
+        blob = new Blob([byteArray], { type: mimeType || 'audio/mp3' });
+      }
+
+      const audioUrl = URL.createObjectURL(blob);
+      console.log('[VoiceTutor] Audio URL created:', audioUrl);
+
+      const audio = new Audio(audioUrl);
+      audioRef.current = audio;
+
+      audio.onplay = () => {
+        console.log('[VoiceTutor] Audio playing');
+        setIsSpeaking(true);
+      };
+      audio.onended = () => {
+        console.log('[VoiceTutor] Audio ended');
+        setIsSpeaking(false);
+      };
+      audio.onerror = (e) => {
+        console.error('[VoiceTutor] Audio error:', e);
+        setIsSpeaking(false);
+        setError('Failed to play audio');
+      };
+
+      await audio.play();
+      return audioUrl;
+    } catch (err) {
+      console.error('[VoiceTutor] playAudio error:', err);
+      throw err;
     }
-    const byteArray = new Uint8Array(byteNumbers);
-    const blob = new Blob([byteArray], { type: mimeType || 'audio/mp3' });
-    const audioUrl = URL.createObjectURL(blob);
-
-    const audio = new Audio(audioUrl);
-    audioRef.current = audio;
-
-    audio.onplay = () => setIsSpeaking(true);
-    audio.onended = () => setIsSpeaking(false);
-    audio.onerror = () => {
-      setIsSpeaking(false);
-      setError('Failed to play audio');
-    };
-
-    await audio.play();
-    return audioUrl;
   }, []);
 
   // AI-generated tutoring speech (2-layer: AI text generation -> TTS)
