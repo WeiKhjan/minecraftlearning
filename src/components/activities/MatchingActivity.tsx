@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import VoiceTutorButton from '@/components/voice/VoiceTutorButton';
+import { getImageUrl } from '@/lib/utils';
 import type { ActivityContent, Locale, MatchingContent } from '@/types';
 
 interface MatchingActivityProps {
@@ -171,9 +172,9 @@ export default function MatchingActivity({ content, locale, onComplete }: Matchi
                   w-full py-3 rounded-lg transition-all flex items-center justify-center gap-2
                   ${isMatched
                     ? 'bg-green-200 text-green-600 cursor-not-allowed'
-                    : isFeedbackItem && feedback.type === 'wrong'
+                    : isFeedbackItem && feedback?.type === 'wrong'
                       ? 'bg-red-500 text-white'
-                      : isFeedbackItem && feedback.type === 'correct'
+                      : isFeedbackItem && feedback?.type === 'correct'
                         ? 'bg-green-500 text-white'
                         : !selectedKey
                           ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
@@ -182,7 +183,7 @@ export default function MatchingActivity({ content, locale, onComplete }: Matchi
                 `}
               >
                 {pair.image ? (
-                  <img src={pair.image} alt={pair.word} className="w-10 h-10 object-contain" />
+                  <img src={getImageUrl(pair.image)} alt={pair.word} className="w-10 h-10 object-contain" />
                 ) : (
                   <span className="text-2xl">📷</span>
                 )}

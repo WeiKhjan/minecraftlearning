@@ -6,6 +6,7 @@ import LoadingOverlay from '@/components/ui/LoadingOverlay';
 import AudioVisualizer from '@/components/ui/AudioVisualizer';
 import { useSpeechRecognition } from '@/hooks/useSpeechRecognition';
 import { useVoiceTutor } from '@/hooks/useVoiceTutor';
+import { getImageUrl } from '@/lib/utils';
 import type { ActivityContent, Locale, SyllableContent } from '@/types';
 
 interface SyllableActivityProps {
@@ -254,7 +255,7 @@ export default function SyllableActivity({ content, avatarUrl, locale, onComplet
           {isWordMode && currentWord?.image && (
             <div className="mb-4">
               <img
-                src={currentWord.image}
+                src={getImageUrl(currentWord.image)}
                 alt={currentWord.word}
                 className="w-32 h-32 mx-auto object-contain rounded-lg bg-white/10"
               />
@@ -421,7 +422,7 @@ export default function SyllableActivity({ content, avatarUrl, locale, onComplet
             >
               {isWordMode && wordData?.image && (
                 <img
-                  src={wordData.image}
+                  src={getImageUrl(wordData.image)}
                   alt={item}
                   className="w-12 h-12 mx-auto object-contain mb-1"
                 />
