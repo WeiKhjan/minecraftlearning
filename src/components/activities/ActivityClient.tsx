@@ -88,7 +88,9 @@ export default function ActivityClient({
 
     // Award XP to kid
     const newXP = kid.total_xp + activity.xp_reward;
-    const newLevel = Math.max(1, Math.floor(Math.sqrt(newXP / 100)));
+    // Level formula: XP thresholds are 0, 100, 300, 600, 1000... (triangular numbers * 100)
+    // Inverse: level = floor((1 + sqrt(1 + 8 * XP / 100)) / 2)
+    const newLevel = Math.max(1, Math.floor((1 + Math.sqrt(1 + 8 * newXP / 100)) / 2));
 
     await supabase
       .from('kids')

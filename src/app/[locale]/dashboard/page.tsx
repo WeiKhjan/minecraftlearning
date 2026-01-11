@@ -117,11 +117,14 @@ export default async function DashboardPage({
   });
 
   // Calculate XP needed for next level
-  const currentLevelXP = (kid.level * kid.level) * 100;
-  const nextLevelXP = ((kid.level + 1) * (kid.level + 1)) * 100;
-  const xpForCurrentLevel = kid.total_xp - currentLevelXP;
+  // Level thresholds: Level 1 = 0 XP, Level 2 = 100 XP, Level 3 = 300 XP, Level 4 = 600 XP, etc.
+  // Formula: XP to reach level N = sum of (100 * i) for i from 1 to N-1 = 100 * (N-1) * N / 2
+  const getXPForLevel = (level: number) => level <= 1 ? 0 : 100 * (level - 1) * level / 2;
+  const currentLevelXP = getXPForLevel(kid.level);
+  const nextLevelXP = getXPForLevel(kid.level + 1);
+  const xpForCurrentLevel = Math.max(0, kid.total_xp - currentLevelXP);
   const xpNeededForLevel = nextLevelXP - currentLevelXP;
-  const levelProgress = Math.min((xpForCurrentLevel / xpNeededForLevel) * 100, 100);
+  const levelProgress = xpNeededForLevel > 0 ? Math.min((xpForCurrentLevel / xpNeededForLevel) * 100, 100) : 0;
 
   return (
     <main className="min-h-screen bg-gradient-to-b from-[#87CEEB] to-[#5DADE2] flex flex-col">
