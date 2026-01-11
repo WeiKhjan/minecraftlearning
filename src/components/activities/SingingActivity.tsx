@@ -162,6 +162,8 @@ export default function SingingActivity({ content, locale, onComplete }: Singing
               text={lyrics[currentLineIndex].line}
               locale={locale}
               size="sm"
+              contentType="sentence"
+              directTTS
             />
           </div>
         </div>

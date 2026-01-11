@@ -190,6 +190,7 @@ export default function MatchingActivity({ content, locale, onComplete }: Matchi
             text={selectedLetter}
             locale={locale}
             size="sm"
+            contentType="word"
           />
         </div>
       )}

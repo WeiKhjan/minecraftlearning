@@ -201,6 +201,7 @@ export default function AlphabetActivity({ content, locale, onComplete }: Alphab
             text={letters[currentIndex]}
             locale={locale}
             size="sm"
+            contentType="letter"
           />
         </div>
       )}

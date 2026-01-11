@@ -15,11 +15,29 @@ import type { Locale } from '@/types';
 export default function LanguageSwitcher() {
   const locale = useLocale() as Locale;
   const router = useRouter();
-  const pathname = usePathname();
+  const intlPathname = usePathname();
   const t = useTranslations('language');
 
   const handleLocaleChange = (newLocale: Locale) => {
-    router.replace(pathname, { locale: newLocale });
+    // Get current path from browser if intl pathname is empty
+    // This handles edge cases where usePathname returns empty
+    let targetPath = intlPathname;
+
+    if (!targetPath || targetPath === '/') {
+      // Fallback: extract path from window.location and remove locale prefix
+      if (typeof window !== 'undefined') {
+        const fullPath = window.location.pathname;
+        // Remove current locale prefix (e.g., /ms/, /en/, /zh/)
+        const pathWithoutLocale = fullPath.replace(/^\/(ms|en|zh)/, '') || '/';
+        targetPath = pathWithoutLocale;
+      }
+    }
+
+    // Preserve search params
+    const search = typeof window !== 'undefined' ? window.location.search : '';
+    const fullPath = search ? `${targetPath}${search}` : targetPath;
+
+    router.replace(fullPath, { locale: newLocale });
   };
 
   return (

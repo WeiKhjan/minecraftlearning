@@ -105,6 +105,7 @@ export default function WritingActivity({ content, locale, onComplete }: Writing
             text={currentItem}
             locale={locale}
             size="md"
+            contentType="word"
           />
         </div>
         {currentWord && (

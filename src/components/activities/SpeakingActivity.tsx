@@ -100,6 +100,7 @@ export default function SpeakingActivity({ content, kidName, locale, onComplete 
             text={getText(currentPhrase?.text || '')}
             locale={locale}
             size="md"
+            contentType="sentence"
           />
         </div>
         <p className="text-sm opacity-80">

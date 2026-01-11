@@ -4,12 +4,21 @@ import { useState } from 'react';
 import { useVoiceTutor } from '@/hooks/useVoiceTutor';
 import type { Locale } from '@/types';
 
+type ContentType = 'letter' | 'word' | 'syllable' | 'sentence' | 'instruction' | 'feedback';
+
 interface VoiceTutorButtonProps {
+  // The content to speak about (for AI tutoring) or text to speak directly
   text: string;
   locale: Locale;
   size?: 'sm' | 'md' | 'lg';
   className?: string;
   showText?: boolean;
+  // Content type for AI tutoring context
+  contentType?: ContentType;
+  // Additional context for AI (e.g., activity name)
+  context?: string;
+  // If true, skip AI generation and just do direct TTS
+  directTTS?: boolean;
 }
 
 export default function VoiceTutorButton({
@@ -18,9 +27,12 @@ export default function VoiceTutorButton({
   size = 'md',
   className = '',
   showText = false,
+  contentType = 'word',
+  context,
+  directTTS = false,
 }: VoiceTutorButtonProps) {
   const [isUnavailable, setIsUnavailable] = useState(false);
-  const { speak, stop, isLoading, isSpeaking, error } = useVoiceTutor({
+  const { speak, speakDirect, stop, isLoading, isSpeaking, error } = useVoiceTutor({
     locale,
     onError: (err) => {
       // If TTS is not configured, hide the button
@@ -39,8 +51,12 @@ export default function VoiceTutorButton({
   const handleClick = () => {
     if (isSpeaking) {
       stop();
+    } else if (directTTS) {
+      // Direct TTS - just speak the text as-is
+      speakDirect(text);
     } else {
-      speak(text);
+      // AI tutoring - generate educational content then speak
+      speak(text, { contentType, context });
     }
   };
 

@@ -123,7 +123,7 @@ export default function SyllableActivity({ content, locale, onComplete }: Syllab
         setActivityState('feedback');
         // Play the correct pronunciation
         setTimeout(() => {
-          playCorrectSound(currentSyllable);
+          playCorrectSound(currentSyllable, { contentType: 'syllable' });
         }, 500);
       }
     } catch (error) {
@@ -216,6 +216,7 @@ export default function SyllableActivity({ content, locale, onComplete }: Syllab
               text={currentSyllable}
               locale={locale}
               size="md"
+              contentType="syllable"
             />
           </div>
 

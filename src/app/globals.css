@@ -18,19 +18,36 @@
   --font-mono: var(--font-geist-mono);
   --font-minecraft: 'Minecraft', monospace;
 
-  /* Minecraft Theme Colors */
-  --color-minecraft-green: #5D8731;
+  /* Minecraft Theme Colors - Authentic UI Palette */
+  --color-minecraft-green: #5E7C16;       /* Official cactus green */
   --color-minecraft-dark-green: #3B5323;
-  --color-minecraft-brown: #8B5A2B;
+  --color-minecraft-lime: #80C71F;         /* Official lime */
+  --color-minecraft-brown: #835432;        /* Official brown */
   --color-minecraft-dark-brown: #5D3A1A;
   --color-minecraft-sky: #87CEEB;
   --color-minecraft-diamond: #5DADE2;
-  --color-minecraft-gold: #FFD700;
+  --color-minecraft-gold: #FFD83D;         /* Official gold */
   --color-minecraft-iron: #C0C0C0;
   --color-minecraft-stone: #7F7F7F;
   --color-minecraft-dirt: #9B7653;
   --color-minecraft-grass: #7CBA3D;
-  --color-minecraft-red: #FF4444;
+  --color-minecraft-red: #B02E26;          /* Official red */
+  --color-minecraft-blue: #3C44AA;         /* Official blue */
+
+  /* Minecraft GUI Colors - From Inventory UI */
+  --color-minecraft-gui-light: #C6C6C6;    /* Light gray */
+  --color-minecraft-gui-mid: #8B8B8B;      /* Mid gray */
+  --color-minecraft-gui-dark: #555555;     /* Dark gray */
+  --color-minecraft-gui-darker: #373737;   /* Darker gray */
+  --color-minecraft-gui-darkest: #1D1D21;  /* Near black */
+  --color-minecraft-gui-white: #FFFFFF;    /* Highlight */
+
+  /* Minecraft Text Colors */
+  --color-minecraft-text-white: #FFFFFF;
+  --color-minecraft-text-yellow: #FFFF55;
+  --color-minecraft-text-gold: #FFAA00;
+  --color-minecraft-text-green: #55FF55;
+  --color-minecraft-text-aqua: #55FFFF;
 
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
@@ -71,72 +88,72 @@
 }
 
 :root {
-  --radius: 0.625rem;
+  --radius: 0rem; /* Minecraft uses sharp corners */
   --background: #87CEEB; /* Minecraft sky blue */
-  --foreground: oklch(0.145 0 0);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
-  --primary: #5D8731; /* Minecraft green */
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: #8B5A2B; /* Minecraft brown */
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
+  --foreground: #1D1D21; /* Minecraft dark text */
+  --card: #C6C6C6; /* Minecraft GUI light gray */
+  --card-foreground: #1D1D21;
+  --popover: #C6C6C6;
+  --popover-foreground: #1D1D21;
+  --primary: #5E7C16; /* Official Minecraft green */
+  --primary-foreground: #FFFFFF;
+  --secondary: #835432; /* Official Minecraft brown */
+  --secondary-foreground: #FFFFFF;
+  --muted: #8B8B8B; /* Minecraft GUI mid gray */
+  --muted-foreground: #555555;
   --accent: #5DADE2; /* Diamond blue */
-  --accent-foreground: oklch(0.145 0 0);
-  --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
-  --ring: #5D8731;
-  --chart-1: oklch(0.646 0.222 41.116);
-  --chart-2: oklch(0.6 0.118 184.704);
-  --chart-3: oklch(0.398 0.07 227.392);
-  --chart-4: oklch(0.828 0.189 84.429);
-  --chart-5: oklch(0.769 0.188 70.08);
-  --sidebar: oklch(0.985 0 0);
-  --sidebar-foreground: oklch(0.145 0 0);
-  --sidebar-primary: #5D8731;
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.97 0 0);
-  --sidebar-accent-foreground: oklch(0.205 0 0);
-  --sidebar-border: oklch(0.922 0 0);
-  --sidebar-ring: oklch(0.708 0 0);
+  --accent-foreground: #1D1D21;
+  --destructive: #B02E26; /* Official Minecraft red */
+  --border: #555555; /* Minecraft GUI dark gray */
+  --input: #373737; /* Minecraft GUI darker */
+  --ring: #5E7C16;
+  --chart-1: #5E7C16; /* Green */
+  --chart-2: #3C44AA; /* Blue */
+  --chart-3: #835432; /* Brown */
+  --chart-4: #FFD83D; /* Gold */
+  --chart-5: #B02E26; /* Red */
+  --sidebar: #C6C6C6;
+  --sidebar-foreground: #1D1D21;
+  --sidebar-primary: #5E7C16;
+  --sidebar-primary-foreground: #FFFFFF;
+  --sidebar-accent: #8B8B8B;
+  --sidebar-accent-foreground: #1D1D21;
+  --sidebar-border: #555555;
+  --sidebar-ring: #5E7C16;
 }
 
 .dark {
-  --background: oklch(0.145 0 0);
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.205 0 0);
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.205 0 0);
-  --popover-foreground: oklch(0.985 0 0);
-  --primary: #7CBA3D;
-  --primary-foreground: oklch(0.205 0 0);
-  --secondary: oklch(0.269 0 0);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.708 0 0);
-  --accent: oklch(0.269 0 0);
-  --accent-foreground: oklch(0.985 0 0);
-  --destructive: oklch(0.704 0.191 22.216);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.556 0 0);
-  --chart-1: oklch(0.488 0.243 264.376);
-  --chart-2: oklch(0.696 0.17 162.48);
-  --chart-3: oklch(0.769 0.188 70.08);
-  --chart-4: oklch(0.627 0.265 303.9);
-  --chart-5: oklch(0.645 0.246 16.439);
-  --sidebar: oklch(0.205 0 0);
-  --sidebar-foreground: oklch(0.985 0 0);
-  --sidebar-primary: oklch(0.488 0.243 264.376);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.269 0 0);
-  --sidebar-accent-foreground: oklch(0.985 0 0);
-  --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.556 0 0);
+  --background: #1D1D21; /* Minecraft near black */
+  --foreground: #FFFFFF;
+  --card: #373737; /* Minecraft GUI darker */
+  --card-foreground: #FFFFFF;
+  --popover: #373737;
+  --popover-foreground: #FFFFFF;
+  --primary: #80C71F; /* Minecraft lime for dark mode */
+  --primary-foreground: #1D1D21;
+  --secondary: #835432;
+  --secondary-foreground: #FFFFFF;
+  --muted: #555555;
+  --muted-foreground: #8B8B8B;
+  --accent: #5DADE2;
+  --accent-foreground: #1D1D21;
+  --destructive: #FF5555; /* Brighter red for dark mode */
+  --border: #555555;
+  --input: #1D1D21;
+  --ring: #80C71F;
+  --chart-1: #80C71F; /* Lime */
+  --chart-2: #5555FF; /* Bright blue */
+  --chart-3: #FFAA00; /* Gold */
+  --chart-4: #55FFFF; /* Aqua */
+  --chart-5: #FF5555; /* Bright red */
+  --sidebar: #373737;
+  --sidebar-foreground: #FFFFFF;
+  --sidebar-primary: #80C71F;
+  --sidebar-primary-foreground: #1D1D21;
+  --sidebar-accent: #555555;
+  --sidebar-accent-foreground: #FFFFFF;
+  --sidebar-border: #555555;
+  --sidebar-ring: #80C71F;
 }
 
 @layer base {
@@ -152,27 +169,130 @@
 @layer utilities {
   .minecraft-font {
     font-family: 'Minecraft', monospace;
+    text-shadow: 2px 2px 0px #3F3F3F;
   }
 
+  /* Authentic Minecraft stone button style */
   .minecraft-button {
-    @apply relative bg-[#7CBA3D] border-4 border-t-[#9EDE5D] border-l-[#9EDE5D] border-b-[#4A7A20] border-r-[#4A7A20] px-4 py-2 text-white font-bold shadow-md transition-all;
+    @apply relative px-6 py-3 font-bold transition-all cursor-pointer;
+    font-family: 'Minecraft', monospace;
+    background-color: #8B8B8B;
+    border: 4px solid;
+    border-top-color: #FFFFFF;
+    border-left-color: #FFFFFF;
+    border-bottom-color: #555555;
+    border-right-color: #555555;
+    color: #FFFFFF;
+    text-shadow: 2px 2px 0px #3F3F3F;
     image-rendering: pixelated;
+    box-shadow: inset -2px -4px 0px 0px #555555, inset 2px 2px 0px 0px #C6C6C6;
   }
 
   .minecraft-button:hover {
-    @apply bg-[#8FCC4D];
+    background-color: #A0A0A0;
+    border-top-color: #FFFFFF;
+    border-left-color: #FFFFFF;
+    border-bottom-color: #6B6B6B;
+    border-right-color: #6B6B6B;
   }
 
   .minecraft-button:active {
-    @apply border-t-[#4A7A20] border-l-[#4A7A20] border-b-[#9EDE5D] border-r-[#9EDE5D];
+    background-color: #7B7B7B;
+    border-top-color: #555555;
+    border-left-color: #555555;
+    border-bottom-color: #FFFFFF;
+    border-right-color: #FFFFFF;
+    box-shadow: inset 2px 4px 0px 0px #555555, inset -2px -2px 0px 0px #C6C6C6;
   }
 
+  /* Green variant button (like grass block) */
+  .minecraft-button-green {
+    @apply minecraft-button;
+    background-color: #5E7C16;
+    border-top-color: #80C71F;
+    border-left-color: #80C71F;
+    border-bottom-color: #3B5323;
+    border-right-color: #3B5323;
+    box-shadow: inset -2px -4px 0px 0px #3B5323, inset 2px 2px 0px 0px #80C71F;
+  }
+
+  .minecraft-button-green:hover {
+    background-color: #6E8C26;
+  }
+
+  /* Authentic Minecraft inventory/GUI card */
   .minecraft-card {
-    @apply bg-[#C6C6C6] border-4 border-t-[#FFFFFF] border-l-[#FFFFFF] border-b-[#555555] border-r-[#555555] p-4;
+    @apply p-4;
+    background-color: #C6C6C6;
+    border: 4px solid;
+    border-top-color: #FFFFFF;
+    border-left-color: #FFFFFF;
+    border-bottom-color: #555555;
+    border-right-color: #555555;
+    box-shadow: inset -2px -2px 0px 0px #8B8B8B, inset 2px 2px 0px 0px #FFFFFF;
   }
 
+  /* Dark card variant */
+  .minecraft-card-dark {
+    @apply p-4;
+    background-color: #373737;
+    border: 4px solid;
+    border-top-color: #555555;
+    border-left-color: #555555;
+    border-bottom-color: #1D1D21;
+    border-right-color: #1D1D21;
+    color: #FFFFFF;
+  }
+
+  /* Authentic Minecraft text input */
   .minecraft-input {
-    @apply bg-black/80 border-2 border-[#373737] text-white px-3 py-2;
+    @apply px-3 py-2;
+    font-family: 'Minecraft', monospace;
+    background-color: #000000;
+    border: 2px solid;
+    border-top-color: #1D1D21;
+    border-left-color: #1D1D21;
+    border-bottom-color: #555555;
+    border-right-color: #555555;
+    color: #FFFFFF;
+    caret-color: #FFFFFF;
+  }
+
+  .minecraft-input:focus {
+    outline: none;
+    border-color: #80C71F;
+  }
+
+  .minecraft-input::placeholder {
+    color: #8B8B8B;
+  }
+
+  /* Minecraft slot/item frame style */
+  .minecraft-slot {
+    @apply flex items-center justify-center;
+    background-color: #8B8B8B;
+    border: 2px solid;
+    border-top-color: #373737;
+    border-left-color: #373737;
+    border-bottom-color: #FFFFFF;
+    border-right-color: #FFFFFF;
+    width: 48px;
+    height: 48px;
+  }
+
+  /* Minecraft title text style */
+  .minecraft-title {
+    font-family: 'Minecraft', monospace;
+    color: #FFFF55;
+    text-shadow: 3px 3px 0px #3F3F3F;
+    letter-spacing: 2px;
+  }
+
+  /* Minecraft subtitle text */
+  .minecraft-subtitle {
+    font-family: 'Minecraft', monospace;
+    color: #AAAAAA;
+    text-shadow: 1px 1px 0px #3F3F3F;
   }
 
   .pixelated {

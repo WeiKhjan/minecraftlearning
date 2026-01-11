@@ -1,5 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server';
 
+/**
+ * Pure Text-to-Speech API
+ * This endpoint ONLY converts provided text to speech.
+ * For AI-generated tutoring with TTS, use /api/voice-tutor instead.
+ *
+ * The text must be plain, readable content - not a prompt or instruction.
+ */
+
 // Voice names for Gemini 2.5 TTS
 const VOICE_CONFIG = {
   ms: 'Aoede', // Good for Malay
@@ -23,6 +31,21 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Clean and prepare text for TTS - remove any instruction-like prefixes
+    let cleanText = text
+      .replace(/^(say|speak|read|pronounce|tell)[:\s]*/i, '')
+      .trim();
+
+    // For very short text (single letters), wrap in a natural phrase
+    if (cleanText.length <= 2) {
+      const letterIntro = {
+        ms: `Huruf ${cleanText}`,
+        zh: `字母 ${cleanText}`,
+        en: `The letter ${cleanText}`,
+      };
+      cleanText = letterIntro[locale as keyof typeof letterIntro] || letterIntro.en;
+    }
+
     const voice = VOICE_CONFIG[locale as keyof typeof VOICE_CONFIG] || VOICE_CONFIG.ms;
 
     // Use Gemini 2.5 Flash TTS model
@@ -38,7 +61,7 @@ export async function POST(request: NextRequest) {
             {
               parts: [
                 {
-                  text: text,
+                  text: cleanText,
                 },
               ],
             },
