@@ -11,55 +11,73 @@ interface MatchingActivityProps {
   onComplete: (score: number) => void;
 }
 
-interface MatchPair {
-  letter: string;
-  image: string;
-  word_ms: string;
-  word_zh: string;
-  word_en: string;
+// Normalized pair structure for internal use
+interface NormalizedPair {
+  key: string; // letter or syllable - used for matching
+  image?: string;
+  word: string; // The word to display
 }
 
 export default function MatchingActivity({ content, locale, onComplete }: MatchingActivityProps) {
   const data = (content?.data || {}) as MatchingContent;
-  const pairs = data.pairs || [];
+  const rawPairs = data.pairs || [];
 
-  const [selectedLetter, setSelectedLetter] = useState<string | null>(null);
+  // Normalize pairs to handle both formats
+  const pairs: NormalizedPair[] = rawPairs.map(p => {
+    const key = p.letter || p.syllable || p.word || '';
+    const word = getLocalizedWord(p, locale);
+    return { key, image: p.image, word };
+  });
+
+  const [selectedKey, setSelectedKey] = useState<string | null>(null);
   const [matchedPairs, setMatchedPairs] = useState<Set<string>>(new Set());
-  const [shuffledLetters, setShuffledLetters] = useState<string[]>([]);
-  const [shuffledImages, setShuffledImages] = useState<MatchPair[]>([]);
+  const [shuffledKeys, setShuffledKeys] = useState<string[]>([]);
+  const [shuffledImages, setShuffledImages] = useState<NormalizedPair[]>([]);
   const [mistakes, setMistakes] = useState(0);
-  const [feedback, setFeedback] = useState<{ type: 'correct' | 'wrong'; letter?: string; image?: string } | null>(null);
+  const [feedback, setFeedback] = useState<{ type: 'correct' | 'wrong'; key?: string; image?: string } | null>(null);
 
   // Shuffle on mount
   useEffect(() => {
-    setShuffledLetters([...pairs.map(p => p.letter)].sort(() => Math.random() - 0.5));
-    setShuffledImages([...pairs].sort(() => Math.random() - 0.5));
-  }, [pairs]);
-
-  const getWord = (pair: MatchPair): string => {
-    switch (locale) {
-      case 'ms': return pair.word_ms;
-      case 'zh': return pair.word_zh;
-      case 'en': return pair.word_en;
-      default: return pair.word_en;
+    if (pairs.length > 0) {
+      setShuffledKeys([...pairs.map(p => p.key)].sort(() => Math.random() - 0.5));
+      setShuffledImages([...pairs].sort(() => Math.random() - 0.5));
     }
+  }, [rawPairs.length]);
+
+  function getLocalizedWord(pair: MatchingContent['pairs'][0], loc: Locale): string {
+    // Try new format first (meaning_*)
+    if (pair.meaning_ms || pair.meaning_zh || pair.meaning_en) {
+      switch (loc) {
+        case 'ms': return pair.meaning_ms || pair.word || '';
+        case 'zh': return pair.meaning_zh || pair.word || '';
+        case 'en': return pair.meaning_en || pair.word || '';
+        default: return pair.meaning_en || pair.word || '';
+      }
+    }
+    // Fall back to old format (word_*)
+    switch (loc) {
+      case 'ms': return pair.word_ms || '';
+      case 'zh': return pair.word_zh || '';
+      case 'en': return pair.word_en || '';
+      default: return pair.word_en || '';
+    }
+  }
+
+  const handleKeyClick = (key: string) => {
+    if (matchedPairs.has(key)) return;
+    setSelectedKey(key);
   };
 
-  const handleLetterClick = (letter: string) => {
-    if (matchedPairs.has(letter)) return;
-    setSelectedLetter(letter);
-  };
+  const handleImageClick = (pair: NormalizedPair) => {
+    if (!selectedKey || matchedPairs.has(pair.key)) return;
 
-  const handleImageClick = (pair: MatchPair) => {
-    if (!selectedLetter || matchedPairs.has(pair.letter)) return;
-
-    if (selectedLetter === pair.letter) {
+    if (selectedKey === pair.key) {
       // Correct match
       const newMatched = new Set(matchedPairs);
-      newMatched.add(pair.letter);
+      newMatched.add(pair.key);
       setMatchedPairs(newMatched);
-      setFeedback({ type: 'correct', letter: selectedLetter, image: pair.image });
-      setSelectedLetter(null);
+      setFeedback({ type: 'correct', key: selectedKey, image: pair.image });
+      setSelectedKey(null);
 
       // Check if complete
       if (newMatched.size >= pairs.length) {
@@ -71,10 +89,10 @@ export default function MatchingActivity({ content, locale, onComplete }: Matchi
     } else {
       // Wrong match
       setMistakes(mistakes + 1);
-      setFeedback({ type: 'wrong', letter: selectedLetter, image: pair.image });
+      setFeedback({ type: 'wrong', key: selectedKey, image: pair.image });
       setTimeout(() => {
         setFeedback(null);
-        setSelectedLetter(null);
+        setSelectedKey(null);
       }, 500);
     }
   };
@@ -102,20 +120,20 @@ export default function MatchingActivity({ content, locale, onComplete }: Matchi
       </div>
 
       <div className="grid grid-cols-2 gap-4">
-        {/* Letters Column */}
+        {/* Keys Column (Letters/Syllables) */}
         <div className="space-y-2">
           <h3 className="text-center font-bold text-gray-700 mb-2">
-            {locale === 'ms' ? 'Huruf' : locale === 'zh' ? '字母' : 'Letters'}
+            {locale === 'ms' ? 'Suku Kata' : locale === 'zh' ? '音节' : 'Syllables'}
           </h3>
-          {shuffledLetters.map((letter, index) => {
-            const isMatched = matchedPairs.has(letter);
-            const isSelected = selectedLetter === letter;
-            const isFeedbackItem = feedback?.letter === letter;
+          {shuffledKeys.map((key, index) => {
+            const isMatched = matchedPairs.has(key);
+            const isSelected = selectedKey === key;
+            const isFeedbackItem = feedback?.key === key;
 
             return (
               <button
-                key={`letter-${index}`}
-                onClick={() => handleLetterClick(letter)}
+                key={`key-${index}`}
+                onClick={() => handleKeyClick(key)}
                 disabled={isMatched}
                 className={`
                   w-full py-4 rounded-lg font-bold text-2xl transition-all
@@ -129,7 +147,7 @@ export default function MatchingActivity({ content, locale, onComplete }: Matchi
                   }
                 `}
               >
-                {letter}
+                {key}
               </button>
             );
           })}
@@ -141,14 +159,14 @@ export default function MatchingActivity({ content, locale, onComplete }: Matchi
             {locale === 'ms' ? 'Gambar' : locale === 'zh' ? '图片' : 'Pictures'}
           </h3>
           {shuffledImages.map((pair, index) => {
-            const isMatched = matchedPairs.has(pair.letter);
+            const isMatched = matchedPairs.has(pair.key);
             const isFeedbackItem = feedback?.image === pair.image;
 
             return (
               <button
                 key={`image-${index}`}
                 onClick={() => handleImageClick(pair)}
-                disabled={isMatched || !selectedLetter}
+                disabled={isMatched || !selectedKey}
                 className={`
                   w-full py-3 rounded-lg transition-all flex items-center justify-center gap-2
                   ${isMatched
@@ -157,40 +175,37 @@ export default function MatchingActivity({ content, locale, onComplete }: Matchi
                       ? 'bg-red-500 text-white'
                       : isFeedbackItem && feedback.type === 'correct'
                         ? 'bg-green-500 text-white'
-                        : !selectedLetter
+                        : !selectedKey
                           ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
                           : 'bg-white hover:bg-gray-100 text-gray-800 border-2 border-gray-300 hover:border-[#5D8731]'
                   }
                 `}
               >
-                <span className="text-2xl">
-                  {/* Use emoji as placeholder for images */}
-                  {pair.letter === 'A' ? '🐔' :
-                    pair.letter === 'E' ? '👩' :
-                    pair.letter === 'I' ? '🦆' :
-                    pair.letter === 'O' ? '🍊' :
-                    pair.letter === 'U' ? '🐫' : '📷'}
-                </span>
-                <span className="font-medium">{getWord(pair)}</span>
+                {pair.image ? (
+                  <img src={pair.image} alt={pair.word} className="w-10 h-10 object-contain" />
+                ) : (
+                  <span className="text-2xl">📷</span>
+                )}
+                <span className="font-medium">{pair.word}</span>
               </button>
             );
           })}
         </div>
       </div>
 
-      {/* Selected Letter Hint */}
-      {selectedLetter && (
+      {/* Selected Key Hint */}
+      {selectedKey && (
         <div className="flex items-center justify-center gap-3">
           <p className="text-[#5DADE2] font-bold">
-            {locale === 'ms' ? `Cari gambar untuk "${selectedLetter}"` :
-              locale === 'zh' ? `找到"${selectedLetter}"的图片` :
-              `Find the picture for "${selectedLetter}"`}
+            {locale === 'ms' ? `Cari gambar untuk "${selectedKey}"` :
+              locale === 'zh' ? `找到"${selectedKey}"的图片` :
+              `Find the picture for "${selectedKey}"`}
           </p>
           <VoiceTutorButton
-            text={selectedLetter}
+            text={selectedKey}
             locale={locale}
             size="sm"
-            contentType="word"
+            contentType="syllable"
           />
         </div>
       )}

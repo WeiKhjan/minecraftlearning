@@ -106,11 +106,19 @@ export interface AlphabetContent {
 
 export interface MatchingContent {
   pairs: {
-    letter: string;
-    image: string;
-    word_ms: string;
-    word_zh: string;
-    word_en: string;
+    // Old format (alphabet matching)
+    letter?: string;
+    word_ms?: string;
+    word_zh?: string;
+    word_en?: string;
+    // New format (syllable/word matching)
+    syllable?: string;
+    word?: string;
+    meaning_ms?: string;
+    meaning_zh?: string;
+    meaning_en?: string;
+    // Common
+    image?: string;
   }[];
 }
 
