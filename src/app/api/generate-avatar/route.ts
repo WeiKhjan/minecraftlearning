@@ -69,23 +69,52 @@ export async function POST(request: NextRequest) {
 
     const equipmentString = equipmentDesc.length > 0
       ? equipmentDesc.join(', ')
-      : 'simple casual clothes';
+      : 'simple Steve-like default outfit';
 
-    // Generate avatar using Gemini with image generation
-    const prompt = `Create a cute, child-friendly Minecraft-style pixel art character avatar.
+    // Build tier color description for equipment
+    const tierColors: Record<string, string> = {
+      leather: 'brown leather',
+      chain: 'silver chainmail',
+      iron: 'shiny silver iron',
+      gold: 'gleaming golden',
+      diamond: 'sparkling blue diamond',
+    };
 
-Character details:
-- Face/expression: ${avatarFace || 'happy smiling face'}
-- Equipment: ${equipmentString}
-- Style: Blocky Minecraft aesthetic, pixel art style, cute and friendly for children
-- Background: Simple solid color or gradient, suitable for a profile picture
-- Character should be standing and facing forward
-- Full body visible but focused on upper body
-- Bright, vibrant colors appropriate for a learning game
+    const coloredEquipment = equipmentDesc.map(desc => {
+      for (const [tier, color] of Object.entries(tierColors)) {
+        if (desc.includes(tier)) {
+          return desc.replace(tier, color);
+        }
+      }
+      return desc;
+    }).join(', ');
 
-Make it look like a friendly adventure character for a children's educational app.`;
+    // Generate avatar using Gemini with image generation - 3D Minecraft style prompt
+    const prompt = `Create a stunning 3D rendered Minecraft-style character avatar that kids will love!
 
-    // Use Gemini 2.0 Flash with image generation capability
+CHARACTER DESIGN:
+- Face: ${avatarFace || 'cute happy smiling face with big friendly eyes'}
+- Equipment: ${coloredEquipment || 'classic Steve outfit'}
+- Body: Iconic Minecraft blocky/cubic body shape with cube head, rectangular body and limbs
+
+ART STYLE (VERY IMPORTANT):
+- 3D rendered look with soft lighting and gentle shadows
+- Minecraft's signature blocky/voxel aesthetic but with modern 3D rendering
+- Smooth, polished surfaces with slight reflections
+- Vibrant, saturated colors that pop
+- Cute chibi-like proportions (slightly bigger head) to appeal to children
+- Friendly, approachable character expression
+
+COMPOSITION:
+- Character standing in a heroic but friendly pose
+- Upper body focus, showing head and torso clearly
+- Slight angle (3/4 view) to show depth and 3D effect
+- Clean, simple gradient background (sky blue to light blue)
+- Soft glow or rim lighting around the character
+
+MOOD: Fun, adventurous, friendly, perfect for a children's educational learning game. The character should look like a brave little hero ready for learning adventures!`;
+
+    // Use Gemini 2.0 Flash experimental with image generation capability
     const response = await fetch(
       `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp:generateContent?key=${apiKey}`,
       {
