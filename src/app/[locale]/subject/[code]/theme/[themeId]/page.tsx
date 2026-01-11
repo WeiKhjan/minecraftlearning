@@ -130,7 +130,7 @@ export default async function ThemePage({
     progressData?.map(p => [p.activity_id, p]) || []
   );
 
-  // Determine activity status based on sequence
+  // Determine activity status - all activities within a chapter are available
   const getActivityStatus = (index: number): ProgressStatus => {
     const activityId = activities?.[index]?.id;
     const progress = progressMap.get(activityId);
@@ -138,15 +138,8 @@ export default async function ThemePage({
     if (progress?.status === 'completed') return 'completed';
     if (progress?.status === 'in_progress') return 'in_progress';
 
-    // First activity is always available
-    if (index === 0) return 'available';
-
-    // Check if previous activity is completed
-    const prevActivityId = activities?.[index - 1]?.id;
-    const prevProgress = progressMap.get(prevActivityId);
-    if (prevProgress?.status === 'completed') return 'available';
-
-    return 'locked';
+    // All activities within the same chapter are available (no sequential lock)
+    return 'available';
   };
 
   return (

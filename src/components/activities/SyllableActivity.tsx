@@ -163,36 +163,6 @@ export default function SyllableActivity({ content, avatarUrl, locale, onComplet
     startListening();
   }, [resetTranscript, startListening]);
 
-  // Stop listening and trigger analysis with whatever was captured
-  const handleStopListening = useCallback(() => {
-    console.log('[SyllableActivity] Stop clicked, transcript:', latestTranscriptRef.current);
-    stopListening();
-
-    // Use ref to get latest transcript (avoids stale closure)
-    const currentTranscript = latestTranscriptRef.current;
-
-    // Give a small delay to ensure final transcript is captured
-    setTimeout(() => {
-      // If there's a transcript, analyze it
-      if (currentTranscript) {
-        console.log('[SyllableActivity] Analyzing:', currentTranscript);
-        handleAnalyzePronunciation(currentTranscript);
-      } else {
-        // No transcript captured, show feedback and return to ready
-        console.log('[SyllableActivity] No transcript detected');
-        setActivityState('ready');
-        setFeedback({
-          isCorrect: false,
-          confidence: 0,
-          feedback: {
-            ms: 'Tiada suara dikesan. Sila cuba lagi.',
-            zh: '没有检测到声音。请再试一次。',
-            en: 'No voice detected. Please try again.',
-          },
-        });
-      }
-    }, 100);
-  }, [stopListening, handleAnalyzePronunciation]);
 
   // Move to next syllable
   const handleMoveToNext = useCallback(() => {
@@ -329,12 +299,6 @@ export default function SyllableActivity({ content, avatarUrl, locale, onComplet
                 />
               </div>
 
-              <button
-                onClick={handleStopListening}
-                className="bg-red-600 text-white px-6 py-3 rounded-full font-bold hover:bg-red-700 transition-all cursor-pointer"
-              >
-                {locale === 'ms' ? 'Berhenti' : locale === 'zh' ? '停止' : 'Stop'}
-              </button>
               {transcript && (
                 <p className="mt-2 text-sm opacity-80">
                   {locale === 'ms' ? 'Dikesan: ' : locale === 'zh' ? '检测到: ' : 'Detected: '}
