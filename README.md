@@ -54,6 +54,206 @@ See `.env.example` for required variables.
 UPDATE parents SET is_admin = true WHERE email = 'admin@example.com';
 ```
 
+## Creating New Lessons
+
+This guide explains how to add new learning content (Units/Activities) to the app.
+
+### Content Structure
+
+```
+Subject (BM/BC/EN/Math)
+└── Grade (1-6)
+    └── Tema (Theme, e.g., "Tema 1: Sayangi Keluarga")
+        └── Unit (e.g., "Unit 2: Mari Sayang")
+            └── Activity (e.g., "BA:6 Mari Ajuk dan Sebut")
+```
+
+### Activity Types
+
+| Type | Code | Description | Content Structure |
+|------|------|-------------|-------------------|
+| Alphabet | `alphabet` | Letter/character recognition | `{ letters: [...], images: [...] }` |
+| Syllable | `syllable` | Syllable reading practice | `{ pairs: [{ word, syllables, image_url }] }` |
+| Matching | `matching` | Match words to images | `{ pairs: [{ word, image_url }] }` |
+| Writing | `writing` | Tracing/writing practice | `{ words: [{ word, image_url }] }` |
+| Dictation | `dictation` | Listen and spell | `{ words: [{ word, image_url }] }` |
+| Speaking | `speaking` | Pronunciation practice | `{ sentences: [{ text, translation }] }` |
+
+### Equipment Reward Tiers
+
+Plan equipment rewards based on progression through Temas:
+
+| Tier | Equipment | Suggested Usage |
+|------|-----------|-----------------|
+| Leather | Helmet, Chestplate, Leggings, Boots | Tutorial/Tema 0 |
+| Chain | Helmet, Chestplate, Leggings, Boots | Tema 1 Unit 1-2 early activities |
+| Iron | Helmet, Chestplate, Leggings, Boots | Tema 1 Unit 2-3 mid activities |
+| Gold | Helmet, Chestplate, Leggings, Boots | Tema 1 Unit 3 late activities |
+| Diamond | Helmet, Chestplate, Leggings, Boots | Tema 2+ |
+
+### Step-by-Step: Adding New Lessons
+
+#### Step 1: Analyze Learning Materials
+
+1. Place learning material images in: `Learning Materials/{Subject}/{Tema} {Unit Name}/`
+2. Review each page and categorize content:
+   - Syllable exercises → `syllable` activity
+   - Word-picture matching → `matching` activity
+   - Writing/tracing exercises → `writing` + `dictation` activities
+   - Sentence reading → `speaking` activity
+
+#### Step 2: Extract Vocabulary Words
+
+Create a list of all vocabulary words with:
+- `word`: The Malay/Chinese/English word
+- `meaning_en`: English meaning (for image generation prompt)
+- `category`: food, animal, object, place, person, action, vehicle, nature, body, clothing
+
+#### Step 3: Update Image Generation API
+
+Edit `src/app/api/generate-vocab-batch/route.ts`:
+
+```typescript
+const VOCABULARY_LIST = [
+  // Add your new words here
+  { word: 'baju', meaning_en: 'shirt/clothes', category: 'clothing' },
+  { word: 'roti', meaning_en: 'bread', category: 'food' },
+  // ... more words
+];
+```
+
+#### Step 4: Generate Vocabulary Images
+
+Option A: Use Admin UI
+1. Deploy changes to Vercel (push to git)
+2. Go to: `https://your-app.vercel.app/en/admin/generate-images`
+3. Click "Generate All Remaining"
+
+Option B: Use API directly
+```bash
+# Check vocabulary list
+curl https://your-app.vercel.app/api/generate-vocab-batch
+
+# Generate in batches of 5
+curl -X POST https://your-app.vercel.app/api/generate-vocab-batch \
+  -H "Content-Type: application/json" \
+  -d '{"startIndex": 0, "count": 5}'
+
+# Continue with next batch
+curl -X POST https://your-app.vercel.app/api/generate-vocab-batch \
+  -H "Content-Type: application/json" \
+  -d '{"startIndex": 5, "count": 5}'
+```
+
+Images are stored at: `{SUPABASE_URL}/storage/v1/object/public/images/vocab/{word}.png`
+
+#### Step 5: Create Seed SQL
+
+Create a new SQL file in `supabase/` (e.g., `seed-tema2.sql`):
+
+```sql
+-- Get theme ID
+DO $$
+DECLARE
+  v_theme_id UUID;
+  v_unit_id UUID;
+BEGIN
+  -- Get or create theme
+  SELECT id INTO v_theme_id FROM themes
+  WHERE subject = 'bm' AND grade_level = 1 AND theme_order = 1;
+
+  -- Create Unit
+  INSERT INTO units (theme_id, name, description, unit_order)
+  VALUES (v_theme_id,
+    '{"ms": "Unit 4: Nama Unit", "zh": "单元4：...", "en": "Unit 4: ..."}',
+    '{"ms": "Deskripsi", "zh": "描述", "en": "Description"}',
+    4
+  ) RETURNING id INTO v_unit_id;
+
+  -- Create Activities
+  INSERT INTO activities (unit_id, name, description, activity_type, content, activity_order, equipment_reward)
+  VALUES (
+    v_unit_id,
+    '{"ms": "BA:XX Nama Aktiviti", "zh": "...", "en": "..."}',
+    '{"ms": "Deskripsi", "zh": "...", "en": "..."}',
+    'matching',
+    '{
+      "pairs": [
+        {"word": "kata1", "image_url": "https://xxx.supabase.co/storage/v1/object/public/images/vocab/kata1.png"},
+        {"word": "kata2", "image_url": "https://xxx.supabase.co/storage/v1/object/public/images/vocab/kata2.png"}
+      ]
+    }'::jsonb,
+    1,
+    'diamond_helmet'
+  );
+
+END $$;
+```
+
+#### Step 6: Run Seed SQL
+
+1. Go to Supabase Dashboard > SQL Editor
+2. Paste and run your seed SQL file
+3. Verify in the app that new content appears
+
+### Content Examples
+
+#### Syllable Activity Content
+```json
+{
+  "pairs": [
+    { "word": "baju", "syllables": ["ba", "ju"], "image_url": "https://..." },
+    { "word": "roti", "syllables": ["ro", "ti"], "image_url": "https://..." }
+  ]
+}
+```
+
+#### Matching Activity Content
+```json
+{
+  "pairs": [
+    { "word": "kucing", "image_url": "https://..." },
+    { "word": "anjing", "image_url": "https://..." }
+  ]
+}
+```
+
+#### Writing/Dictation Activity Content
+```json
+{
+  "words": [
+    { "word": "nasi", "image_url": "https://..." },
+    { "word": "air", "image_url": "https://..." }
+  ]
+}
+```
+
+#### Speaking Activity Content
+```json
+{
+  "sentences": [
+    { "text": "Saya suka makan nasi.", "translation": "I like to eat rice." },
+    { "text": "Ini kucing saya.", "translation": "This is my cat." }
+  ]
+}
+```
+
+### Existing Seed Files
+
+| File | Content |
+|------|---------|
+| `supabase/seed.sql` | Tema 1 Unit 1 (initial content) |
+| `supabase/seed-unit2-unit3.sql` | Tema 1 Unit 2 & Unit 3 |
+
+### Tips
+
+1. **Batch size**: Generate images in batches of 5 to avoid API timeouts
+2. **Rate limiting**: The API has 2-second delays between image generations
+3. **Image style**: Images are generated in kawaii/cute cartoon style for children
+4. **Multilingual**: Always provide names/descriptions in ms, zh, en
+5. **Equipment progression**: Plan rewards to give sense of progression
+6. **Writing + Dictation**: For writing activities, also create a dictation activity with same words
+
 ## License
 
 MIT
