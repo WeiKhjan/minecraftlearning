@@ -207,17 +207,31 @@
 
   /* Green variant button (like grass block) */
   .minecraft-button-green {
-    @apply minecraft-button;
+    @apply relative px-6 py-3 font-bold transition-all cursor-pointer;
+    font-family: 'Minecraft', monospace;
     background-color: #5E7C16;
+    border: 4px solid;
     border-top-color: #80C71F;
     border-left-color: #80C71F;
     border-bottom-color: #3B5323;
     border-right-color: #3B5323;
+    color: #FFFFFF;
+    text-shadow: 2px 2px 0px #3F3F3F;
+    image-rendering: pixelated;
     box-shadow: inset -2px -4px 0px 0px #3B5323, inset 2px 2px 0px 0px #80C71F;
   }
 
   .minecraft-button-green:hover {
     background-color: #6E8C26;
+  }
+
+  .minecraft-button-green:active {
+    background-color: #4E6C06;
+    border-top-color: #3B5323;
+    border-left-color: #3B5323;
+    border-bottom-color: #80C71F;
+    border-right-color: #80C71F;
+    box-shadow: inset 2px 4px 0px 0px #3B5323, inset -2px -2px 0px 0px #80C71F;
   }
 
   /* Authentic Minecraft inventory/GUI card */
