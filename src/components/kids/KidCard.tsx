@@ -68,10 +68,18 @@ export default function KidCard({ kid, locale }: KidCardProps) {
         className="minecraft-card hover:scale-105 transition-transform cursor-pointer text-center block"
       >
         {/* Avatar */}
-        <div className="w-20 h-20 mx-auto mb-3 bg-[#5D8731] rounded-lg flex items-center justify-center">
-          <span className="text-4xl">
-            {kid.avatar_seed || '🧒'}
-          </span>
+        <div className="w-20 h-20 mx-auto mb-3 bg-[#5D8731] rounded-lg flex items-center justify-center overflow-hidden">
+          {kid.generated_avatar_url ? (
+            <img
+              src={kid.generated_avatar_url}
+              alt={kid.name}
+              className="w-full h-full object-cover"
+            />
+          ) : (
+            <span className="text-4xl">
+              {kid.avatar_seed || '🧒'}
+            </span>
+          )}
         </div>
 
         {/* Name */}
