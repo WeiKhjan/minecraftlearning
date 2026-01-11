@@ -24,16 +24,33 @@ export default function DictationActivity({ content, avatarUrl, locale, onComple
   const [feedback, setFeedback] = useState<'correct' | 'wrong' | null>(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [hasPlayed, setHasPlayed] = useState(false);
+  const [isPlayingPregen, setIsPlayingPregen] = useState(false);
 
   const { speakDirect, stop, isLoading: isSpeaking } = useVoiceTutor({ locale });
 
   const currentWord = words[currentIndex];
 
   const handlePlayAudio = useCallback(() => {
-    if (currentWord) {
-      speakDirect(currentWord.word);
+    if (!currentWord) return;
+
+    // Use pre-generated audio if available
+    if (currentWord.audio_url) {
+      const audio = new Audio(currentWord.audio_url);
+      setIsPlayingPregen(true);
+      audio.onended = () => setIsPlayingPregen(false);
+      audio.onerror = () => {
+        setIsPlayingPregen(false);
+        // Fallback to TTS
+        speakDirect(currentWord.word);
+      };
+      audio.play();
       setHasPlayed(true);
+      return;
     }
+
+    // Fallback to TTS API
+    speakDirect(currentWord.word);
+    setHasPlayed(true);
   }, [currentWord, speakDirect]);
 
   const handleRecognized = (isCorrect: boolean, recognizedText: string) => {
@@ -102,10 +119,12 @@ export default function DictationActivity({ content, avatarUrl, locale, onComple
     en: 'Listen Again',
   };
 
+  const isPlayingAudio = isSpeaking || isPlayingPregen;
+
   return (
     <div className="space-y-6">
       <LoadingOverlay
-        isLoading={isAnalyzing || isSpeaking}
+        isLoading={isAnalyzing || isPlayingAudio}
         avatarUrl={avatarUrl}
         locale={locale}
         message={isAnalyzing ? analyzingMessage[locale] : speakingMessage[locale]}
@@ -139,17 +158,17 @@ export default function DictationActivity({ content, avatarUrl, locale, onComple
           <>
             <button
               onClick={handlePlayAudio}
-              disabled={isSpeaking}
+              disabled={isPlayingAudio}
               className={`
                 w-24 h-24 rounded-full flex items-center justify-center mx-auto
                 transition-all duration-200
-                ${isSpeaking
+                ${isPlayingAudio
                   ? 'bg-white/30 animate-pulse'
                   : 'bg-white/20 hover:bg-white/30 hover:scale-110'
                 }
               `}
             >
-              <span className="text-5xl">{isSpeaking ? '🔊' : '🔈'}</span>
+              <span className="text-5xl">{isPlayingAudio ? '🔊' : '🔈'}</span>
             </button>
             <p className="mt-4 text-lg font-bold">
               {hasPlayed ? playAgainText[locale] : playButtonText[locale]}

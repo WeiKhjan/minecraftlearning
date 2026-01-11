@@ -247,6 +247,7 @@ export default function SyllableActivity({ content, avatarUrl, locale, onComplet
               locale={locale}
               size="md"
               contentType="syllable"
+              audioUrl={data.audio_urls?.[currentIndex]}
             />
           </div>
 

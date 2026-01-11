@@ -117,6 +117,7 @@ export default function SpeakingActivity({ content, kidName, avatarUrl, locale, 
             locale={locale}
             size="md"
             contentType="sentence"
+            audioUrl={currentPhrase?.audio_url}
           />
         </div>
         <p className="text-sm opacity-80">

@@ -136,6 +136,8 @@ curl -X POST https://your-app.vercel.app/api/generate-equipment \
 
 Pets are Minecraft mob companions that kids can collect and display next to their avatar. Pets are awarded when a kid completes ALL activities in a theme.
 
+Pet images are AI-generated Minecraft 8-bit pixel art style using Gemini 2.5 Flash. All 25 pets (5 rarities × 5 pets) have been pre-generated and stored in Supabase.
+
 **Pet Rarity Tiers**:
 | Rarity | Examples | When to Award |
 |--------|----------|---------------|
@@ -147,13 +149,16 @@ Pets are Minecraft mob companions that kids can collect and display next to thei
 
 **Storage location**: `{SUPABASE_URL}/storage/v1/object/public/images/pets/{pet_id}.png`
 
-**Available Pet IDs**:
-- **Passive**: `chicken`, `cow`, `pig`, `sheep`, `rabbit`, `cat`, `fox`, `parrot`, `turtle`, `panda`, `axolotl`, `ocelot`, `llama`
-- **Neutral**: `wolf`, `bee`
-- **Hostile**: `skeleton`, `zombie`, `creeper`, `spider`, `slime`, `ender_dragon`, `wither`
-- **Utility**: `iron_golem`, `snow_golem`, `allay`
+**Pet IDs by Rarity**:
+| Rarity | Pet 1 | Pet 2 | Pet 3 | Pet 4 | Pet 5 |
+|--------|-------|-------|-------|-------|-------|
+| Common | `chicken` | `cow` | `pig` | `sheep` | `rabbit` |
+| Uncommon | `cat` | `wolf` | `fox` | `parrot` | `turtle` |
+| Rare | `bee` | `panda` | `axolotl` | `ocelot` | `llama` |
+| Epic | `skeleton` | `zombie` | `creeper` | `spider` | `slime` |
+| Legendary | `iron_golem` | `snow_golem` | `allay` | `ender_dragon` | `wither` |
 
-**Generating Pet Images**:
+**Regenerating Pet Images** (if needed):
 
 Use the pet generation API at `src/app/api/generate-pets/route.ts`:
 
@@ -199,6 +204,55 @@ VALUES (
 2. System checks if all activities in the theme are now completed
 3. If all completed AND theme has a `pet_reward`, the pet is awarded
 4. Pet appears in kid's pet collection and can be equipped
+
+### Voice Audio (TTS) System
+
+Voice audio clips for speaking, syllable, and dictation activities can be pre-generated to save API costs and avoid rate limits. Audio is generated using Gemini 2.5 Flash TTS and stored in Supabase.
+
+**Storage location**: `{SUPABASE_URL}/storage/v1/object/public/audio/{type}/{activity_id}/{index}.mp3`
+
+**Supported Activity Types**:
+| Type | Content Field | Audio Storage Path |
+|------|---------------|-------------------|
+| Speaking | `phrases[].audio_url` | `audio/speaking/{activity_id}/{index}.mp3` |
+| Syllable | `audio_urls[]` | `audio/syllable/{activity_id}/{index}.mp3` |
+| Dictation | `words[].audio_url` | `audio/dictation/{activity_id}/{index}.mp3` |
+
+**Setup** (one-time):
+1. Create an `audio` storage bucket in Supabase Dashboard > Storage
+2. Set the bucket to public (for playback access)
+
+**Generating Audio Clips**:
+
+Use the audio generation API at `src/app/api/generate-audio/route.ts`:
+
+```bash
+# Check all audio items that need generation
+curl https://your-app.vercel.app/api/generate-audio
+
+# Generate in batches of 5
+curl -X POST https://your-app.vercel.app/api/generate-audio \
+  -H "Content-Type: application/json" \
+  -d '{"startIndex": 0, "count": 5}'
+
+# Continue with next batches
+curl -X POST https://your-app.vercel.app/api/generate-audio \
+  -H "Content-Type: application/json" \
+  -d '{"startIndex": 5, "count": 5}'
+```
+
+**How Pre-generated Audio Works**:
+1. The API scans all speaking, syllable, and dictation activities in the database
+2. For each text item (phrase, syllable, or word), it generates TTS audio
+3. Audio is uploaded to Supabase storage
+4. Components automatically use pre-generated audio when available
+5. Falls back to live TTS API if pre-generated audio is not available or fails
+
+**Benefits**:
+- Reduces API costs (generate once, use many times)
+- Avoids TTS rate limits during lessons
+- Faster audio playback (no API call needed)
+- Works offline once cached by browser
 
 ### Step-by-Step: Adding New Lessons
 
@@ -356,13 +410,15 @@ END $$;
 
 ### Tips
 
-1. **Batch size**: Generate images in batches of 5 to avoid API timeouts
-2. **Rate limiting**: The API has 2-second delays between image generations
-3. **Image style**: Vocabulary images are kawaii/cute cartoon style; equipment images are Minecraft 8-bit pixel art
+1. **Batch size**: Generate images/audio in batches of 5 to avoid API timeouts
+2. **Rate limiting**: The API has 2-second delays between generations
+3. **Image style**: Vocabulary images are kawaii/cute cartoon style; equipment and pet images are Minecraft 8-bit pixel art
 4. **Multilingual**: Always provide names/descriptions in ms, zh, en
 5. **Equipment progression**: Plan rewards to give sense of progression (see Equipment Reward Tiers table)
 6. **Writing + Dictation**: For writing activities, also create a dictation activity with same words
 7. **Equipment images**: All 25 equipment images are pre-generated. Use equipment IDs from the table above for `equipment_reward` field
+8. **Pet images**: All 25 pet images are pre-generated. Use pet IDs from the table above for `pet_reward` field on themes
+9. **Voice audio**: After adding new speaking/syllable/dictation activities, run the audio generation API to pre-generate TTS clips
 
 ## License
 

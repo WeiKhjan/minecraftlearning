@@ -116,7 +116,7 @@ export interface MatchingContent {
 
 export interface SyllableContent {
   syllables: string[];
-  audio_url?: string;
+  audio_urls?: string[]; // Pre-generated audio URLs for each syllable
 }
 
 export interface WritingContent {
@@ -136,6 +136,7 @@ export interface SpeakingContent {
     translation_ms: string;
     translation_zh: string;
     translation_en: string;
+    audio_url?: string; // Pre-generated audio URL
   }[];
   use_kid_name: boolean;
 }
@@ -165,6 +166,7 @@ export interface DictationContent {
     meaning_ms: string;
     meaning_zh: string;
     meaning_en: string;
+    audio_url?: string; // Pre-generated audio URL
   }[];
 }
 
