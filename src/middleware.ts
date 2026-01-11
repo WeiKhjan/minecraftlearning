@@ -10,11 +10,17 @@ const intlMiddleware = createMiddleware({
 });
 
 export async function middleware(request: NextRequest) {
-  // First, handle i18n routing
+  const pathname = request.nextUrl.pathname;
+
+  // Skip i18n middleware for auth callback routes
+  if (pathname.startsWith('/auth/')) {
+    return await updateSession(request);
+  }
+
+  // Handle i18n routing for other routes
   const response = intlMiddleware(request);
 
-  // Then, handle Supabase session
-  // Note: We return the intl response but also update the session
+  // Update Supabase session
   await updateSession(request);
 
   return response;
