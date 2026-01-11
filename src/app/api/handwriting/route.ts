@@ -135,7 +135,7 @@ If blank or unreadable, use recognizedLetter: "?" and isCorrect: false.`;
           }],
           generationConfig: {
             temperature: 0.1,
-            maxOutputTokens: 500,
+            maxOutputTokens: 100000,
           },
         }),
       }

@@ -72,7 +72,7 @@ Return ONLY this JSON:
           },
           generationConfig: {
             temperature: 0.1,
-            maxOutputTokens: 300,
+            maxOutputTokens: 100000,
             responseMimeType: 'application/json',
           },
         }),
