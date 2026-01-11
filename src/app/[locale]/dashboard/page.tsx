@@ -65,22 +65,56 @@ export default async function DashboardPage({
     redirect(`/${locale}/kids`);
   }
 
-  // Fetch subjects
+  // Fetch subjects with their themes and activity counts
   const { data: subjects } = await supabase
     .from('subjects')
-    .select('*')
+    .select(`
+      *,
+      themes (
+        id,
+        activities (id)
+      )
+    `)
     .order('order_index', { ascending: true });
 
-  // Fetch kid's subject progress
-  const { data: subjectProgress } = await supabase
-    .from('kid_subject_progress')
-    .select('*')
-    .eq('kid_id', kidId);
+  // Fetch kid's completed activities with their theme and subject info
+  const { data: kidProgress } = await supabase
+    .from('kid_progress')
+    .select(`
+      activity_id,
+      status,
+      activities (
+        theme_id,
+        themes (
+          subject_id
+        )
+      )
+    `)
+    .eq('kid_id', kidId)
+    .eq('status', 'completed');
 
-  // Create a map of subject progress
-  const progressMap = new Map(
-    subjectProgress?.map(p => [p.subject_id, p]) || []
-  );
+  // Calculate total activities per subject
+  const activityCountsPerSubject = new Map<string, { total: number; completed: number }>();
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  subjects?.forEach((subject: any) => {
+    const totalActivities = subject.themes?.reduce((sum: number, theme: { activities?: { id: string }[] }) =>
+      sum + (theme.activities?.length || 0), 0) || 0;
+    activityCountsPerSubject.set(subject.id, { total: totalActivities, completed: 0 });
+  });
+
+  // Count completed activities per subject
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  kidProgress?.forEach((progress: any) => {
+    // Supabase returns singular object for belongs-to relations
+    const subjectId = progress.activities?.themes?.subject_id;
+    if (subjectId) {
+      const counts = activityCountsPerSubject.get(subjectId);
+      if (counts) {
+        counts.completed += 1;
+      }
+    }
+  });
 
   // Calculate XP needed for next level
   const currentLevelXP = (kid.level * kid.level) * 100;
@@ -194,10 +228,11 @@ export default async function DashboardPage({
 
           {/* Subjects Grid */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            {subjects?.map((subject: Subject) => {
-              const progress = progressMap.get(subject.id);
-              const completedCount = progress?.completed_activities || 0;
-              const totalCount = progress?.total_activities || 0;
+            {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
+            {subjects?.map((subject: any) => {
+              const counts = activityCountsPerSubject.get(subject.id);
+              const completedCount = counts?.completed || 0;
+              const totalCount = counts?.total || 0;
               const progressPercent = totalCount > 0 ? (completedCount / totalCount) * 100 : 0;
 
               return (
@@ -229,7 +264,7 @@ export default async function DashboardPage({
                   <p className="text-xs text-gray-500 text-center">
                     {t('subjects.progress', {
                       completed: completedCount,
-                      total: totalCount || '?',
+                      total: totalCount,
                     })}
                   </p>
                 </Link>

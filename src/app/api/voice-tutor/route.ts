@@ -164,7 +164,9 @@ export async function POST(request: NextRequest) {
     }
 
     // Return base64 audio data and the generated text
-    console.log('[voice-tutor] Success - returning audio with mimeType:', mimeType, 'text:', textToSpeak?.substring(0, 50));
+    console.log('[voice-tutor] Success - returning audio with mimeType:', mimeType);
+    console.log('[voice-tutor] Full text to speak:', textToSpeak);
+    console.log('[voice-tutor] Audio data length:', audioData?.length, 'bytes (~', Math.round(audioData?.length / 48000), 'seconds at 24kHz)');
     return NextResponse.json({
       audio: audioData,
       mimeType: mimeType,
