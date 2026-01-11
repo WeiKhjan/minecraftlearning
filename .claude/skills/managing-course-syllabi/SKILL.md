@@ -1,11 +1,63 @@
 ---
-name: course-syllabus
-description: Generate new course syllabus content for the MYLearnt educational platform. Use this skill when asked to create new subjects, themes (units), or activities for the learning curriculum. Supports activity types: alphabet, matching, syllable, writing, speaking, math, dictation (NOT singing). Handles all grades (primary_1 through primary_6) and all 3 languages (ms, zh, en). IMPORTANT: Subject content language is fixed based on subject type (BM=Malay, BC=Chinese, EN=English) regardless of UI language.
+name: managing-course-syllabi
+description: Manages and generates course syllabus content for the MYLearnt educational platform. Creates new subjects, themes (units), and activities for the learning curriculum. Supports activity types including alphabet, matching, syllable, writing, speaking, math, and dictation. Handles all grades (primary_1 through primary_6) and all 3 languages (ms, zh, en). Subject content language remains fixed based on subject type (BM=Malay, BC=Chinese, EN=English) regardless of UI language selection.
 ---
 
-# Course Syllabus Generation Skill
+# Managing Course Syllabi
 
-This skill guides you through creating educational content for the MYLearnt Minecraft-themed learning platform.
+Creates and manages educational content for the MYLearnt Minecraft-themed learning platform.
+
+## Quick Start
+
+### Most Common Task: Add a New Activity to Existing Theme
+
+```sql
+-- 1. Get the theme ID
+SELECT id FROM themes WHERE code = 'unit_2' AND subject_id = (SELECT id FROM subjects WHERE code = 'bm');
+
+-- 2. Insert the activity
+INSERT INTO activities (theme_id, type, title_ms, title_zh, title_en,
+  instructions_ms, instructions_zh, instructions_en, content, xp_reward, order_index)
+VALUES (
+  '{theme_id}',
+  'matching',
+  'Padankan Suku Kata',
+  '配对音节',
+  'Match Syllables',
+  'Padankan suku kata dengan gambar yang betul',
+  '将音节与正确的图片配对',
+  'Match the syllable with the correct picture',
+  '{"type": "matching", "data": {"pairs": [...]}}',
+  10,
+  (SELECT COALESCE(MAX(order_index), 0) + 1 FROM activities WHERE theme_id = '{theme_id}')
+);
+```
+
+### Quick Reference: Activity Types
+| Type | XP | Best For |
+|------|----|----------|
+| `alphabet` | 10 | Letter/character recognition |
+| `matching` | 10 | Vocabulary association |
+| `syllable` | 15 | Pronunciation practice |
+| `writing` | 15 | Handwriting/tracing |
+| `speaking` | 20 | Phrase repetition |
+| `math` | 20 | Arithmetic exercises |
+| `dictation` | 20 | Listen and spell |
+
+---
+
+## Degrees of Freedom
+
+| Area | Freedom Level | Guidelines |
+|------|---------------|------------|
+| **New Activity Ideas** | 🟢 High | Suggests creative new activities within existing types. Can propose new vocabulary themes, math problem sets, or speaking scenarios. |
+| **Vocabulary Selection** | 🟢 High | Chooses appropriate words for grade level. Can select culturally relevant terms and age-appropriate content. |
+| **Activity Sequencing** | 🟡 Medium | Follows progressive difficulty (simple → complex). Can reorder within guidelines. |
+| **XP Rewards** | 🟡 Medium | Stays within 10-25 range based on difficulty. Can adjust based on activity complexity. |
+| **Content Structure** | 🔴 Low | Must follow exact JSON schemas in `references/content-formats.json`. |
+| **Database Schema** | 🔴 Low | Does not modify table structures without explicit approval. |
+
+---
 
 ## Content Hierarchy
 
@@ -82,7 +134,7 @@ For learning letters/characters.
 ```
 
 ### 2. matching
-Match items (letters/syllables to images/words).
+Matches items (letters/syllables to images/words).
 ```json
 {
   "type": "matching",
@@ -103,7 +155,7 @@ Match items (letters/syllables to images/words).
 ```
 
 ### 3. syllable
-Pronunciation practice with speech recognition.
+Provides pronunciation practice with speech recognition.
 ```json
 {
   "type": "syllable",
@@ -126,7 +178,7 @@ Pronunciation practice with speech recognition.
 ```
 
 ### 4. writing
-Handwriting/tracing practice.
+Enables handwriting/tracing practice.
 ```json
 {
   "type": "writing",
@@ -147,7 +199,7 @@ Handwriting/tracing practice.
 ```
 
 ### 5. speaking
-Phrase repetition with AI feedback.
+Facilitates phrase repetition with AI feedback.
 ```json
 {
   "type": "speaking",
@@ -167,7 +219,7 @@ Phrase repetition with AI feedback.
 ```
 
 ### 6. math
-Mathematics exercises.
+Presents mathematics exercises.
 ```json
 {
   "type": "math",
@@ -188,7 +240,7 @@ Mathematics exercises.
 ```
 
 ### 7. dictation
-Listen and write words.
+Tests listening and writing skills.
 ```json
 {
   "type": "dictation",
@@ -210,10 +262,10 @@ Listen and write words.
 
 ### Creating a New Theme (Unit)
 
-1. **Identify the subject** by code: `bm`, `bc`, `en`, or `math`
-2. **Get subject UUID** from database
-3. **Determine order_index** (next available number)
-4. **Create theme record**:
+1. **Identifies the subject** by code: `bm`, `bc`, `en`, or `math`
+2. **Gets subject UUID** from database
+3. **Determines order_index** (next available number)
+4. **Creates theme record**:
    ```sql
    INSERT INTO themes (subject_id, code, name_ms, name_zh, name_en,
      description_ms, description_zh, description_en, order_index, required_grade)
@@ -222,15 +274,15 @@ Listen and write words.
 
 ### Creating Activities for a Theme
 
-1. **Get theme UUID**
-2. **Plan activity sequence** (order_index starts at 1)
+1. **Gets theme UUID**
+2. **Plans activity sequence** (order_index starts at 1)
 3. **For each activity**:
-   - Choose appropriate type based on learning goal
-   - Create content JSON following the format above
-   - Set XP reward (default 10, harder activities 15-25)
-   - Optionally link equipment_reward_id
+   - Chooses appropriate type based on learning goal
+   - Creates content JSON following the format above
+   - Sets XP reward (default 10, harder activities 15-25)
+   - Optionally links equipment_reward_id
 
-4. **Insert activities**:
+4. **Inserts activities**:
    ```sql
    INSERT INTO activities (theme_id, type, title_ms, title_zh, title_en,
      instructions_ms, instructions_zh, instructions_en, content,
@@ -240,20 +292,20 @@ Listen and write words.
 
 ## Best Practices
 
-1. **Progressive Difficulty**: Start with simpler activities (alphabet, matching) before complex ones (speaking, dictation)
+1. **Progressive Difficulty**: Starts with simpler activities (alphabet, matching) before complex ones (speaking, dictation)
 
 2. **Consistent Naming**:
    - Theme codes: `theme_1`, `unit_2`, `chapter_3`
-   - Keep order_index sequential within parent
+   - Keeps order_index sequential within parent
 
 3. **XP Rewards**:
    - Basic (alphabet, matching): 10 XP
    - Intermediate (syllable, writing): 15 XP
    - Advanced (speaking, dictation, math): 20 XP
 
-4. **Images**: Use relative paths `images/vocab/{word}.png` - generate images using the image-generation skill
+4. **Images**: Uses relative paths `images/vocab/{word}.png` - generates images using `generating-images` skill
 
-5. **Audio**: Leave `audio_url` as null initially - generate using voice-tutorial skill
+5. **Audio**: Leaves `audio_url` as null initially - generates using `generating-voice-tutorials` skill
 
 6. **Grade Appropriateness**:
    - primary_1-2: Focus on alphabet, matching, simple syllables
@@ -307,13 +359,13 @@ INSERT INTO activities (
 
 ## Files to Update
 
-When creating new content, you may need to update:
+When creating new content, may need to update:
 - `supabase/schema.sql` - If adding new tables or fields
 - `src/types/index.ts` - If adding new activity types
 - Activity components in `src/components/activities/` - If new type needs UI
 
 ## Related Skills
 
-- **image-generation**: Generate vocabulary images for activities
-- **voice-tutorial**: Generate audio files for speaking/syllable activities
-- **equipment-generation**: Create equipment rewards for activities
+- **generating-images**: Generates vocabulary images for activities
+- **generating-voice-tutorials**: Generates audio files for speaking/syllable activities
+- **generating-equipment**: Creates equipment rewards for activities

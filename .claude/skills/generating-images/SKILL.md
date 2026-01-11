@@ -1,11 +1,51 @@
 ---
-name: image-generation
-description: Generate images for the MYLearnt educational platform using AI. Use this skill when asked to create vocabulary images, character avatars, pet icons, or any visual content. Supports multiple image styles including kawaii vocabulary illustrations, Minecraft pixel art equipment, 3D character avatars, and chibi pet companions. Uses Gemini AI image generation APIs.
+name: generating-images
+description: Generates images for the MYLearnt educational platform using AI. Creates vocabulary images, character avatars, pet icons, and equipment visuals. Supports multiple image styles including kawaii vocabulary illustrations, Minecraft pixel art equipment, 3D character avatars, and chibi pet companions. Uses Gemini AI image generation APIs.
 ---
 
-# Image Generation Skill
+# Generating Images
 
-This skill guides you through generating various types of images for the MYLearnt platform using AI.
+Creates various types of images for the MYLearnt platform using AI image generation.
+
+## Quick Start
+
+### Most Common Task: Generate Vocabulary Images
+
+```typescript
+// Single image
+POST /api/generate-vocab-image
+{ "word": "baju", "meaning_en": "shirt", "category": "clothing" }
+
+// Batch generation
+POST /api/generate-vocab-batch
+{ "startIndex": 0, "count": 5 }
+```
+
+### Quick Reference: Image Types
+| Type | API Endpoint | Style |
+|------|-------------|-------|
+| Vocabulary | `/api/generate-vocab-image` | Kawaii/cute illustration |
+| Equipment | `/api/generate-equipment` | Minecraft pixel art |
+| Avatar | `/api/generate-avatar` | 3D Minecraft character |
+| Pet | `/api/generate-pets` | Chibi pixel art |
+
+---
+
+## Degrees of Freedom
+
+| Area | Freedom Level | Guidelines |
+|------|---------------|------------|
+| **New Vocabulary Words** | 🟢 High | Adds any educational vocabulary with appropriate category. Can suggest words for new themes/units. |
+| **Category Selection** | 🟢 High | Chooses or creates new categories that fit the vocabulary. Can propose new category types. |
+| **Pet Designs** | 🟢 High | Creates new pet concepts with appropriate rarity. Can suggest seasonal or themed pets. |
+| **Avatar Expressions** | 🟢 High | Designs new face expressions using emoji mapping. Can add culturally relevant expressions. |
+| **Equipment Themes** | 🟢 High | Creates themed equipment sets (holidays, subjects). See `generating-equipment` skill. |
+| **Style Variations** | 🟡 Medium | Maintains established art styles but can adjust colors, details within guidelines. |
+| **Prompt Engineering** | 🟡 Medium | Improves prompts for better results while maintaining style consistency. |
+| **Storage Paths** | 🔴 Low | Follows established path conventions. |
+| **API Structure** | 🔴 Low | Uses existing endpoints without modification. |
+
+---
 
 ## Image Types Overview
 
@@ -33,7 +73,7 @@ SUPABASE_SERVICE_ROLE_KEY=your_service_key
 ## 1. Vocabulary Image Generation
 
 ### Purpose
-Generate educational images for vocabulary words in matching, syllable, and dictation activities.
+Generates educational images for vocabulary words in matching, syllable, and dictation activities.
 
 ### API Endpoint
 **File**: `src/app/api/generate-vocab-image/route.ts`
@@ -47,7 +87,7 @@ POST /api/generate-vocab-image
 }
 ```
 
-### Categories and Prompts
+### Categories and Prompts (🟢 High Freedom to Add New)
 | Category | Prompt Style |
 |----------|-------------|
 | food | "delicious appetizing food item on a clean plate or simple background" |
@@ -93,23 +133,27 @@ POST /api/generate-vocab-batch
 }
 ```
 
-### Adding New Vocabulary
+### Adding New Vocabulary (🟢 High Freedom)
 ```typescript
 // In generate-vocab-batch/route.ts, add to VOCABULARY_LIST:
 const VOCABULARY_LIST = [
   // Existing words...
 
-  // New Unit words
+  // New Unit words - can freely add appropriate vocabulary
   { word: 'kucing', meaning_en: 'cat', category: 'animal' },
   { word: 'meja', meaning_en: 'table', category: 'object' },
   { word: 'nasi', meaning_en: 'rice', category: 'food' },
+
+  // Can create new categories as needed
+  { word: 'guru', meaning_en: 'teacher', category: 'profession' },
+  { word: 'gembira', meaning_en: 'happy', category: 'emotion' },
 ];
 ```
 
 ## 2. Equipment Image Generation
 
 ### Purpose
-Generate Minecraft-style pixel art icons for character equipment.
+Generates Minecraft-style pixel art icons for character equipment.
 
 ### API Endpoint
 **File**: `src/app/api/generate-equipment/route.ts`
@@ -160,7 +204,7 @@ Style Requirements:
 ## 3. Avatar Image Generation
 
 ### Purpose
-Generate full-body Minecraft-style character avatars with equipped gear.
+Generates full-body Minecraft-style character avatars with equipped gear.
 
 ### API Endpoint
 **File**: `src/app/api/generate-avatar/route.ts`
@@ -180,7 +224,7 @@ POST /api/generate-avatar
 }
 ```
 
-### Face Expressions
+### Face Expressions (🟢 High Freedom to Add New)
 | Emoji | Description |
 |-------|-------------|
 | 😊 | warm friendly smile with rosy cheeks and sparkling happy eyes |
@@ -235,7 +279,7 @@ COMPOSITION:
 ## 4. Pet Image Generation
 
 ### Purpose
-Generate cute Minecraft-style pet companion icons.
+Generates cute Minecraft-style pet companion icons.
 
 ### API Endpoint
 **File**: `src/app/api/generate-pets/route.ts`
@@ -248,7 +292,7 @@ POST /api/generate-pets
 }
 ```
 
-### Pet List (25 total)
+### Pet List (25 total, 🟢 High Freedom to Add New)
 ```typescript
 // Passive Mobs (Common)
 { id: 'chicken', rarity: 'common', description: 'A clucking farm bird' }
@@ -284,6 +328,10 @@ POST /api/generate-pets
 { id: 'allay', rarity: 'legendary', description: 'A magical blue allay fairy' }
 { id: 'warden', rarity: 'legendary', description: 'A mysterious dark warden' }
 { id: 'ender_dragon', rarity: 'legendary', description: 'The mighty black ender dragon' }
+
+// Can add seasonal/themed pets:
+// { id: 'reindeer', rarity: 'epic', description: 'A festive holiday reindeer' }
+// { id: 'dragon_boat', rarity: 'legendary', description: 'A dragon boat spirit' }
 ```
 
 ### Rarity Visual Effects
@@ -345,31 +393,31 @@ Features:
 
 ## Best Practices
 
-1. **Rate Limiting**: Add 2-3 second delays between API calls
-2. **Error Handling**: Implement retries with exponential backoff
-3. **Image Validation**: Check generated images have actual content
-4. **Storage Cleanup**: Remove failed/incomplete uploads
-5. **Naming Convention**: Use `{word}_{timestamp}.png` for uniqueness
+1. **Rate Limiting**: Adds 2-3 second delays between API calls
+2. **Error Handling**: Implements retries with exponential backoff
+3. **Image Validation**: Checks generated images have actual content
+4. **Storage Cleanup**: Removes failed/incomplete uploads
+5. **Naming Convention**: Uses `{word}_{timestamp}.png` for uniqueness
 
 ## Troubleshooting
 
 ### Generation Fails
-- Check Gemini API key is valid
-- Verify rate limits not exceeded
-- Try fallback model (2.5 Flash)
+- Checks Gemini API key is valid
+- Verifies rate limits not exceeded
+- Tries fallback model (2.5 Flash)
 
 ### Wrong Style Generated
 - Be more specific in prompt
-- Add negative prompts ("NOT photorealistic")
-- Specify exact pixel art requirements
+- Adds negative prompts ("NOT photorealistic")
+- Specifies exact pixel art requirements
 
 ### Storage Upload Fails
-- Check Supabase service role key
-- Verify bucket exists and is public
-- Check file size limits
+- Checks Supabase service role key
+- Verifies bucket exists and is public
+- Checks file size limits
 
 ## Related Skills
 
-- **course-syllabus**: Activities need vocabulary images
-- **equipment-generation**: Uses similar pixel art generation
-- **voice-tutorial**: Audio pairs with visual content
+- **managing-course-syllabi**: Activities need vocabulary images
+- **generating-equipment**: Uses similar pixel art generation
+- **generating-voice-tutorials**: Audio pairs with visual content

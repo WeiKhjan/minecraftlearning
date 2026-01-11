@@ -1,11 +1,55 @@
 ---
-name: voice-tutorial
-description: Generate voice-guided tutorials and TTS audio content for the MYLearnt learning platform. Use this skill when asked to create audio clips for activities, generate AI tutor voice guidance, or set up text-to-speech for educational content. Supports Malay (ms), Chinese (zh), and English (en) languages. Handles both direct TTS and AI-generated tutoring explanations.
+name: generating-voice-tutorials
+description: Generates voice-guided tutorials and TTS audio content for the MYLearnt learning platform. Creates audio clips for activities, AI tutor voice guidance, and text-to-speech for educational content. Supports Malay (ms), Chinese (zh), and English (en) languages. Handles both direct TTS and AI-generated tutoring explanations.
 ---
 
-# Voice Tutorial Generation Skill
+# Generating Voice Tutorials
 
-This skill guides you through creating voice-guided content and audio files for the MYLearnt educational platform.
+Creates voice-guided content and audio files for the MYLearnt educational platform.
+
+## Quick Start
+
+### Most Common Task: Generate Audio for an Activity
+
+```typescript
+// Option 1: Use batch API for multiple activities
+POST /api/generate-audio
+{ "startIndex": 0, "count": 5 }
+
+// Option 2: Generate single TTS audio
+POST /api/tts
+{ "text": "Selamat pagi", "locale": "ms" }
+
+// Option 3: Generate AI tutoring + TTS
+POST /api/voice-tutor
+{ "content": "ba", "contentType": "syllable", "locale": "ms" }
+```
+
+### Quick Reference: Content Types
+| Type | AI Processing | Use For |
+|------|---------------|---------|
+| `letter` | Yes | Alphabet learning with examples |
+| `syllable` | Yes | Suku kata breakdown and practice |
+| `word` | Yes | Vocabulary with meaning |
+| `sentence` | Yes | Speaking practice phrases |
+| `instruction` | No (direct TTS) | Activity directions |
+| `feedback` | No (direct TTS) | Encouragement messages |
+
+---
+
+## Degrees of Freedom
+
+| Area | Freedom Level | Guidelines |
+|------|---------------|------------|
+| **Tutoring Script Writing** | 🟢 High | Creates engaging, child-friendly explanations. Can add enthusiasm, vary phrasing, include cultural context. |
+| **Voice Selection** | 🟢 High | Chooses appropriate voices for different content. Can suggest voice changes for variety. |
+| **Example Words/Phrases** | 🟢 High | Selects culturally relevant examples when generating tutoring content. |
+| **Audio Organization** | 🟡 Medium | Follows storage structure but can suggest improvements. |
+| **Language Selection** | 🟡 Medium | Matches audio to subject language (not UI). Can suggest appropriate locale. |
+| **API Structure** | 🔴 Low | Uses existing endpoints without modification. |
+| **Voice System Architecture** | 🔴 Low | Does not change two-layer (AI + TTS) system. |
+
+---
 
 ## Voice System Architecture
 
@@ -156,18 +200,18 @@ POST /api/generate-audio
 
 ## Generating Audio for Activities
 
-### Step 1: Identify Content Needing Audio
+### Step 1: Identifies Content Needing Audio
 
 Activities with these types need audio:
 - `speaking` - `phrases[].text`
 - `syllable` - `syllables[]` and `words[].word`
 - `dictation` - `words[].word`
 
-### Step 2: Generate Audio Clips
+### Step 2: Generates Audio Clips
 
-**Option A: Use Batch API**
+**Option A: Uses Batch API**
 ```bash
-# Generate first 10 audio clips
+# Generates first 10 audio clips
 curl -X POST /api/generate-audio -d '{"startIndex": 0, "count": 10}'
 ```
 
@@ -182,10 +226,10 @@ const response = await fetch('/api/tts', {
   })
 });
 const { audio, mimeType } = await response.json();
-// Upload to storage...
+// Uploads to storage...
 ```
 
-### Step 3: Upload to Supabase Storage
+### Step 3: Uploads to Supabase Storage
 
 ```typescript
 // Upload pattern
@@ -193,10 +237,10 @@ const path = `audio/${activityType}/${activityId}/${index}.mp3`;
 await supabase.storage.from('audio').upload(path, audioBuffer);
 ```
 
-### Step 4: Update Activity Content
+### Step 4: Updates Activity Content
 
 ```sql
--- Update syllable activity with audio URLs
+-- Updates syllable activity with audio URLs
 UPDATE activities
 SET content = jsonb_set(
   content,
@@ -251,7 +295,7 @@ await speak('ba', { contentType: 'syllable' });
 await speakDirect('Selamat pagi');
 ```
 
-## AI Tutor Prompt Templates
+## AI Tutor Prompt Templates (🟢 High Freedom for Content)
 
 ### Malay (ms)
 ```javascript
@@ -287,11 +331,11 @@ const prompts = {
 
 ## Best Practices
 
-1. **Pre-generate Audio**: For production, pre-generate all audio to avoid API latency
-2. **Rate Limiting**: Add 2-second delays between batch API calls
-3. **Fallback Handling**: Always have TTS fallback if AI generation fails
+1. **Pre-generate Audio**: Pre-generates all audio for production to avoid API latency
+2. **Rate Limiting**: Adds 2-second delays between batch API calls
+3. **Fallback Handling**: Always has TTS fallback if AI generation fails
 4. **Cache Audio**: Client-side caching prevents repeated API calls
-5. **Language Consistency**: Match audio language to subject content, not UI locale
+5. **Language Consistency**: Matches audio language to subject content, not UI locale
 
 ## Workflow: Adding Voice to New Activity
 
@@ -309,20 +353,20 @@ graph TD
 ## Troubleshooting
 
 ### No Audio Generated
-- Check API key configuration for Gemini
-- Verify locale is valid (ms, zh, en)
-- Check Supabase storage permissions
+- Checks API key configuration for Gemini
+- Verifies locale is valid (ms, zh, en)
+- Checks Supabase storage permissions
 
 ### Wrong Language Voice
-- Ensure `locale` parameter matches content language
-- Subject content should use subject language, not UI locale
+- Ensures `locale` parameter matches content language
+- Subject content uses subject language, not UI locale
 
 ### Audio Quality Issues
-- Use PCM format for best quality
+- Uses PCM format for best quality
 - 24kHz sample rate recommended
-- Convert to MP3 for storage/delivery
+- Converts to MP3 for storage/delivery
 
 ## Related Skills
 
-- **course-syllabus**: Create activities that need voice content
-- **image-generation**: Generate visual aids to accompany audio
+- **managing-course-syllabi**: Creates activities that need voice content
+- **generating-images**: Generates visual aids to accompany audio

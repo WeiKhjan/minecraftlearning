@@ -1,11 +1,61 @@
 ---
-name: equipment-generation
-description: Generate new Minecraft-style equipment items for the MYLearnt gamification system. Use this skill when asked to create new armor pieces, weapons, or accessories for player characters. Handles equipment tiers (leather to diamond), slots (helmet, chestplate, leggings, boots, weapon), rarity levels, and AI image generation. Equipment serves as rewards for completing learning activities.
+name: generating-equipment
+description: Generates Minecraft-style equipment items for the MYLearnt gamification system. Creates new armor pieces, weapons, and accessories for player characters. Handles equipment tiers (leather to diamond), slots (helmet, chestplate, leggings, boots, weapon), rarity levels, and AI image generation. Equipment serves as rewards for completing learning activities.
 ---
 
-# Equipment Generation Skill
+# Generating Equipment
 
-This skill guides you through creating Minecraft-themed equipment items for the MYLearnt reward system.
+Creates Minecraft-themed equipment items for the MYLearnt reward system.
+
+## Quick Start
+
+### Most Common Task: Add a New Equipment Item
+
+```sql
+-- 1. Insert the equipment record
+INSERT INTO equipment (name, name_ms, name_zh, name_en, slot, tier, rarity, required_level)
+VALUES (
+  'ruby_helmet',
+  'Topi Keledar Delima',
+  '红宝石头盔',
+  'Ruby Helmet',
+  'helmet',
+  'gold',
+  'epic',
+  15
+) RETURNING id;
+
+-- 2. Generate image via API (or manually upload)
+-- POST /api/generate-equipment with the equipment details
+
+-- 3. Update with image URL
+UPDATE equipment SET image_url = 'images/equipment/ruby_helmet.png' WHERE name = 'ruby_helmet';
+```
+
+### Quick Reference: Tier → Rarity → Level
+| Tier | Rarity | Level Range | Color |
+|------|--------|-------------|-------|
+| leather | common | 1-5 | Brown |
+| chain | common | 6-10 | Gray |
+| iron | rare | 11-15 | Silver |
+| gold | epic | 16-20 | Gold |
+| diamond | legendary | 21+ | Cyan |
+
+---
+
+## Degrees of Freedom
+
+| Area | Freedom Level | Guidelines |
+|------|---------------|------------|
+| **New Equipment Concepts** | 🟢 High | Creates themed equipment sets (holidays, subjects, achievements). Can propose creative new items like "Graduation Cap" or "Math Crown". |
+| **Visual Styling** | 🟢 High | Designs unique appearances within Minecraft pixel art style. Can vary colors, add thematic elements. |
+| **Naming Creativity** | 🟢 High | Invents creative names in all 3 languages. Should be kid-friendly and thematic. |
+| **Tier Assignment** | 🟡 Medium | Follows tier progression guidelines. Can adjust based on context. |
+| **Rarity Mapping** | 🟡 Medium | Generally follows tier→rarity mapping. Can elevate for special items. |
+| **Database Schema** | 🔴 Low | Does not modify table structures. Uses existing fields only. |
+| **Slot Types** | 🔴 Low | Limited to: helmet, chestplate, leggings, boots, weapon. |
+
+---
 
 ## Equipment System Overview
 
@@ -71,7 +121,7 @@ diamond_helmet, diamond_chestplate, diamond_leggings, diamond_boots, diamond_swo
 
 ## Creating New Equipment
 
-### Step 1: Define Equipment Properties
+### Step 1: Defines Equipment Properties
 
 ```sql
 INSERT INTO equipment (name, name_ms, name_zh, name_en, slot, tier, rarity, required_level)
@@ -81,15 +131,15 @@ VALUES (
   '翡翠头盔',
   'Emerald Helmet',
   'helmet',
-  'diamond',  -- Using diamond tier for emerald (highest)
+  'diamond',
   'legendary',
   25
 );
 ```
 
-### Step 2: Generate Equipment Image
+### Step 2: Generates Equipment Image
 
-Use the API endpoint to generate Minecraft-style pixel art:
+Uses the API endpoint to generate Minecraft-style pixel art:
 
 **Endpoint**: `POST /api/generate-equipment`
 
@@ -108,14 +158,14 @@ Style Requirements:
 - NO text, NO labels
 ```
 
-### Step 3: Upload Image to Storage
+### Step 3: Uploads Image to Storage
 
 Images are stored in Supabase at:
 ```
 images/equipment/{equipment_id}.png
 ```
 
-### Step 4: Update Equipment Record
+### Step 4: Updates Equipment Record
 
 ```sql
 UPDATE equipment
@@ -125,7 +175,7 @@ WHERE id = '{equipment_id}';
 
 ## Custom Equipment Ideas
 
-### Special Event Equipment
+### Special Event Equipment (🟢 High Freedom)
 ```javascript
 // Halloween Set
 { name: 'pumpkin_helmet', tier: 'gold', rarity: 'epic', slot: 'helmet' }
@@ -138,9 +188,13 @@ WHERE id = '{equipment_id}';
 // Back to School Set
 { name: 'graduation_cap', tier: 'leather', rarity: 'common', slot: 'helmet' }
 { name: 'pencil_sword', tier: 'chain', rarity: 'rare', slot: 'weapon' }
+
+// Hari Raya Set
+{ name: 'songkok_helmet', tier: 'gold', rarity: 'epic', slot: 'helmet' }
+{ name: 'ketupat_chestplate', tier: 'gold', rarity: 'epic', slot: 'chestplate' }
 ```
 
-### Subject-Themed Equipment
+### Subject-Themed Equipment (🟢 High Freedom)
 ```javascript
 // Math Master Set
 { name: 'calculator_helmet', tier: 'iron', slot: 'helmet' }
@@ -149,6 +203,10 @@ WHERE id = '{equipment_id}';
 // Language Arts Set
 { name: 'book_helmet', tier: 'chain', slot: 'helmet' }
 { name: 'quill_sword', tier: 'chain', slot: 'weapon' }
+
+// Science Set
+{ name: 'lab_goggles', tier: 'iron', slot: 'helmet' }
+{ name: 'beaker_weapon', tier: 'iron', slot: 'weapon' }
 ```
 
 ## Image Generation Prompt Templates
@@ -195,15 +253,15 @@ Style: Minecraft-style sword with handle and {tier_specific} blade
 
 ## Linking Equipment to Activities
 
-Set `equipment_reward_id` when creating activities:
+Sets `equipment_reward_id` when creating activities:
 
 ```sql
--- First, create the equipment
+-- First, creates the equipment
 INSERT INTO equipment (name, name_ms, name_zh, name_en, slot, tier, rarity, required_level)
 VALUES ('bronze_medal', 'Pingat Gangsa', '铜牌', 'Bronze Medal', 'chestplate', 'leather', 'common', 1)
 RETURNING id;
 
--- Then link to activity
+-- Then links to activity
 UPDATE activities
 SET equipment_reward_id = '{returned_id}'
 WHERE id = '{activity_id}';
@@ -211,11 +269,11 @@ WHERE id = '{activity_id}';
 
 ## Best Practices
 
-1. **Balanced Progression**: Don't give diamond gear for easy activities
-2. **Thematic Consistency**: Match equipment to subject/theme when possible
-3. **Visual Variety**: Vary colors and styles within same tier
-4. **Localized Names**: Always provide ms, zh, en translations
-5. **Level Requirements**: Higher tiers should require higher kid levels
+1. **Balanced Progression**: Does not give diamond gear for easy activities
+2. **Thematic Consistency**: Matches equipment to subject/theme when possible
+3. **Visual Variety**: Varies colors and styles within same tier
+4. **Localized Names**: Always provides ms, zh, en translations
+5. **Level Requirements**: Higher tiers require higher kid levels
 
 ## API Reference
 
@@ -255,5 +313,5 @@ supabase-storage/
 
 ## Related Skills
 
-- **course-syllabus**: Link equipment as activity rewards
-- **image-generation**: Similar AI image generation patterns
+- **managing-course-syllabi**: Links equipment as activity rewards
+- **generating-images**: Uses similar AI image generation patterns
