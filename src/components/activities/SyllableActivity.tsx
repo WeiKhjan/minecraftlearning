@@ -2,6 +2,7 @@
 
 import { useState, useCallback, useEffect } from 'react';
 import VoiceTutorButton from '@/components/voice/VoiceTutorButton';
+import LoadingOverlay from '@/components/ui/LoadingOverlay';
 import { useSpeechRecognition } from '@/hooks/useSpeechRecognition';
 import { useVoiceTutor } from '@/hooks/useVoiceTutor';
 import type { ActivityContent, Locale, SyllableContent } from '@/types';
@@ -204,8 +205,22 @@ export default function SyllableActivity({ content, locale, onComplete }: Syllab
   // Get localized text
   const getText = (texts: { ms: string; zh: string; en: string }) => texts[locale];
 
+  // Localized analyzing message
+  const analyzingMessage = {
+    ms: 'Menganalisis sebutan anda...',
+    zh: '正在分析您的发音...',
+    en: 'Analyzing your pronunciation...',
+  };
+
   return (
     <div className="space-y-6">
+      {/* Loading Overlay during analysis */}
+      <LoadingOverlay
+        isLoading={activityState === 'analyzing'}
+        locale={locale}
+        message={analyzingMessage[locale]}
+      />
+
       {/* Instruction */}
       <p className="text-center text-gray-600">
         {locale === 'ms' ? 'Tekan butang mikrofon dan baca suku kata dengan kuat' :
