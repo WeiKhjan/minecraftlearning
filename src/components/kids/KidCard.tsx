@@ -65,6 +65,7 @@ export default function KidCard({ kid, locale }: KidCardProps) {
       {/* Kid Card Link */}
       <Link
         href={`/dashboard?kid=${kid.id}`}
+        prefetch={true}
         className="minecraft-card hover:scale-105 transition-transform cursor-pointer text-center block"
       >
         {/* Avatar */}

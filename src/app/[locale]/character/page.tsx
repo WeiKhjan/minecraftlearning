@@ -18,16 +18,16 @@ export default async function CharacterPage({
   const t = await getTranslations();
   const supabase = await createClient();
 
-  // Check authentication
+  // Redirect if no kid selected (check early)
+  if (!kidId) {
+    redirect(`/${locale}/kids`);
+  }
+
+  // Check authentication - middleware validates session, but we need user.id
   const { data: { user }, error: authError } = await supabase.auth.getUser();
 
   if (authError || !user) {
     redirect(`/${locale}/login`);
-  }
-
-  // Redirect if no kid selected
-  if (!kidId) {
-    redirect(`/${locale}/kids`);
   }
 
   // Verify kid ownership and get kid data
@@ -42,30 +42,31 @@ export default async function CharacterPage({
     redirect(`/${locale}/kids`);
   }
 
-  // Fetch kid's equipped items (including pet)
-  const { data: equipped } = await supabase
-    .from('kid_equipped')
-    .select('*, helmet:helmet_id(*), chestplate:chestplate_id(*), leggings:leggings_id(*), boots:boots_id(*), weapon:weapon_id(*), pet:pet_id(*)')
-    .eq('kid_id', kidId)
-    .single();
-
-  // Fetch kid's inventory with equipment details
-  const { data: inventory } = await supabase
-    .from('kid_inventory')
-    .select('*, equipment:equipment_id(*)')
-    .eq('kid_id', kidId);
-
-  // Fetch kid's owned pets
-  const { data: ownedPets } = await supabase
-    .from('kid_pets')
-    .select('*, pet:pet_id(*)')
-    .eq('kid_id', kidId);
-
-  // Fetch all equipment for reference
-  const { data: allEquipment } = await supabase
-    .from('equipment')
-    .select('*')
-    .order('required_level', { ascending: true });
+  // Parallel fetch: equipped items, inventory, pets, and all equipment
+  const [
+    { data: equipped },
+    { data: inventory },
+    { data: ownedPets },
+    { data: allEquipment }
+  ] = await Promise.all([
+    supabase
+      .from('kid_equipped')
+      .select('*, helmet:helmet_id(*), chestplate:chestplate_id(*), leggings:leggings_id(*), boots:boots_id(*), weapon:weapon_id(*), pet:pet_id(*)')
+      .eq('kid_id', kidId)
+      .single(),
+    supabase
+      .from('kid_inventory')
+      .select('*, equipment:equipment_id(*)')
+      .eq('kid_id', kidId),
+    supabase
+      .from('kid_pets')
+      .select('*, pet:pet_id(*)')
+      .eq('kid_id', kidId),
+    supabase
+      .from('equipment')
+      .select('*')
+      .order('required_level', { ascending: true })
+  ]);
 
   return (
     <main className="min-h-screen bg-gradient-to-b from-[#87CEEB] to-[#5DADE2] flex flex-col">

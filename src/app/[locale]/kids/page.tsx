@@ -90,6 +90,7 @@ export default async function KidsPage({
             {/* Add New Kid Card */}
             <Link
               href={`/${locale}/kids/new`}
+              prefetch={true}
               className="minecraft-card hover:scale-105 transition-transform cursor-pointer text-center border-2 border-dashed border-gray-300 bg-white/50"
             >
               <div className="w-20 h-20 mx-auto mb-3 bg-gray-200 rounded-lg flex items-center justify-center">

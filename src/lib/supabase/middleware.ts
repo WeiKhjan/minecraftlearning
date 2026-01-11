@@ -29,13 +29,11 @@ export async function updateSession(request: NextRequest) {
     }
   );
 
-  // IMPORTANT: Avoid writing any logic between createServerClient and
-  // supabase.auth.getUser(). A simple mistake could make it very hard to debug
-  // issues with users being randomly logged out.
-
+  // Use getSession() for faster auth checks in middleware (reads from cookies without network call)
+  // Page components will still validate with getUser() when needed for data fetching
   const {
-    data: { user },
-  } = await supabase.auth.getUser();
+    data: { session },
+  } = await supabase.auth.getSession();
 
   // Define public routes that don't require authentication
   const publicRoutes = ['/', '/login', '/auth/callback'];
@@ -48,7 +46,7 @@ export async function updateSession(request: NextRequest) {
     (route) => pathWithoutLocale === route || pathWithoutLocale.startsWith('/auth/')
   );
 
-  if (!user && !isPublicRoute) {
+  if (!session && !isPublicRoute) {
     // Redirect to login if not authenticated and trying to access protected route
     const locale = pathname.match(/^\/(ms|zh|en)/)?.[1] || 'ms';
     const url = request.nextUrl.clone();

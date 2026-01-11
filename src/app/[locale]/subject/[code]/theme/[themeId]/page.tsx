@@ -65,58 +65,59 @@ export default async function ThemePage({
   const t = await getTranslations();
   const supabase = await createClient();
 
-  // Check authentication
+  // Redirect if no kid selected (check early)
+  if (!kidId) {
+    redirect(`/${locale}/kids`);
+  }
+
+  // Check authentication - middleware validates session, but we need user.id
   const { data: { user }, error: authError } = await supabase.auth.getUser();
 
   if (authError || !user) {
     redirect(`/${locale}/login`);
   }
 
-  // Redirect if no kid selected
-  if (!kidId) {
-    redirect(`/${locale}/kids`);
-  }
-
-  // Verify kid ownership
-  const { data: kid } = await supabase
-    .from('kids')
-    .select('*')
-    .eq('id', kidId)
-    .eq('parent_id', user.id)
-    .single();
+  // Parallel fetch: kid, subject, theme, and activities (all independent)
+  const [
+    { data: kid },
+    { data: subject },
+    { data: theme },
+    { data: activities }
+  ] = await Promise.all([
+    supabase
+      .from('kids')
+      .select('*')
+      .eq('id', kidId)
+      .eq('parent_id', user.id)
+      .single(),
+    supabase
+      .from('subjects')
+      .select('*')
+      .eq('code', code)
+      .single(),
+    supabase
+      .from('themes')
+      .select('*')
+      .eq('id', themeId)
+      .single(),
+    supabase
+      .from('activities')
+      .select('*, equipment:equipment_reward_id(*)')
+      .eq('theme_id', themeId)
+      .order('order_index', { ascending: true })
+  ]);
 
   if (!kid) {
     redirect(`/${locale}/kids`);
   }
 
-  // Fetch the subject
-  const { data: subject } = await supabase
-    .from('subjects')
-    .select('*')
-    .eq('code', code)
-    .single();
-
   if (!subject) {
     notFound();
   }
 
-  // Fetch the theme
-  const { data: theme } = await supabase
-    .from('themes')
-    .select('*')
-    .eq('id', themeId)
-    .single();
-
   if (!theme) {
     notFound();
   }
-
-  // Fetch activities for this theme with equipment rewards
-  const { data: activities } = await supabase
-    .from('activities')
-    .select('*, equipment:equipment_reward_id(*)')
-    .eq('theme_id', themeId)
-    .order('order_index', { ascending: true });
 
   // Fetch kid's progress for these activities
   const { data: progressData } = await supabase
@@ -234,6 +235,7 @@ export default async function ThemePage({
                   <Link
                     key={activity.id}
                     href={isLocked ? '#' : `/${locale}/activity/${activity.id}?kid=${kidId}`}
+                    prefetch={!isLocked}
                     className={`minecraft-card block transition-all ${
                       isLocked
                         ? 'opacity-60 cursor-not-allowed'

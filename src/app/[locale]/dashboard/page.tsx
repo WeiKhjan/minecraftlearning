@@ -61,16 +61,16 @@ export default async function DashboardPage({
   const t = await getTranslations();
   const supabase = await createClient();
 
-  // Check authentication
+  // Redirect if no kid selected (check early to avoid unnecessary auth call)
+  if (!kidId) {
+    redirect(`/${locale}/kids`);
+  }
+
+  // Check authentication - middleware already validates session, but we need user.id
   const { data: { user }, error: authError } = await supabase.auth.getUser();
 
   if (authError || !user) {
     redirect(`/${locale}/login`);
-  }
-
-  // Redirect if no kid selected
-  if (!kidId) {
-    redirect(`/${locale}/kids`);
   }
 
   // Fetch the selected kid (verify ownership)
@@ -85,18 +85,51 @@ export default async function DashboardPage({
     redirect(`/${locale}/kids`);
   }
 
-  // Fetch kid's equipped items
-  const { data: equippedRaw } = await supabase
-    .from('kid_equipped')
-    .select(`
-      helmet:helmet_id(id, tier, slot),
-      chestplate:chestplate_id(id, tier, slot),
-      leggings:leggings_id(id, tier, slot),
-      boots:boots_id(id, tier, slot),
-      weapon:weapon_id(id, tier, slot)
-    `)
-    .eq('kid_id', kidId)
-    .single();
+  // Parallel data fetching - these queries don't depend on each other
+  const [
+    { data: equippedRaw },
+    { data: subjects },
+    { data: kidProgress }
+  ] = await Promise.all([
+    // Fetch kid's equipped items
+    supabase
+      .from('kid_equipped')
+      .select(`
+        helmet:helmet_id(id, tier, slot),
+        chestplate:chestplate_id(id, tier, slot),
+        leggings:leggings_id(id, tier, slot),
+        boots:boots_id(id, tier, slot),
+        weapon:weapon_id(id, tier, slot)
+      `)
+      .eq('kid_id', kidId)
+      .single(),
+    // Fetch subjects with their themes and activity counts
+    supabase
+      .from('subjects')
+      .select(`
+        *,
+        themes (
+          id,
+          activities (id)
+        )
+      `)
+      .order('order_index', { ascending: true }),
+    // Fetch kid's completed activities with their theme and subject info
+    supabase
+      .from('kid_progress')
+      .select(`
+        activity_id,
+        status,
+        activities (
+          theme_id,
+          themes (
+            subject_id
+          )
+        )
+      `)
+      .eq('kid_id', kidId)
+      .eq('status', 'completed')
+  ]);
 
   // Helper to extract equipment from Supabase response (handles both object and array formats)
   const getEquipment = (item: unknown): { id: string; tier: EquipmentTier; slot: string } | null => {
@@ -119,42 +152,15 @@ export default async function DashboardPage({
   const calculateLevel = (xp: number) => Math.max(1, Math.floor((1 + Math.sqrt(1 + 8 * xp / 100)) / 2));
   const correctLevel = calculateLevel(kid.total_xp);
 
-  // Auto-fix level if it's incorrect
+  // Auto-fix level if it's incorrect (fire-and-forget, don't await)
   if (kid.level !== correctLevel) {
-    await supabase
+    supabase
       .from('kids')
       .update({ level: correctLevel })
-      .eq('id', kid.id);
-    kid.level = correctLevel; // Update local object too
+      .eq('id', kid.id)
+      .then(() => {});
+    kid.level = correctLevel; // Update local object
   }
-
-  // Fetch subjects with their themes and activity counts
-  const { data: subjects } = await supabase
-    .from('subjects')
-    .select(`
-      *,
-      themes (
-        id,
-        activities (id)
-      )
-    `)
-    .order('order_index', { ascending: true });
-
-  // Fetch kid's completed activities with their theme and subject info
-  const { data: kidProgress } = await supabase
-    .from('kid_progress')
-    .select(`
-      activity_id,
-      status,
-      activities (
-        theme_id,
-        themes (
-          subject_id
-        )
-      )
-    `)
-    .eq('kid_id', kidId)
-    .eq('status', 'completed');
 
   // Calculate total activities per subject
   const activityCountsPerSubject = new Map<string, { total: number; completed: number }>();
@@ -201,7 +207,7 @@ export default async function DashboardPage({
           {/* Avatar + Character Link */}
           <div className="flex items-center gap-2">
             {kid.generated_avatar_url && (
-              <Link href={`/${locale}/character?kid=${kidId}`}>
+              <Link href={`/${locale}/character?kid=${kidId}`} prefetch={true}>
                 <div className="w-10 h-10 rounded-full overflow-hidden border-2 border-white/50 hover:border-white transition-all">
                   <img
                     src={kid.generated_avatar_url}
@@ -213,6 +219,7 @@ export default async function DashboardPage({
             )}
             <Link
               href={`/${locale}/character?kid=${kidId}`}
+              prefetch={true}
               className="flex items-center gap-1 bg-white/20 hover:bg-white/30 px-3 py-1.5 rounded-full text-white text-sm transition-all"
               title={locale === 'ms' ? 'Watak Saya' : locale === 'zh' ? '我的角色' : 'My Character'}
             >
@@ -306,6 +313,7 @@ export default async function DashboardPage({
                 <Link
                   key={subject.id}
                   href={`/${locale}/subject/${subject.code}?kid=${kidId}`}
+                  prefetch={true}
                   className="minecraft-card hover:scale-105 transition-transform cursor-pointer"
                 >
                   {/* Icon */}
@@ -442,6 +450,7 @@ export default async function DashboardPage({
                 {/* View character button */}
                 <Link
                   href={`/${locale}/character?kid=${kidId}`}
+                  prefetch={true}
                   className="minecraft-button"
                 >
                   {t('dashboard.viewAll')}

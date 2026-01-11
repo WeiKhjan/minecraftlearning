@@ -45,36 +45,36 @@ export default async function SubjectPage({
   const t = await getTranslations();
   const supabase = await createClient();
 
-  // Check authentication
+  // Redirect if no kid selected (check early)
+  if (!kidId) {
+    redirect(`/${locale}/kids`);
+  }
+
+  // Check authentication - middleware validates session, but we need user.id
   const { data: { user }, error: authError } = await supabase.auth.getUser();
 
   if (authError || !user) {
     redirect(`/${locale}/login`);
   }
 
-  // Redirect if no kid selected
-  if (!kidId) {
-    redirect(`/${locale}/kids`);
-  }
-
-  // Verify kid ownership
-  const { data: kid } = await supabase
-    .from('kids')
-    .select('*')
-    .eq('id', kidId)
-    .eq('parent_id', user.id)
-    .single();
+  // Parallel fetch: kid verification and subject (independent queries)
+  const [{ data: kid }, { data: subject }] = await Promise.all([
+    supabase
+      .from('kids')
+      .select('*')
+      .eq('id', kidId)
+      .eq('parent_id', user.id)
+      .single(),
+    supabase
+      .from('subjects')
+      .select('*')
+      .eq('code', code)
+      .single()
+  ]);
 
   if (!kid) {
     redirect(`/${locale}/kids`);
   }
-
-  // Fetch the subject
-  const { data: subject } = await supabase
-    .from('subjects')
-    .select('*')
-    .eq('code', code)
-    .single();
 
   if (!subject) {
     notFound();
@@ -87,29 +87,19 @@ export default async function SubjectPage({
     .eq('subject_id', subject.id)
     .order('order_index', { ascending: true });
 
-  // Fetch activities count per theme
-  const { data: activities } = await supabase
-    .from('activities')
-    .select('theme_id')
-    .in('theme_id', themes?.map(t => t.id) || []);
+  const themeIds = themes?.map(t => t.id) || [];
 
-  // Count activities per theme
-  const activityCounts = new Map<string, number>();
-  activities?.forEach(a => {
-    activityCounts.set(a.theme_id, (activityCounts.get(a.theme_id) || 0) + 1);
-  });
-
-  // Fetch kid's progress for activities in these themes
-  const { data: progress } = await supabase
-    .from('kid_progress')
-    .select('activity_id, status')
-    .eq('kid_id', kidId);
-
-  // Get activity IDs per theme for progress calculation
-  const { data: allActivities } = await supabase
-    .from('activities')
-    .select('id, theme_id')
-    .in('theme_id', themes?.map(t => t.id) || []);
+  // Parallel fetch: activities and progress (both depend on themeIds)
+  const [{ data: allActivities }, { data: progress }] = await Promise.all([
+    supabase
+      .from('activities')
+      .select('id, theme_id')
+      .in('theme_id', themeIds),
+    supabase
+      .from('kid_progress')
+      .select('activity_id, status')
+      .eq('kid_id', kidId)
+  ]);
 
   // Calculate completed activities per theme
   const themeProgress = new Map<string, { completed: number; total: number }>();
@@ -201,6 +191,7 @@ export default async function SubjectPage({
                   <Link
                     key={theme.id}
                     href={isLocked ? '#' : `/${locale}/subject/${code}/theme/${theme.id}?kid=${kidId}`}
+                    prefetch={!isLocked}
                     className={`minecraft-card block transition-all ${
                       isLocked
                         ? 'opacity-60 cursor-not-allowed'
