@@ -239,14 +239,33 @@ export default function CharacterClient({
     setIsUpdating(true);
     const supabase = createClient();
 
-    const updateData: Record<string, string | null> = {
-      kid_id: kid.id,
-      [`${equipment.slot}_id`]: equipment.id,
-    };
+    try {
+      // First, check if kid_equipped row exists
+      const { data: existingRow } = await supabase
+        .from('kid_equipped')
+        .select('kid_id')
+        .eq('kid_id', kid.id)
+        .maybeSingle();
 
-    await supabase
-      .from('kid_equipped')
-      .upsert(updateData, { onConflict: 'kid_id' });
+      if (existingRow) {
+        // Update existing row
+        const { error } = await supabase
+          .from('kid_equipped')
+          .update({ [`${equipment.slot}_id`]: equipment.id })
+          .eq('kid_id', kid.id);
+
+        if (error) console.error('[CharacterClient] Equip update error:', error);
+      } else {
+        // Insert new row
+        const { error } = await supabase
+          .from('kid_equipped')
+          .insert({ kid_id: kid.id, [`${equipment.slot}_id`]: equipment.id });
+
+        if (error) console.error('[CharacterClient] Equip insert error:', error);
+      }
+    } catch (err) {
+      console.error('[CharacterClient] Equip error:', err);
+    }
 
     router.refresh();
     setIsUpdating(false);
@@ -257,10 +276,16 @@ export default function CharacterClient({
     setIsUpdating(true);
     const supabase = createClient();
 
-    await supabase
-      .from('kid_equipped')
-      .update({ [`${slot}_id`]: null })
-      .eq('kid_id', kid.id);
+    try {
+      const { error } = await supabase
+        .from('kid_equipped')
+        .update({ [`${slot}_id`]: null })
+        .eq('kid_id', kid.id);
+
+      if (error) console.error('[CharacterClient] Unequip error:', error);
+    } catch (err) {
+      console.error('[CharacterClient] Unequip error:', err);
+    }
 
     router.refresh();
     setIsUpdating(false);
@@ -270,9 +295,33 @@ export default function CharacterClient({
     setIsUpdating(true);
     const supabase = createClient();
 
-    await supabase
-      .from('kid_equipped')
-      .upsert({ kid_id: kid.id, pet_id: petId }, { onConflict: 'kid_id' });
+    try {
+      // First, check if kid_equipped row exists
+      const { data: existingRow } = await supabase
+        .from('kid_equipped')
+        .select('kid_id')
+        .eq('kid_id', kid.id)
+        .maybeSingle();
+
+      if (existingRow) {
+        // Update existing row
+        const { error } = await supabase
+          .from('kid_equipped')
+          .update({ pet_id: petId })
+          .eq('kid_id', kid.id);
+
+        if (error) console.error('[CharacterClient] Equip pet update error:', error);
+      } else {
+        // Insert new row
+        const { error } = await supabase
+          .from('kid_equipped')
+          .insert({ kid_id: kid.id, pet_id: petId });
+
+        if (error) console.error('[CharacterClient] Equip pet insert error:', error);
+      }
+    } catch (err) {
+      console.error('[CharacterClient] Equip pet error:', err);
+    }
 
     router.refresh();
     setIsUpdating(false);
@@ -283,10 +332,16 @@ export default function CharacterClient({
     setIsUpdating(true);
     const supabase = createClient();
 
-    await supabase
-      .from('kid_equipped')
-      .update({ pet_id: null })
-      .eq('kid_id', kid.id);
+    try {
+      const { error } = await supabase
+        .from('kid_equipped')
+        .update({ pet_id: null })
+        .eq('kid_id', kid.id);
+
+      if (error) console.error('[CharacterClient] Unequip pet error:', error);
+    } catch (err) {
+      console.error('[CharacterClient] Unequip pet error:', err);
+    }
 
     router.refresh();
     setIsUpdating(false);
