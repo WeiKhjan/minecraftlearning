@@ -124,8 +124,16 @@ export default async function DashboardPage({
           <div className="minecraft-card mb-6">
             <div className="flex items-center gap-4">
               {/* Avatar */}
-              <div className="w-16 h-16 bg-[#5D8731] rounded-lg flex items-center justify-center">
-                <span className="text-3xl">{kid.avatar_seed || '🧒'}</span>
+              <div className="w-16 h-16 bg-[#5D8731] rounded-lg flex items-center justify-center overflow-hidden">
+                {kid.generated_avatar_url ? (
+                  <img
+                    src={kid.generated_avatar_url}
+                    alt={kid.name}
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  <span className="text-3xl">{kid.avatar_seed || '🧒'}</span>
+                )}
               </div>
 
               {/* Info */}
@@ -225,8 +233,16 @@ export default async function DashboardPage({
               <div className="flex items-center justify-center gap-8">
                 {/* Character placeholder */}
                 <div className="text-center">
-                  <div className="w-32 h-32 bg-[#5D8731] rounded-lg flex items-center justify-center mb-2">
-                    <span className="text-6xl">{kid.avatar_seed || '🧒'}</span>
+                  <div className="w-32 h-32 bg-[#5D8731] rounded-lg flex items-center justify-center mb-2 overflow-hidden">
+                    {kid.generated_avatar_url ? (
+                      <img
+                        src={kid.generated_avatar_url}
+                        alt={kid.name}
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
+                      <span className="text-6xl">{kid.avatar_seed || '🧒'}</span>
+                    )}
                   </div>
                   <p className="text-gray-600 text-sm">{kid.name}</p>
                 </div>
