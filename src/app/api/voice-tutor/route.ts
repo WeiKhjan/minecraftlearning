@@ -194,14 +194,14 @@ function generateTutorPrompt(
 ): string {
   const prompts = {
     letter: {
-      ms: `Huruf "${content}". Terus terangkan: sebut nama huruf, bunyinya, dan satu contoh perkataan. Contoh format: "Huruf A, bunyi 'ah', seperti 'ayam'."`,
-      zh: `字母"${content}"。直接解释：说出字母名称、发音和一个例词。格式示例："字母A，发音'啊'，比如'苹果'。"`,
-      en: `Letter "${content}". Directly explain: say the letter name, its sound, and one example word. Example format: "Letter A, sounds like 'ah', like in 'apple'."`,
+      ms: `Huruf "${content}". Terus terangkan: sebut nama huruf, bunyinya, dan satu contoh perkataan. Contoh format: "Huruf A, bunyi 'ah', seperti 'ayam'." PENTING: Jawapan mesti ringkas, kurang dari 10 saat masa membaca.`,
+      zh: `字母"${content}"。直接解释：说出字母名称、发音和一个例词。格式示例："字母A，发音'啊'，比如'苹果'。" 重要：回答必须简短，朗读时间少于10秒。`,
+      en: `Letter "${content}". Directly explain: say the letter name, its sound, and one example word. Example format: "Letter A, sounds like 'ah', like in 'apple'." IMPORTANT: Keep response brief, under 10 seconds speaking time.`,
     },
     word: {
-      ms: `Perkataan "${content}". Terus terangkan: sebut perkataan dan maksudnya dalam 1-2 ayat.`,
-      zh: `单词"${content}"。直接解释：读出单词并用1-2句话说明意思。`,
-      en: `Word "${content}". Directly explain: say the word and its meaning in 1-2 sentences.`,
+      ms: `Perkataan "${content}". Terus terangkan: sebut perkataan dan maksudnya dalam 1-2 ayat. PENTING: Jawapan mesti ringkas, kurang dari 10 saat masa membaca.`,
+      zh: `单词"${content}"。直接解释：读出单词并用1-2句话说明意思。 重要：回答必须简短，朗读时间少于10秒。`,
+      en: `Word "${content}". Directly explain: say the word and its meaning in 1-2 sentences. IMPORTANT: Keep response brief, under 10 seconds speaking time.`,
     },
     syllable: {
       ms: `Suku kata "${content}". ${content.length === 1 ? `Ini huruf vokal. Terangkan bunyi vokal ini dengan jelas.` : `Ini gabungan konsonan dan vokal. Pecahkan bunyi konsonan "${content[0]}" dan vokal "${content.slice(1)}" kemudian gabungkan.`} Akhiri dengan: "Cuba sebut bersama saya: ${content}... ${content}... ${content}." PENTING: Jawapan mesti ringkas, kurang dari 10 saat masa membaca.`,
