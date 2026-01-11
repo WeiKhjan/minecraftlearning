@@ -26,8 +26,20 @@ export default function DrawingCanvas({
   const [hasDrawn, setHasDrawn] = useState(false);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const lastPointRef = useRef<Point | null>(null);
+  const prevLetterRef = useRef<string>(expectedLetter);
 
-  // Initialize canvas
+  // Draw faint guide letter
+  const drawGuideLetter = useCallback((ctx: CanvasRenderingContext2D, letter: string, width: number, height: number) => {
+    ctx.save();
+    ctx.font = `bold ${Math.min(width, height) * 0.6}px Arial`;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillStyle = 'rgba(200, 200, 200, 0.3)';
+    ctx.fillText(letter.toUpperCase(), width / 2, height / 2);
+    ctx.restore();
+  }, []);
+
+  // Initialize canvas and redraw when expectedLetter changes
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -48,20 +60,16 @@ export default function DrawingCanvas({
     ctx.lineCap = 'round';
     ctx.lineJoin = 'round';
 
-    // Draw guide letter
+    // Clear canvas and draw new guide letter
+    ctx.clearRect(0, 0, rect.width, rect.height);
     drawGuideLetter(ctx, expectedLetter, rect.width, rect.height);
-  }, [expectedLetter]);
 
-  // Draw faint guide letter
-  const drawGuideLetter = (ctx: CanvasRenderingContext2D, letter: string, width: number, height: number) => {
-    ctx.save();
-    ctx.font = `bold ${Math.min(width, height) * 0.6}px Arial`;
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
-    ctx.fillStyle = 'rgba(200, 200, 200, 0.3)';
-    ctx.fillText(letter.toUpperCase(), width / 2, height / 2);
-    ctx.restore();
-  };
+    // Reset hasDrawn when letter changes
+    if (prevLetterRef.current !== expectedLetter) {
+      setHasDrawn(false);
+      prevLetterRef.current = expectedLetter;
+    }
+  }, [expectedLetter, drawGuideLetter]);
 
   // Get point from event
   const getPoint = useCallback((e: React.TouchEvent | React.MouseEvent): Point | null => {
@@ -143,10 +151,17 @@ export default function DrawingCanvas({
     if (!canvas || !ctx) return;
 
     const rect = canvas.getBoundingClientRect();
-    ctx.clearRect(0, 0, rect.width, rect.height);
+    const dpr = window.devicePixelRatio || 1;
+
+    // Reset canvas dimensions to clear properly
+    canvas.width = rect.width * dpr;
+    canvas.height = rect.height * dpr;
+    ctx.scale(dpr, dpr);
+
+    // Redraw guide letter with current expectedLetter
     drawGuideLetter(ctx, expectedLetter, rect.width, rect.height);
     setHasDrawn(false);
-  }, [expectedLetter]);
+  }, [expectedLetter, drawGuideLetter]);
 
   // Submit drawing for recognition
   const handleSubmit = useCallback(async () => {
@@ -177,10 +192,8 @@ export default function DrawingCanvas({
       const result = await response.json();
       onRecognized(result.isCorrect, result.recognizedLetter || '?');
 
-      if (result.isCorrect) {
-        // Clear after successful recognition
-        setTimeout(handleClear, 500);
-      }
+      // Note: Don't call handleClear here - the useEffect will handle
+      // clearing and redrawing when expectedLetter changes from parent
     } catch (error) {
       console.error('Handwriting recognition error:', error);
       // Fallback: simple check
@@ -188,7 +201,7 @@ export default function DrawingCanvas({
     } finally {
       setIsAnalyzing(false);
     }
-  }, [hasDrawn, expectedLetter, locale, onRecognized, handleClear]);
+  }, [hasDrawn, expectedLetter, locale, onRecognized]);
 
   return (
     <div className="space-y-4">

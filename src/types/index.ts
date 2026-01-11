@@ -35,6 +35,7 @@ export interface Kid {
   grade: Grade;
   preferred_language: Locale;
   avatar_seed: string | null;
+  generated_avatar_url: string | null;
   level: number;
   total_xp: number;
   created_at: string;

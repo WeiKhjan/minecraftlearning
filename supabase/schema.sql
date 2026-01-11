@@ -27,10 +27,19 @@ CREATE TABLE IF NOT EXISTS kids (
   grade TEXT NOT NULL CHECK (grade IN ('primary_1', 'primary_2', 'primary_3', 'primary_4', 'primary_5', 'primary_6')),
   preferred_language TEXT DEFAULT 'ms' CHECK (preferred_language IN ('ms', 'zh', 'en')),
   avatar_seed TEXT,
+  generated_avatar_url TEXT,
   level INTEGER DEFAULT 1,
   total_xp INTEGER DEFAULT 0,
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
+
+-- Add column if table already exists (for migrations)
+DO $$
+BEGIN
+  IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'kids' AND column_name = 'generated_avatar_url') THEN
+    ALTER TABLE kids ADD COLUMN generated_avatar_url TEXT;
+  END IF;
+END $$;
 
 -- =====================
 -- SUBJECTS
@@ -371,3 +380,19 @@ CREATE INDEX IF NOT EXISTS idx_kid_progress_kid_id ON kid_progress(kid_id);
 CREATE INDEX IF NOT EXISTS idx_kid_progress_activity_id ON kid_progress(activity_id);
 CREATE INDEX IF NOT EXISTS idx_kid_subject_progress_kid_id ON kid_subject_progress(kid_id);
 CREATE INDEX IF NOT EXISTS idx_voice_sessions_kid_id ON voice_sessions(kid_id);
+
+-- =====================
+-- STORAGE BUCKETS
+-- =====================
+-- Note: Run this in Supabase Dashboard > Storage > Create Bucket
+-- Bucket name: avatars
+-- Public: true (for displaying avatars)
+--
+-- Or use the SQL below (requires admin access):
+-- INSERT INTO storage.buckets (id, name, public) VALUES ('avatars', 'avatars', true);
+--
+-- RLS Policy for avatars bucket (run in SQL Editor):
+-- CREATE POLICY "Allow authenticated uploads" ON storage.objects
+--   FOR INSERT WITH CHECK (bucket_id = 'avatars' AND auth.role() = 'authenticated');
+-- CREATE POLICY "Allow public reads" ON storage.objects
+--   FOR SELECT USING (bucket_id = 'avatars');
