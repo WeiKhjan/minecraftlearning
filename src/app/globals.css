@@ -167,7 +167,6 @@
   /* Apply Minecraft font to all headings */
   h1, h2, h3, h4, h5, h6 {
     font-family: 'Minecraft', monospace;
-    text-shadow: 2px 2px 0px rgba(0, 0, 0, 0.3);
   }
   /* Buttons get the Minecraft font */
   button {
@@ -183,7 +182,6 @@
 @layer utilities {
   .minecraft-font {
     font-family: 'Minecraft', monospace;
-    text-shadow: 2px 2px 0px #3F3F3F;
   }
 
   /* Authentic Minecraft stone button style */
@@ -197,7 +195,6 @@
     border-bottom-color: #555555;
     border-right-color: #555555;
     color: #FFFFFF;
-    text-shadow: 2px 2px 0px #3F3F3F;
     image-rendering: pixelated;
     box-shadow: inset -2px -4px 0px 0px #555555, inset 2px 2px 0px 0px #C6C6C6;
   }
@@ -230,7 +227,6 @@
     border-bottom-color: #3B5323;
     border-right-color: #3B5323;
     color: #FFFFFF;
-    text-shadow: 2px 2px 0px #3F3F3F;
     image-rendering: pixelated;
     box-shadow: inset -2px -4px 0px 0px #3B5323, inset 2px 2px 0px 0px #80C71F;
   }
@@ -312,7 +308,6 @@
   .minecraft-title {
     font-family: 'Minecraft', monospace;
     color: #FFFF55;
-    text-shadow: 3px 3px 0px #3F3F3F;
     letter-spacing: 2px;
   }
 
@@ -320,7 +315,6 @@
   .minecraft-subtitle {
     font-family: 'Minecraft', monospace;
     color: #AAAAAA;
-    text-shadow: 1px 1px 0px #3F3F3F;
   }
 
   .pixelated {
