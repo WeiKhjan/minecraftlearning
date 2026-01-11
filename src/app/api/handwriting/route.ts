@@ -182,9 +182,19 @@ If blank or unreadable, use recognizedLetter: "?" and isCorrect: false.`;
       try {
         parsed = JSON.parse(textContent);
       } catch {
-        // Fallback: extract JSON from response
-        const jsonMatch = textContent.match(/\{[\s\S]*\}/);
+        // Fallback: extract JSON from response (handle markdown code blocks too)
+        let jsonText = textContent;
+
+        // Remove markdown code block if present
+        const codeBlockMatch = textContent.match(/```(?:json)?\s*([\s\S]*?)```/);
+        if (codeBlockMatch) {
+          jsonText = codeBlockMatch[1];
+        }
+
+        // Extract JSON object
+        const jsonMatch = jsonText.match(/\{[\s\S]*\}/);
         if (!jsonMatch) {
+          console.error('[Handwriting] No JSON found in:', textContent);
           throw new Error('No JSON found');
         }
         parsed = JSON.parse(jsonMatch[0]);
