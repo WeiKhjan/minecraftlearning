@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-// Voice names for different languages
+// Voice names for Gemini 2.5 TTS
 const VOICE_CONFIG = {
   ms: 'Aoede', // Good for Malay
   zh: 'Puck',  // Good for Mandarin
@@ -17,7 +17,6 @@ export async function POST(request: NextRequest) {
 
     const apiKey = process.env.GEMINI_API_KEY;
     if (!apiKey) {
-      // Return a specific error that the client can handle gracefully
       return NextResponse.json(
         { error: 'TTS not configured', code: 'NO_API_KEY' },
         { status: 503 }
@@ -26,9 +25,9 @@ export async function POST(request: NextRequest) {
 
     const voice = VOICE_CONFIG[locale as keyof typeof VOICE_CONFIG] || VOICE_CONFIG.ms;
 
-    // Use Gemini 2.0 Flash with audio output
+    // Use Gemini 2.5 Flash TTS model
     const response = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`,
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-tts:generateContent?key=${apiKey}`,
       {
         method: 'POST',
         headers: {
@@ -39,7 +38,7 @@ export async function POST(request: NextRequest) {
             {
               parts: [
                 {
-                  text: `Please read aloud: "${text}"`,
+                  text: text,
                 },
               ],
             },
@@ -62,9 +61,8 @@ export async function POST(request: NextRequest) {
       const errorText = await response.text();
       console.error('Gemini TTS error:', errorText);
 
-      // Try fallback with different approach
       return NextResponse.json(
-        { error: 'TTS temporarily unavailable', code: 'API_ERROR' },
+        { error: 'TTS temporarily unavailable', code: 'API_ERROR', details: errorText },
         { status: 503 }
       );
     }
@@ -73,8 +71,10 @@ export async function POST(request: NextRequest) {
 
     // Extract audio data from response
     const audioData = data.candidates?.[0]?.content?.parts?.[0]?.inlineData?.data;
+    const mimeType = data.candidates?.[0]?.content?.parts?.[0]?.inlineData?.mimeType || 'audio/mp3';
 
     if (!audioData) {
+      console.error('No audio in response:', JSON.stringify(data, null, 2));
       return NextResponse.json(
         { error: 'No audio generated', code: 'NO_AUDIO' },
         { status: 503 }
@@ -84,7 +84,7 @@ export async function POST(request: NextRequest) {
     // Return base64 audio data
     return NextResponse.json({
       audio: audioData,
-      mimeType: 'audio/mp3',
+      mimeType: mimeType,
     });
   } catch (error) {
     console.error('TTS error:', error);
