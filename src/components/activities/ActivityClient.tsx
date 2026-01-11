@@ -12,6 +12,7 @@ import WritingActivity from './WritingActivity';
 import SpeakingActivity from './SpeakingActivity';
 import SingingActivity from './SingingActivity';
 import Confetti from '@/components/effects/Confetti';
+import LoadingOverlay from '@/components/ui/LoadingOverlay';
 import { useSoundEffects } from '@/hooks/useSoundEffects';
 import type { Activity, Kid, Equipment, Locale } from '@/types';
 
@@ -169,6 +170,14 @@ export default function ActivityClient({
 
   return (
     <main className="min-h-screen bg-gradient-to-b from-[#87CEEB] to-[#5DADE2] flex flex-col">
+      {/* Loading Overlay */}
+      <LoadingOverlay
+        isLoading={isSubmitting}
+        avatarUrl={kid.generated_avatar_url}
+        locale={locale}
+        message={translations.loading}
+      />
+
       {/* Confetti Effect */}
       <Confetti isActive={showConfetti} />
 
