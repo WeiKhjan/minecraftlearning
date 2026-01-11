@@ -3,6 +3,7 @@
 import { useState, useCallback, useEffect } from 'react';
 import VoiceTutorButton from '@/components/voice/VoiceTutorButton';
 import LoadingOverlay from '@/components/ui/LoadingOverlay';
+import AudioVisualizer from '@/components/ui/AudioVisualizer';
 import { useSpeechRecognition } from '@/hooks/useSpeechRecognition';
 import { useVoiceTutor } from '@/hooks/useVoiceTutor';
 import type { ActivityContent, Locale, SyllableContent } from '@/types';
@@ -289,7 +290,7 @@ export default function SyllableActivity({ content, locale, onComplete }: Syllab
 
           {activityState === 'listening' && (
             <>
-              <div className="flex items-center justify-center gap-2 mb-4">
+              <div className="flex items-center justify-center gap-2 mb-2">
                 <div className="w-4 h-4 bg-red-500 rounded-full animate-pulse" />
                 <p className="text-lg font-bold">
                   {locale === 'ms' ? 'Mendengar...' :
@@ -297,6 +298,17 @@ export default function SyllableActivity({ content, locale, onComplete }: Syllab
                     'Listening...'}
                 </p>
               </div>
+
+              {/* Audio Visualizer - Sound Wave Chart */}
+              <div className="my-4 px-4">
+                <AudioVisualizer
+                  isListening={isListening}
+                  barCount={24}
+                  barColor="#ffffff"
+                  height={50}
+                />
+              </div>
+
               <button
                 onClick={handleStopListening}
                 className="bg-red-600 text-white px-6 py-3 rounded-full font-bold hover:bg-red-700 transition-all cursor-pointer"
