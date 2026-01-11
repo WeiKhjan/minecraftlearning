@@ -10,6 +10,7 @@ interface DrawingCanvasProps {
   disabled?: boolean;
   contentType?: 'letter' | 'word';  // Type of content
   onAnalyzingChange?: (isAnalyzing: boolean) => void;  // Callback for parent loading overlay
+  showWatermark?: boolean;  // Whether to show faint guide text (default: true, set false for dictation)
 }
 
 interface Point {
@@ -24,6 +25,7 @@ export default function DrawingCanvas({
   disabled = false,
   contentType,
   onAnalyzingChange,
+  showWatermark = true,
 }: DrawingCanvasProps) {
   // Auto-detect content type if not provided
   const isWord = contentType === 'word' || expectedLetter.length > 1;
@@ -70,16 +72,18 @@ export default function DrawingCanvas({
     ctx.lineCap = 'round';
     ctx.lineJoin = 'round';
 
-    // Clear canvas and draw new guide text
+    // Clear canvas and draw guide text only if showWatermark is true
     ctx.clearRect(0, 0, rect.width, rect.height);
-    drawGuideText(ctx, expectedLetter, rect.width, rect.height, isWord);
+    if (showWatermark) {
+      drawGuideText(ctx, expectedLetter, rect.width, rect.height, isWord);
+    }
 
     // Reset hasDrawn when letter changes
     if (prevLetterRef.current !== expectedLetter) {
       setHasDrawn(false);
       prevLetterRef.current = expectedLetter;
     }
-  }, [expectedLetter, drawGuideText, isWord]);
+  }, [expectedLetter, drawGuideText, isWord, showWatermark]);
 
   // Get point from event
   const getPoint = useCallback((e: React.TouchEvent | React.MouseEvent): Point | null => {
@@ -168,10 +172,12 @@ export default function DrawingCanvas({
     canvas.height = rect.height * dpr;
     ctx.scale(dpr, dpr);
 
-    // Redraw guide text with current expectedLetter
-    drawGuideText(ctx, expectedLetter, rect.width, rect.height, isWord);
+    // Redraw guide text with current expectedLetter only if showWatermark is true
+    if (showWatermark) {
+      drawGuideText(ctx, expectedLetter, rect.width, rect.height, isWord);
+    }
     setHasDrawn(false);
-  }, [expectedLetter, drawGuideText, isWord]);
+  }, [expectedLetter, drawGuideText, isWord, showWatermark]);
 
   // Submit drawing for recognition
   const handleSubmit = useCallback(async () => {

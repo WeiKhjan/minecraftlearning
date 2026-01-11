@@ -186,7 +186,7 @@ export default function DictationActivity({ content, avatarUrl, locale, onComple
         )}
       </div>
 
-      {/* Drawing Canvas */}
+      {/* Drawing Canvas - no watermark for dictation (child should only hear, not see) */}
       <DrawingCanvas
         expectedLetter={currentWord?.word || ''}
         locale={locale}
@@ -194,6 +194,7 @@ export default function DictationActivity({ content, avatarUrl, locale, onComple
         disabled={feedback !== null || !hasPlayed}
         contentType="word"
         onAnalyzingChange={setIsAnalyzing}
+        showWatermark={false}
       />
 
       {/* Hint - show after playing */}
