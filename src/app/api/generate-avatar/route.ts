@@ -13,6 +13,60 @@ interface GenerateAvatarRequest {
   };
 }
 
+// Map emoji faces to descriptive expressions
+const faceDescriptions: Record<string, string> = {
+  '😊': 'warm friendly smile with rosy cheeks and sparkling happy eyes',
+  '😄': 'big cheerful grin showing excitement and joy',
+  '😎': 'cool confident expression with a slight smirk',
+  '🤩': 'amazed starry-eyed expression full of wonder',
+  '😁': 'wide beaming smile radiating happiness',
+  '🥳': 'celebratory excited face ready for adventure',
+  '😃': 'bright enthusiastic smile with wide eyes',
+  '🙂': 'gentle pleasant smile, calm and friendly',
+  '😺': 'playful cat-like smile, mischievous and cute',
+  '🦊': 'clever fox-like expression, smart and adventurous',
+  '🐱': 'cute kitty face with whiskers and button nose',
+  '🐶': 'adorable puppy-like face, loyal and eager',
+};
+
+// Equipment tier visual descriptions
+const tierVisuals: Record<string, { material: string; glow: string; quality: string }> = {
+  leather: {
+    material: 'warm brown leather with visible stitching',
+    glow: 'subtle warm brown tones',
+    quality: 'rustic beginner adventurer',
+  },
+  chain: {
+    material: 'interlocking silver metal rings with metallic sheen',
+    glow: 'cool silver metallic reflections',
+    quality: 'experienced fighter',
+  },
+  iron: {
+    material: 'polished steel plates with rivets and shine',
+    glow: 'bright metallic silver gleam',
+    quality: 'strong warrior',
+  },
+  gold: {
+    material: 'luxurious golden metal with ornate engravings',
+    glow: 'radiant golden aura and sparkles',
+    quality: 'royal champion',
+  },
+  diamond: {
+    material: 'crystalline blue diamond with magical shimmer',
+    glow: 'magical cyan/blue particles and ethereal glow',
+    quality: 'legendary hero',
+  },
+};
+
+// Weapon descriptions by tier
+const weaponVisuals: Record<string, string> = {
+  leather: 'simple wooden sword with leather-wrapped handle',
+  chain: 'stone blade sword with metal guard',
+  iron: 'gleaming iron sword with cross-guard',
+  gold: 'ornate golden sword with jeweled hilt',
+  diamond: 'legendary diamond sword glowing with magical energy',
+};
+
 export async function POST(request: NextRequest) {
   try {
     const { kidId, avatarFace, equipment }: GenerateAvatarRequest = await request.json();
@@ -49,70 +103,102 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Build description of equipment
-    const equipmentDesc: string[] = [];
+    // Build dynamic face description
+    const faceDesc = faceDescriptions[avatarFace] ||
+      (avatarFace ? `expressive face showing "${avatarFace}" emotion` : 'friendly smiling face with bright eyes');
+
+    // Build detailed equipment descriptions
+    const equipmentParts: string[] = [];
+    const tiers: string[] = [];
+
     if (equipment.helmet) {
-      equipmentDesc.push(`${equipment.helmet.tier} helmet`);
+      const tier = equipment.helmet.tier;
+      tiers.push(tier);
+      const visual = tierVisuals[tier];
+      equipmentParts.push(`HEAD: ${visual.material} helmet protecting the head`);
     }
+
     if (equipment.chestplate) {
-      equipmentDesc.push(`${equipment.chestplate.tier} chestplate/armor`);
+      const tier = equipment.chestplate.tier;
+      tiers.push(tier);
+      const visual = tierVisuals[tier];
+      equipmentParts.push(`CHEST: ${visual.material} chestplate armor covering torso`);
     }
+
     if (equipment.leggings) {
-      equipmentDesc.push(`${equipment.leggings.tier} leggings/pants`);
+      const tier = equipment.leggings.tier;
+      tiers.push(tier);
+      const visual = tierVisuals[tier];
+      equipmentParts.push(`LEGS: ${visual.material} leggings protecting the legs`);
     }
+
     if (equipment.boots) {
-      equipmentDesc.push(`${equipment.boots.tier} boots`);
+      const tier = equipment.boots.tier;
+      tiers.push(tier);
+      const visual = tierVisuals[tier];
+      equipmentParts.push(`FEET: ${visual.material} boots on the feet`);
     }
+
     if (equipment.weapon) {
-      equipmentDesc.push(`${equipment.weapon.tier} sword/weapon in hand`);
+      const tier = equipment.weapon.tier;
+      tiers.push(tier);
+      equipmentParts.push(`WEAPON: ${weaponVisuals[tier]} held in right hand`);
     }
 
-    const equipmentString = equipmentDesc.length > 0
-      ? equipmentDesc.join(', ')
-      : 'simple Steve-like default outfit';
+    // Determine highest tier for overall theme
+    const tierRank = ['leather', 'chain', 'iron', 'gold', 'diamond'];
+    const highestTier = tiers.length > 0
+      ? tiers.reduce((a, b) => tierRank.indexOf(a) > tierRank.indexOf(b) ? a : b)
+      : 'leather';
 
-    // Build tier color description for equipment
-    const tierColors: Record<string, string> = {
-      leather: 'brown leather',
-      chain: 'silver chainmail',
-      iron: 'shiny silver iron',
-      gold: 'gleaming golden',
-      diamond: 'sparkling blue diamond',
+    const themeVisual = tierVisuals[highestTier];
+    const hasEquipment = equipmentParts.length > 0;
+
+    // Dynamic background based on tier
+    const backgrounds: Record<string, string> = {
+      leather: 'sunny grass field with blue sky, peaceful village vibe',
+      chain: 'stone castle courtyard with training dummies',
+      iron: 'mountain fortress with snow peaks in distance',
+      gold: 'royal palace garden with golden sunlight',
+      diamond: 'magical floating islands with aurora borealis, mystical particles',
     };
 
-    const coloredEquipment = equipmentDesc.map(desc => {
-      for (const [tier, color] of Object.entries(tierColors)) {
-        if (desc.includes(tier)) {
-          return desc.replace(tier, color);
-        }
-      }
-      return desc;
-    }).join(', ');
+    // Build the dynamic prompt
+    const prompt = `Generate a stunning 3D Minecraft-style character avatar!
 
-    // Generate avatar using Gemini with image generation - 3D Minecraft style prompt
-    const prompt = `Create a stunning 3D rendered Minecraft-style character avatar that kids will love!
+===== CHARACTER FACE =====
+${faceDesc}
+The face should clearly show this expression - it's very important for the character's personality!
 
-CHARACTER DESIGN:
-- Face: ${avatarFace || 'cute happy smiling face with big friendly eyes'}
-- Equipment: ${coloredEquipment || 'classic Steve outfit'}
-- Body: Iconic Minecraft blocky/cubic body shape with cube head, rectangular body and limbs
+===== EQUIPMENT (MUST MATCH EXACTLY) =====
+${hasEquipment ? equipmentParts.join('\n') : 'No armor equipped - wearing simple villager clothes (brown shirt, blue pants)'}
 
-ART STYLE (VERY IMPORTANT):
-- 3D rendered look with soft lighting and gentle shadows
-- Minecraft's signature blocky/voxel aesthetic but with modern 3D rendering
-- Smooth, polished surfaces with slight reflections
-- Vibrant, saturated colors that pop
-- Cute chibi-like proportions (slightly bigger head) to appeal to children
-- Friendly, approachable character expression
+${hasEquipment ? `Overall appearance: ${themeVisual.quality} with ${themeVisual.glow}` : 'Simple but cheerful village kid look'}
 
-COMPOSITION:
-- Character standing in a heroic but friendly pose
-- Upper body focus, showing head and torso clearly
-- Slight angle (3/4 view) to show depth and 3D effect
-- Clean, simple gradient background (sky blue to light blue)
-- Soft glow or rim lighting around the character
+===== UNEQUIPPED BODY PARTS =====
+${!equipment.helmet ? '- HEAD: Show the character\'s face and hair clearly (no helmet)' : ''}
+${!equipment.chestplate ? '- CHEST: Simple colored shirt/tunic' : ''}
+${!equipment.leggings ? '- LEGS: Basic blue pants like Steve' : ''}
+${!equipment.boots ? '- FEET: Simple brown shoes' : ''}
 
-MOOD: Fun, adventurous, friendly, perfect for a children's educational learning game. The character should look like a brave little hero ready for learning adventures!`;
+===== 3D ART STYLE (CRITICAL) =====
+- Authentic Minecraft blocky/cubic body: square head, rectangular torso, blocky limbs
+- HIGH QUALITY 3D RENDER with ray-traced lighting
+- Smooth surfaces with realistic reflections on armor/equipment
+- Vibrant saturated colors
+- Soft shadows and ambient occlusion
+- ${hasEquipment && (highestTier === 'gold' || highestTier === 'diamond') ? 'Add magical particle effects and glow around equipment' : 'Clean polished look'}
+
+===== COMPOSITION =====
+- 3/4 angle view showing character depth
+- Full body visible, heroic standing pose
+- Background: ${backgrounds[highestTier]}
+- Rim lighting to make character pop
+- Character should fill most of the frame
+
+===== MOOD =====
+This is for a children's educational game - make the character look like an AWESOME hero that kids would want to be!
+${hasEquipment ? `This ${themeVisual.quality} is ready for learning adventures!` : 'A brave young adventurer starting their journey!'}`;
 
     // Use Gemini 2.0 Flash experimental with image generation capability
     const response = await fetch(
