@@ -47,6 +47,8 @@ export default function SyllableActivity({ content, avatarUrl, locale, onComplet
   });
 
   // Speech recognition for listening to kid
+  // Always use Malay ('ms') for speech recognition since suku kata are Malay syllables
+  // UI locale is separate - used for feedback text only
   const {
     isListening,
     isSupported: isSpeechSupported,
@@ -56,7 +58,7 @@ export default function SyllableActivity({ content, avatarUrl, locale, onComplet
     stopListening,
     resetTranscript,
   } = useSpeechRecognition({
-    locale,
+    locale: 'ms', // Always Malay for suku kata recognition
     onResult: (spokenText) => {
       // Store in ref for stop button access
       latestTranscriptRef.current = spokenText;
