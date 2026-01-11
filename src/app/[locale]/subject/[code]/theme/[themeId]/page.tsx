@@ -157,16 +157,30 @@ export default async function ThemePage({
           MineCraft Learning
         </Link>
         <div className="flex items-center gap-4">
-          <Link
-            href={`/${locale}/character?kid=${kidId}`}
-            className="flex items-center gap-1 bg-white/20 hover:bg-white/30 px-3 py-1.5 rounded-full text-white text-sm transition-all"
-            title={locale === 'ms' ? 'Watak Saya' : locale === 'zh' ? '我的角色' : 'My Character'}
-          >
-            <span>🧑</span>
-            <span className="hidden sm:inline">
-              {locale === 'ms' ? 'Watak' : locale === 'zh' ? '角色' : 'Character'}
-            </span>
-          </Link>
+          {/* Avatar + Character Link */}
+          <div className="flex items-center gap-2">
+            {kid.generated_avatar_url && (
+              <Link href={`/${locale}/character?kid=${kidId}`}>
+                <div className="w-10 h-10 rounded-full overflow-hidden border-2 border-white/50 hover:border-white transition-all">
+                  <img
+                    src={kid.generated_avatar_url}
+                    alt={kid.name}
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+              </Link>
+            )}
+            <Link
+              href={`/${locale}/character?kid=${kidId}`}
+              className="flex items-center gap-1 bg-white/20 hover:bg-white/30 px-3 py-1.5 rounded-full text-white text-sm transition-all"
+              title={locale === 'ms' ? 'Watak Saya' : locale === 'zh' ? '我的角色' : 'My Character'}
+            >
+              <span>🧑</span>
+              <span className="hidden sm:inline">
+                {locale === 'ms' ? 'Watak' : locale === 'zh' ? '角色' : 'Character'}
+              </span>
+            </Link>
+          </div>
           <LanguageSwitcher />
           <Link
             href={`/${locale}/subject/${code}?kid=${kidId}`}
