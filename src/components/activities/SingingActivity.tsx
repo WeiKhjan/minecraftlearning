@@ -1,7 +1,6 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
-import VoiceTutorButton from '@/components/voice/VoiceTutorButton';
 import type { ActivityContent, Locale, SingingContent } from '@/types';
 
 interface SingingActivityProps {
@@ -13,12 +12,13 @@ interface SingingActivityProps {
 
 export default function SingingActivity({ content, locale, onComplete }: SingingActivityProps) {
   const data = content.data as SingingContent;
-  const { title, lyrics, melody_reference } = data;
+  const { title, lyrics, melody_reference, youtube_id } = data;
 
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentLineIndex, setCurrentLineIndex] = useState(-1);
   const [sungLines, setSungLines] = useState<Set<number>>(new Set());
   const timerRef = useRef<NodeJS.Timeout | null>(null);
+  const lyricsContainerRef = useRef<HTMLDivElement>(null);
 
   // Auto-advance through lyrics when playing
   useEffect(() => {
@@ -41,6 +41,16 @@ export default function SingingActivity({ content, locale, onComplete }: Singing
     };
   }, [isPlaying, currentLineIndex, lyrics.length, sungLines.size, onComplete]);
 
+  // Auto-scroll to current line
+  useEffect(() => {
+    if (currentLineIndex >= 0 && lyricsContainerRef.current) {
+      const lineElement = lyricsContainerRef.current.children[currentLineIndex] as HTMLElement;
+      if (lineElement) {
+        lineElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+    }
+  }, [currentLineIndex]);
+
   const handlePlay = () => {
     setIsPlaying(true);
     setCurrentLineIndex(0);
@@ -62,7 +72,7 @@ export default function SingingActivity({ content, locale, onComplete }: Singing
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       {/* Song Title */}
       <div className="text-center">
         <h3 className="text-2xl font-bold text-gray-800 mb-1">🎵 {title}</h3>
@@ -74,8 +84,21 @@ export default function SingingActivity({ content, locale, onComplete }: Singing
         )}
       </div>
 
+      {/* YouTube Video Embed */}
+      {youtube_id && (
+        <div className="relative w-full pt-[56.25%] bg-black rounded-lg overflow-hidden">
+          <iframe
+            className="absolute top-0 left-0 w-full h-full"
+            src={`https://www.youtube.com/embed/${youtube_id}?rel=0&modestbranding=1`}
+            title={title}
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowFullScreen
+          />
+        </div>
+      )}
+
       {/* Instruction */}
-      <p className="text-center text-gray-600">
+      <p className="text-center text-gray-600 text-sm">
         {locale === 'ms' ? 'Nyanyi bersama dan tekan setiap baris semasa menyanyinya' :
           locale === 'zh' ? '跟着唱，并在唱每一行时点击它' :
           'Sing along and tap each line as you sing it'}
@@ -114,8 +137,8 @@ export default function SingingActivity({ content, locale, onComplete }: Singing
       </div>
 
       {/* Lyrics Display */}
-      <div className="bg-gray-100 rounded-lg p-4 max-h-80 overflow-y-auto">
-        <div className="space-y-2">
+      <div className="bg-gray-100 rounded-lg p-4 max-h-60 overflow-y-auto">
+        <div ref={lyricsContainerRef} className="space-y-2">
           {lyrics.map((lyric, index) => {
             const isCurrent = index === currentLineIndex;
             const isSung = sungLines.has(index);
@@ -150,22 +173,13 @@ export default function SingingActivity({ content, locale, onComplete }: Singing
 
       {/* Current Line Highlight */}
       {isPlaying && currentLineIndex >= 0 && currentLineIndex < lyrics.length && (
-        <div className="text-center">
+        <div className="text-center bg-[#5DADE2]/10 rounded-lg p-3">
           <p className="text-sm text-gray-500 mb-1">
             {locale === 'ms' ? 'Nyanyikan sekarang:' : locale === 'zh' ? '现在唱：' : 'Sing now:'}
           </p>
-          <div className="flex items-center justify-center gap-3">
-            <p className="text-xl font-bold text-[#5DADE2]">
-              {lyrics[currentLineIndex].line}
-            </p>
-            <VoiceTutorButton
-              text={lyrics[currentLineIndex].line}
-              locale={locale}
-              size="sm"
-              contentType="sentence"
-              directTTS
-            />
-          </div>
+          <p className="text-xl font-bold text-[#5DADE2]">
+            {lyrics[currentLineIndex].line}
+          </p>
         </div>
       )}
     </div>

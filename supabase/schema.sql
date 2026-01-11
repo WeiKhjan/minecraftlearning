@@ -136,7 +136,7 @@ ON CONFLICT DO NOTHING;
 CREATE TABLE IF NOT EXISTS activities (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
   theme_id UUID REFERENCES themes(id) ON DELETE CASCADE NOT NULL,
-  type TEXT NOT NULL CHECK (type IN ('alphabet', 'matching', 'syllable', 'writing', 'speaking', 'singing', 'math')),
+  type TEXT NOT NULL CHECK (type IN ('alphabet', 'matching', 'syllable', 'writing', 'speaking', 'singing', 'math', 'dictation')),
   title_ms TEXT NOT NULL,
   title_zh TEXT NOT NULL,
   title_en TEXT NOT NULL,

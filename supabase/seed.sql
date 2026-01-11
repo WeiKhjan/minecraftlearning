@@ -193,6 +193,7 @@ BEGIN
       "data": {
         "title": "Mari Belajar",
         "melody_reference": "Bapaku Pulang dari Kota",
+        "youtube_id": "969_1kBcjbk",
         "lyrics": [
           {"line": "Marilah sebut sama-sama", "timing": 0},
           {"line": "Abjad ''a'' bunyinya a", "timing": 3},
@@ -258,6 +259,61 @@ BEGIN
     30,
     v_equipment_id,
     7
+  );
+
+  -- Activity 8: Ejaan Perkataan (Dictation)
+  SELECT id INTO v_equipment_id FROM equipment WHERE name = 'Iron Chestplate' LIMIT 1;
+
+  INSERT INTO activities (theme_id, type, title_ms, title_zh, title_en, instructions_ms, instructions_zh, instructions_en, content, xp_reward, equipment_reward_id, order_index)
+  VALUES (
+    v_theme_id,
+    'dictation',
+    'Ejaan Perkataan',
+    '听写单词',
+    'Word Dictation',
+    'Dengar perkataan dan tulis dengan betul',
+    '听单词并正确写出来',
+    'Listen to the word and write it correctly',
+    '{
+      "type": "dictation",
+      "data": {
+        "words": [
+          {
+            "word": "ayam",
+            "meaning_ms": "ayam",
+            "meaning_zh": "鸡",
+            "meaning_en": "chicken"
+          },
+          {
+            "word": "epal",
+            "meaning_ms": "epal",
+            "meaning_zh": "苹果",
+            "meaning_en": "apple"
+          },
+          {
+            "word": "ikan",
+            "meaning_ms": "ikan",
+            "meaning_zh": "鱼",
+            "meaning_en": "fish"
+          },
+          {
+            "word": "oren",
+            "meaning_ms": "oren",
+            "meaning_zh": "橙子",
+            "meaning_en": "orange"
+          },
+          {
+            "word": "ular",
+            "meaning_ms": "ular",
+            "meaning_zh": "蛇",
+            "meaning_en": "snake"
+          }
+        ]
+      }
+    }'::jsonb,
+    35,
+    v_equipment_id,
+    8
   );
 
 END $$;

@@ -12,7 +12,7 @@ export type EquipmentTier = 'leather' | 'chain' | 'iron' | 'gold' | 'diamond';
 
 export type EquipmentRarity = 'common' | 'rare' | 'epic' | 'legendary';
 
-export type ActivityType = 'alphabet' | 'matching' | 'syllable' | 'writing' | 'speaking' | 'singing' | 'math';
+export type ActivityType = 'alphabet' | 'matching' | 'syllable' | 'writing' | 'speaking' | 'singing' | 'math' | 'dictation';
 
 export type ProgressStatus = 'locked' | 'available' | 'in_progress' | 'completed';
 
@@ -88,7 +88,7 @@ export interface Activity {
 // Activity Content Types
 export interface ActivityContent {
   type: ActivityType;
-  data: AlphabetContent | MatchingContent | SyllableContent | WritingContent | SpeakingContent | SingingContent | MathContent;
+  data: AlphabetContent | MatchingContent | SyllableContent | WritingContent | SpeakingContent | SingingContent | MathContent | DictationContent;
 }
 
 export interface AlphabetContent {
@@ -144,6 +144,7 @@ export interface SingingContent {
   }[];
   audio_url?: string;
   melody_reference?: string;
+  youtube_id?: string;
 }
 
 export interface MathContent {
@@ -151,6 +152,15 @@ export interface MathContent {
     question: string;
     answer: string | number;
     options?: (string | number)[];
+  }[];
+}
+
+export interface DictationContent {
+  words: {
+    word: string;
+    meaning_ms: string;
+    meaning_zh: string;
+    meaning_en: string;
   }[];
 }
 
