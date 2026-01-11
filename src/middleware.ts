@@ -33,6 +33,7 @@ export const config = {
     // - /_next (Next.js internals)
     // - /_static (static files)
     // - /favicon.ico, /sitemap.xml, /robots.txt (static files)
-    '/((?!api|_next|_static|favicon.ico|sitemap.xml|robots.txt|equipment|characters|backgrounds|sounds).*)',
+    // - Static assets in public folder (images, videos, etc.)
+    '/((?!api|_next|_static|favicon.ico|sitemap.xml|robots.txt|equipment|characters|backgrounds|sounds|logo\\.jpeg|hero-video\\.mp4|.*\\.(?:jpg|jpeg|png|gif|svg|ico|webp|mp4|webm|ogg|mp3|wav|pdf|woff|woff2|ttf|eot)$).*)',
   ],
 };
