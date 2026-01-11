@@ -24,9 +24,23 @@ export default function LoginPage() {
   };
 
   return (
-    <main className="min-h-screen bg-gradient-to-b from-[#87CEEB] to-[#5DADE2] flex flex-col">
+    <main className="min-h-screen bg-gradient-to-b from-[#87CEEB] to-[#5DADE2] flex flex-col relative overflow-hidden">
+      {/* Video Background */}
+      <video
+        autoPlay
+        muted
+        loop
+        playsInline
+        className="absolute inset-0 w-full h-full object-cover z-0"
+      >
+        <source src="/hero-video2.mp4" type="video/mp4" />
+      </video>
+
+      {/* Dark Overlay for readability */}
+      <div className="absolute inset-0 bg-black/40 z-10" />
+
       {/* Header */}
-      <header className="w-full p-4 flex justify-between items-center">
+      <header className="w-full p-4 flex justify-between items-center relative z-20">
         <Link href="/">
           <img src="/logo.jpeg" alt="MYLearnt" className="h-12 w-auto rounded-lg" />
         </Link>
@@ -34,7 +48,7 @@ export default function LoginPage() {
       </header>
 
       {/* Main Content */}
-      <div className="flex-1 flex items-center justify-center px-4">
+      <div className="flex-1 flex items-center justify-center px-4 relative z-20">
         <div className="minecraft-card max-w-md w-full">
           <div className="text-center mb-6">
             <h1 className="text-3xl font-bold text-gray-800 mb-2">
