@@ -154,11 +154,6 @@ export default function DictationActivity({ content, avatarUrl, locale, onComple
             <p className="mt-4 text-lg font-bold">
               {hasPlayed ? playAgainText[locale] : playButtonText[locale]}
             </p>
-            {hasPlayed && (
-              <p className="text-sm opacity-80 mt-1">
-                ({getWordMeaning()})
-              </p>
-            )}
           </>
         )}
 
