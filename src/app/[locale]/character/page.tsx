@@ -42,12 +42,14 @@ export default async function CharacterPage({
     redirect(`/${locale}/kids`);
   }
 
-  // Parallel fetch: equipped items, inventory, pets, and all equipment
+  // Parallel fetch: equipped items, inventory, pets, equipment, and progress stats
   const [
     { data: equippedData, error: equippedError },
     { data: inventory },
     { data: ownedPets },
-    { data: allEquipment }
+    { data: allEquipment },
+    { data: progressStats },
+    { count: totalActivities }
   ] = await Promise.all([
     supabase
       .from('kid_equipped')
@@ -65,8 +67,22 @@ export default async function CharacterPage({
     supabase
       .from('equipment')
       .select('*')
-      .order('required_level', { ascending: true })
+      .order('required_level', { ascending: true }),
+    supabase
+      .from('kid_progress')
+      .select('status, score, stars')
+      .eq('kid_id', kidId),
+    supabase
+      .from('activities')
+      .select('*', { count: 'exact', head: true })
   ]);
+
+  // Calculate progress statistics
+  const completedActivities = progressStats?.filter(p => p.status === 'completed').length || 0;
+  const totalStars = progressStats?.reduce((sum, p) => sum + (p.stars || 0), 0) || 0;
+  const avgScore = progressStats?.length
+    ? Math.round(progressStats.filter(p => p.score !== null).reduce((sum, p) => sum + (p.score || 0), 0) / progressStats.filter(p => p.score !== null).length)
+    : 0;
 
   // Create kid_equipped row if it doesn't exist
   let equipped = equippedData;
@@ -112,6 +128,12 @@ export default async function CharacterPage({
             ownedPets={ownedPets || []}
             allEquipment={allEquipment || []}
             locale={locale as Locale}
+            stats={{
+              completedActivities,
+              totalActivities: totalActivities || 0,
+              totalStars,
+              avgScore,
+            }}
             translations={{
               equipment: t('character.equipment'),
               inventory: t('character.inventory'),

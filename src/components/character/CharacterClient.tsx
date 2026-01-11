@@ -100,6 +100,12 @@ interface CharacterClientProps {
   ownedPets: (KidPet & { pet: Pet })[];
   allEquipment: Equipment[];
   locale: Locale;
+  stats: {
+    completedActivities: number;
+    totalActivities: number;
+    totalStars: number;
+    avgScore: number;
+  };
   translations: {
     equipment: string;
     inventory: string;
@@ -115,6 +121,44 @@ interface CharacterClientProps {
     noPets: string;
     levelRequired: string;
   };
+}
+
+// XP thresholds for each level (cumulative)
+const XP_THRESHOLDS = [0, 100, 250, 500, 850, 1300, 1900, 2700, 3700, 5000, 6500, 8500, 11000, 14000, 18000, 23000, 29000, 36000, 44000, 55000, 70000];
+
+// Get XP needed for next level
+function getXPForNextLevel(level: number): number {
+  return XP_THRESHOLDS[Math.min(level, XP_THRESHOLDS.length - 1)] || XP_THRESHOLDS[XP_THRESHOLDS.length - 1];
+}
+
+// Get XP needed for current level
+function getXPForCurrentLevel(level: number): number {
+  return XP_THRESHOLDS[Math.max(0, level - 1)] || 0;
+}
+
+// Calculate XP progress percentage within current level
+function getXPProgress(totalXP: number, level: number): number {
+  const currentLevelXP = getXPForCurrentLevel(level);
+  const nextLevelXP = getXPForNextLevel(level);
+  const xpInLevel = totalXP - currentLevelXP;
+  const xpNeeded = nextLevelXP - currentLevelXP;
+  return Math.min(100, Math.max(0, (xpInLevel / xpNeeded) * 100));
+}
+
+// Player titles based on level
+function getPlayerTitle(level: number, locale: Locale): { title: string; color: string } {
+  const titles: { minLevel: number; title: { ms: string; zh: string; en: string }; color: string }[] = [
+    { minLevel: 1, title: { ms: 'Pengembaraan Baharu', zh: '新手冒险者', en: 'Novice Adventurer' }, color: '#808080' },
+    { minLevel: 3, title: { ms: 'Pelajar Rajin', zh: '勤奋学徒', en: 'Eager Apprentice' }, color: '#2ecc71' },
+    { minLevel: 5, title: { ms: 'Penjelajah Berani', zh: '勇敢探索者', en: 'Brave Explorer' }, color: '#3498db' },
+    { minLevel: 8, title: { ms: 'Pahlawan Bijak', zh: '智慧战士', en: 'Wise Warrior' }, color: '#9b59b6' },
+    { minLevel: 12, title: { ms: 'Pendekar Mahir', zh: '技艺大师', en: 'Skilled Champion' }, color: '#e74c3c' },
+    { minLevel: 16, title: { ms: 'Legenda Muda', zh: '青年传奇', en: 'Rising Legend' }, color: '#f39c12' },
+    { minLevel: 20, title: { ms: 'Master Legenda', zh: '传奇大师', en: 'Legendary Master' }, color: '#FFD700' },
+  ];
+
+  const playerTitle = [...titles].reverse().find(t => level >= t.minLevel) || titles[0];
+  return { title: playerTitle.title[locale], color: playerTitle.color };
 }
 
 function getEquipmentName(equipment: Equipment | null | undefined, locale: Locale): string {
@@ -204,6 +248,7 @@ export default function CharacterClient({
   ownedPets,
   allEquipment,
   locale,
+  stats,
   translations,
 }: CharacterClientProps) {
   const router = useRouter();
@@ -420,13 +465,96 @@ export default function CharacterClient({
 
       {/* Left Panel - Character & Equipment */}
       <div className="minecraft-card lg:col-span-1 p-4 sm:p-6 h-fit">
-        {/* Header with name and level */}
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="text-xl sm:text-2xl font-bold text-gray-800 minecraft-font">
-            {kid.name}
-          </h2>
-          <div className="flex items-center gap-2 bg-gradient-to-r from-yellow-400 to-yellow-500 px-3 py-1.5 rounded-lg shadow-md">
-            <span className="text-yellow-900 font-bold">Lv.{kid.level}</span>
+        {/* Player Stats Header */}
+        <div className="mb-5">
+          {/* Name and Level Row */}
+          <div className="flex items-center justify-between mb-2">
+            <h2 className="text-xl sm:text-2xl font-bold text-gray-800 minecraft-font">
+              {kid.name}
+            </h2>
+            {/* Enhanced Level Badge */}
+            <div className="relative">
+              <div className="flex items-center gap-1 bg-gradient-to-br from-amber-400 via-yellow-500 to-orange-500 px-4 py-2 rounded-lg shadow-lg border-2 border-yellow-600">
+                <span className="text-yellow-100 text-xs font-medium">LV</span>
+                <span className="text-white font-black text-xl drop-shadow-md">{kid.level}</span>
+              </div>
+              {/* Decorative stars */}
+              <div className="absolute -top-1 -right-1 text-yellow-300 text-xs animate-pulse">✦</div>
+            </div>
+          </div>
+
+          {/* Player Title */}
+          <div className="mb-3">
+            <span
+              className="text-sm font-bold px-3 py-1 rounded-full inline-block"
+              style={{
+                color: getPlayerTitle(kid.level, locale).color,
+                backgroundColor: `${getPlayerTitle(kid.level, locale).color}20`,
+                border: `1px solid ${getPlayerTitle(kid.level, locale).color}40`,
+              }}
+            >
+              {getPlayerTitle(kid.level, locale).title}
+            </span>
+          </div>
+
+          {/* XP Progress Bar */}
+          <div className="bg-gray-800 rounded-lg p-3 space-y-2">
+            <div className="flex items-center justify-between text-xs">
+              <span className="text-gray-400 font-medium">
+                {locale === 'ms' ? 'Pengalaman' : locale === 'zh' ? '经验值' : 'Experience'}
+              </span>
+              <span className="text-yellow-400 font-bold">
+                {kid.total_xp.toLocaleString()} / {getXPForNextLevel(kid.level).toLocaleString()} XP
+              </span>
+            </div>
+            <div className="relative h-4 bg-gray-700 rounded-full overflow-hidden">
+              {/* Animated XP bar */}
+              <div
+                className="absolute inset-y-0 left-0 bg-gradient-to-r from-green-500 via-emerald-400 to-green-500 rounded-full transition-all duration-500 ease-out"
+                style={{ width: `${getXPProgress(kid.total_xp, kid.level)}%` }}
+              >
+                {/* Shimmer effect */}
+                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent animate-shimmer" />
+              </div>
+              {/* Level markers */}
+              <div className="absolute inset-0 flex items-center justify-center">
+                <span className="text-[10px] font-bold text-white drop-shadow-md">
+                  {Math.round(getXPProgress(kid.total_xp, kid.level))}%
+                </span>
+              </div>
+            </div>
+            <div className="flex items-center justify-between text-[10px] text-gray-500">
+              <span>Lv.{kid.level}</span>
+              <span>{getXPForNextLevel(kid.level) - kid.total_xp} XP {locale === 'ms' ? 'lagi' : locale === 'zh' ? '还需' : 'to go'}</span>
+              <span>Lv.{kid.level + 1}</span>
+            </div>
+          </div>
+
+          {/* Quick Stats Row */}
+          <div className="grid grid-cols-3 gap-2 mt-3">
+            {/* Activities Completed */}
+            <div className="bg-gradient-to-br from-blue-500/10 to-blue-600/10 rounded-lg p-2 text-center border border-blue-500/20">
+              <div className="text-lg font-black text-blue-500">{stats.completedActivities}</div>
+              <div className="text-[10px] text-gray-500 font-medium">
+                {locale === 'ms' ? 'Selesai' : locale === 'zh' ? '已完成' : 'Completed'}
+              </div>
+            </div>
+            {/* Total Stars */}
+            <div className="bg-gradient-to-br from-yellow-500/10 to-amber-600/10 rounded-lg p-2 text-center border border-yellow-500/20">
+              <div className="text-lg font-black text-yellow-500 flex items-center justify-center gap-0.5">
+                {stats.totalStars} <span className="text-sm">⭐</span>
+              </div>
+              <div className="text-[10px] text-gray-500 font-medium">
+                {locale === 'ms' ? 'Bintang' : locale === 'zh' ? '星星' : 'Stars'}
+              </div>
+            </div>
+            {/* Average Score */}
+            <div className="bg-gradient-to-br from-green-500/10 to-emerald-600/10 rounded-lg p-2 text-center border border-green-500/20">
+              <div className="text-lg font-black text-green-500">{stats.avgScore}%</div>
+              <div className="text-[10px] text-gray-500 font-medium">
+                {locale === 'ms' ? 'Purata' : locale === 'zh' ? '平均' : 'Average'}
+              </div>
+            </div>
           </div>
         </div>
 
