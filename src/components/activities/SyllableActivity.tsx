@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback, useEffect, useRef } from 'react';
 import VoiceTutorButton from '@/components/voice/VoiceTutorButton';
 import LoadingOverlay from '@/components/ui/LoadingOverlay';
 import AudioVisualizer from '@/components/ui/AudioVisualizer';
@@ -36,6 +36,9 @@ export default function SyllableActivity({ content, avatarUrl, locale, onComplet
   const [attempts, setAttempts] = useState(0);
   const [totalScore, setTotalScore] = useState(0);
 
+  // Ref to track latest transcript (avoids stale closure)
+  const latestTranscriptRef = useRef<string>('');
+
   const currentSyllable = syllables[currentIndex];
 
   // Voice tutor for playing correct pronunciation
@@ -55,6 +58,8 @@ export default function SyllableActivity({ content, avatarUrl, locale, onComplet
   } = useSpeechRecognition({
     locale,
     onResult: (spokenText) => {
+      // Store in ref for stop button access
+      latestTranscriptRef.current = spokenText;
       // Automatically analyze when we get a result
       handleAnalyzePronunciation(spokenText);
     },
@@ -63,6 +68,11 @@ export default function SyllableActivity({ content, avatarUrl, locale, onComplet
       setActivityState('ready');
     },
   });
+
+  // Keep ref in sync with transcript
+  useEffect(() => {
+    latestTranscriptRef.current = transcript;
+  }, [transcript]);
 
   // Auto-stop listening after 3 seconds
   useEffect(() => {
@@ -144,6 +154,7 @@ export default function SyllableActivity({ content, avatarUrl, locale, onComplet
   // Start listening
   const handleStartListening = useCallback(() => {
     resetTranscript();
+    latestTranscriptRef.current = ''; // Reset ref too
     setFeedback(null);
     setActivityState('listening');
     startListening();
@@ -151,14 +162,21 @@ export default function SyllableActivity({ content, avatarUrl, locale, onComplet
 
   // Stop listening and trigger analysis with whatever was captured
   const handleStopListening = useCallback(() => {
+    console.log('[SyllableActivity] Stop clicked, transcript:', latestTranscriptRef.current);
     stopListening();
+
+    // Use ref to get latest transcript (avoids stale closure)
+    const currentTranscript = latestTranscriptRef.current;
+
     // Give a small delay to ensure final transcript is captured
     setTimeout(() => {
       // If there's a transcript, analyze it
-      if (transcript) {
-        handleAnalyzePronunciation(transcript);
+      if (currentTranscript) {
+        console.log('[SyllableActivity] Analyzing:', currentTranscript);
+        handleAnalyzePronunciation(currentTranscript);
       } else {
         // No transcript captured, show feedback and return to ready
+        console.log('[SyllableActivity] No transcript detected');
         setActivityState('ready');
         setFeedback({
           isCorrect: false,
@@ -171,7 +189,7 @@ export default function SyllableActivity({ content, avatarUrl, locale, onComplet
         });
       }
     }, 100);
-  }, [stopListening, transcript, handleAnalyzePronunciation]);
+  }, [stopListening, handleAnalyzePronunciation]);
 
   // Move to next syllable
   const handleMoveToNext = useCallback(() => {

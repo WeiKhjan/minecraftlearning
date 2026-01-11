@@ -49,15 +49,20 @@ export async function POST(request: NextRequest) {
         body: JSON.stringify({
           contents: [{
             parts: [{
-              text: `Analyze pronunciation. Expected: "${expected}", Spoken: "${spoken}". Be lenient - accept if sounds similar. Return JSON only.`
+              text: `Child should say: "${expected}"
+Child said: "${spoken}"
+Is it correct or close enough? Be lenient for children.`
             }]
           }],
           systemInstruction: {
             parts: [{
-              text: `You assess children's pronunciation. Be encouraging and lenient.
-Return ONLY valid JSON with this exact structure:
-{"isCorrect":boolean,"confidence":number,"feedbackMs":"string","feedbackZh":"string","feedbackEn":"string","correctionMs":"string","correctionZh":"string","correctionEn":"string"}
-No markdown, no explanation, just the JSON object.`
+              text: `You assess children's pronunciation for Malaysian primary school. Be encouraging.
+IMPORTANT: feedbackMs must be in MALAY (Bahasa Malaysia), feedbackZh must be in SIMPLIFIED CHINESE, feedbackEn must be in ENGLISH.
+Example feedbackMs: "Bagus!" or "Cuba lagi!"
+Example feedbackZh: "很好!" or "再试一次!"
+Example feedbackEn: "Good job!" or "Try again!"
+Return ONLY this JSON:
+{"isCorrect":true/false,"confidence":0.8,"feedbackMs":"Malay text here","feedbackZh":"Chinese text here","feedbackEn":"English text here","correctionMs":"Malay correction","correctionZh":"Chinese correction","correctionEn":"English correction"}`
             }]
           },
           generationConfig: {
