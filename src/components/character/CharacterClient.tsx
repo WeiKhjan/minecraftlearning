@@ -4,7 +4,10 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import { createClient } from '@/lib/supabase/client';
-import type { Kid, Equipment, KidInventory, Locale, EquipmentSlot, EquipmentTier } from '@/types';
+import type { Kid, Equipment, KidInventory, Locale, EquipmentSlot, EquipmentTier, Pet, KidPet, PetRarity } from '@/types';
+
+// Image base URLs
+const PET_IMAGE_BASE = 'https://glwxvgxgquwfgwbwqbiz.supabase.co/storage/v1/object/public/images/pets';
 
 // Equipment image base URL
 const EQUIPMENT_IMAGE_BASE = 'https://glwxvgxgquwfgwbwqbiz.supabase.co/storage/v1/object/public/images/equipment';
@@ -59,6 +62,29 @@ const rarityColors: Record<string, string> = {
   legendary: '#f39c12',
 };
 
+// Pet rarity colors (including uncommon)
+const petRarityColors: Record<PetRarity, string> = {
+  common: '#808080',
+  uncommon: '#2ecc71',
+  rare: '#3498db',
+  epic: '#9b59b6',
+  legendary: '#f39c12',
+};
+
+// Pet rarity background colors
+const petRarityBgColors: Record<PetRarity, string> = {
+  common: '#E0E0E0',
+  uncommon: '#D5F5E3',
+  rare: '#D6EAF8',
+  epic: '#E8DAEF',
+  legendary: '#FEF5E7',
+};
+
+// Get pet image URL
+function getPetImageUrl(petId: string): string {
+  return `${PET_IMAGE_BASE}/${petId}.png`;
+}
+
 interface CharacterClientProps {
   kid: Kid;
   equipped: {
@@ -68,8 +94,10 @@ interface CharacterClientProps {
     leggings?: Equipment | null;
     boots?: Equipment | null;
     weapon?: Equipment | null;
+    pet?: Pet | null;
   } | null;
   inventory: (KidInventory & { equipment: Equipment })[];
+  ownedPets: (KidPet & { pet: Pet })[];
   allEquipment: Equipment[];
   locale: Locale;
   translations: {
@@ -82,7 +110,9 @@ interface CharacterClientProps {
     leggings: string;
     boots: string;
     weapon: string;
+    pet: string;
     noEquipment: string;
+    noPets: string;
     levelRequired: string;
   };
 }
@@ -95,6 +125,11 @@ function getEquipmentName(equipment: Equipment | null | undefined, locale: Local
     case 'en': return equipment.name_en || equipment.name;
     default: return equipment.name;
   }
+}
+
+function getPetName(pet: Pet | null | undefined, locale: Locale): string {
+  if (!pet) return '';
+  return pet.name[locale] || pet.name.en;
 }
 
 // Minecraft-style slot component
@@ -166,13 +201,15 @@ export default function CharacterClient({
   kid,
   equipped,
   inventory,
+  ownedPets,
   allEquipment,
   locale,
   translations,
 }: CharacterClientProps) {
   const router = useRouter();
-  const [activeTab, setActiveTab] = useState<'equipped' | 'inventory'>('equipped');
+  const [activeTab, setActiveTab] = useState<'equipped' | 'inventory' | 'pets'>('equipped');
   const [selectedSlot, setSelectedSlot] = useState<EquipmentSlot | null>(null);
+  const [isPetSlotSelected, setIsPetSlotSelected] = useState(false);
   const [isUpdating, setIsUpdating] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
   const [generatedAvatar, setGeneratedAvatar] = useState<string | null>(kid.generated_avatar_url);
@@ -227,6 +264,36 @@ export default function CharacterClient({
 
     router.refresh();
     setIsUpdating(false);
+  };
+
+  const handleEquipPet = async (petId: string) => {
+    setIsUpdating(true);
+    const supabase = createClient();
+
+    await supabase
+      .from('kid_equipped')
+      .upsert({ kid_id: kid.id, pet_id: petId }, { onConflict: 'kid_id' });
+
+    router.refresh();
+    setIsUpdating(false);
+    setIsPetSlotSelected(false);
+  };
+
+  const handleUnequipPet = async () => {
+    setIsUpdating(true);
+    const supabase = createClient();
+
+    await supabase
+      .from('kid_equipped')
+      .update({ pet_id: null })
+      .eq('kid_id', kid.id);
+
+    router.refresh();
+    setIsUpdating(false);
+  };
+
+  const getEquippedPet = (): Pet | null => {
+    return equipped?.pet as Pet | null;
   };
 
   // Generate AI avatar
@@ -311,32 +378,82 @@ export default function CharacterClient({
         {/* Main Equipment Layout - RPG Style Grid */}
         <div className="flex flex-col items-center gap-4">
 
-          {/* Character Avatar Display */}
-          <div className="relative">
+          {/* Character Avatar Display with Pet */}
+          <div className="flex items-end gap-3">
             {/* Avatar Frame - Minecraft style */}
-            <div
-              className="w-28 h-28 sm:w-32 sm:h-32 rounded-lg overflow-hidden border-4"
-              style={{
-                borderColor: '#555555',
-                boxShadow: 'inset -3px -3px 0 #373737, inset 3px 3px 0 #C6C6C6, 0 4px 12px rgba(0,0,0,0.3)',
-                background: 'linear-gradient(135deg, #6B8E23 0%, #556B2F 100%)',
+            <div className="relative">
+              <div
+                className="w-28 h-28 sm:w-32 sm:h-32 rounded-lg overflow-hidden border-4"
+                style={{
+                  borderColor: '#555555',
+                  boxShadow: 'inset -3px -3px 0 #373737, inset 3px 3px 0 #C6C6C6, 0 4px 12px rgba(0,0,0,0.3)',
+                  background: 'linear-gradient(135deg, #6B8E23 0%, #556B2F 100%)',
+                }}
+              >
+                {generatedAvatar ? (
+                  <Image
+                    src={generatedAvatar}
+                    alt={`${kid.name}'s Avatar`}
+                    width={128}
+                    height={128}
+                    className="w-full h-full object-cover"
+                    unoptimized={generatedAvatar.startsWith('data:')}
+                  />
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center">
+                    <span className="text-5xl">{kid.avatar_seed || '😊'}</span>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Pet Slot - Next to avatar */}
+            <button
+              onClick={() => {
+                setIsPetSlotSelected(!isPetSlotSelected);
+                setSelectedSlot(null);
               }}
+              className={`
+                relative w-16 h-16 sm:w-20 sm:h-20
+                bg-[#8B8B8B] rounded-lg
+                border-[3px] transition-all duration-150
+                hover:scale-105 hover:brightness-110
+                ${isPetSlotSelected
+                  ? 'border-[#F39C12] ring-2 ring-[#F39C12] ring-offset-1'
+                  : 'border-t-[#FFFFFF] border-l-[#FFFFFF] border-r-[#555555] border-b-[#555555]'
+                }
+              `}
+              style={{
+                boxShadow: 'inset -2px -2px 0 #373737, inset 2px 2px 0 #C6C6C6',
+                backgroundColor: getEquippedPet() ? petRarityBgColors[getEquippedPet()!.rarity] : '#8B8B8B',
+              }}
+              title={getEquippedPet() ? getPetName(getEquippedPet(), locale) : translations.pet}
             >
-              {generatedAvatar ? (
-                <Image
-                  src={generatedAvatar}
-                  alt={`${kid.name}'s Avatar`}
-                  width={128}
-                  height={128}
-                  className="w-full h-full object-cover"
-                  unoptimized={generatedAvatar.startsWith('data:')}
-                />
-              ) : (
-                <div className="w-full h-full flex items-center justify-center">
-                  <span className="text-5xl">{kid.avatar_seed || '😊'}</span>
+              <div className="absolute inset-1 bg-[#373737]/30 rounded flex items-center justify-center">
+                {getEquippedPet() ? (
+                  <Image
+                    src={getPetImageUrl(getEquippedPet()!.id)}
+                    alt={getPetName(getEquippedPet(), locale)}
+                    width={48}
+                    height={48}
+                    className="object-contain drop-shadow-lg"
+                  />
+                ) : (
+                  <div className="text-[#555555]/50 text-[10px] font-bold text-center leading-tight">
+                    {translations.pet}
+                  </div>
+                )}
+              </div>
+              {/* Rarity indicator */}
+              {getEquippedPet() && (
+                <div
+                  className="absolute -bottom-1 -right-1 w-4 h-4 rounded-full flex items-center justify-center text-[8px] font-bold text-white border border-white shadow-md"
+                  style={{ backgroundColor: petRarityColors[getEquippedPet()!.rarity] }}
+                >
+                  {getEquippedPet()!.rarity.charAt(0).toUpperCase()}
                 </div>
               )}
-            </div>
+            </button>
           </div>
 
           {/* Equipment Slots Grid - Classic RPG Layout */}
@@ -348,7 +465,7 @@ export default function CharacterClient({
                 slot="helmet"
                 slotName={translations.helmet}
                 isSelected={selectedSlot === 'helmet'}
-                onClick={() => setSelectedSlot(selectedSlot === 'helmet' ? null : 'helmet')}
+                onClick={() => { setSelectedSlot(selectedSlot === 'helmet' ? null : 'helmet'); setIsPetSlotSelected(false); }}
                 locale={locale}
               />
             </div>
@@ -360,7 +477,7 @@ export default function CharacterClient({
                 slot="weapon"
                 slotName={translations.weapon}
                 isSelected={selectedSlot === 'weapon'}
-                onClick={() => setSelectedSlot(selectedSlot === 'weapon' ? null : 'weapon')}
+                onClick={() => { setSelectedSlot(selectedSlot === 'weapon' ? null : 'weapon'); setIsPetSlotSelected(false); }}
                 locale={locale}
               />
               <EquipmentSlotBox
@@ -368,7 +485,7 @@ export default function CharacterClient({
                 slot="chestplate"
                 slotName={translations.chestplate}
                 isSelected={selectedSlot === 'chestplate'}
-                onClick={() => setSelectedSlot(selectedSlot === 'chestplate' ? null : 'chestplate')}
+                onClick={() => { setSelectedSlot(selectedSlot === 'chestplate' ? null : 'chestplate'); setIsPetSlotSelected(false); }}
                 locale={locale}
               />
               {/* Empty slot for visual balance */}
@@ -382,7 +499,7 @@ export default function CharacterClient({
                 slot="leggings"
                 slotName={translations.leggings}
                 isSelected={selectedSlot === 'leggings'}
-                onClick={() => setSelectedSlot(selectedSlot === 'leggings' ? null : 'leggings')}
+                onClick={() => { setSelectedSlot(selectedSlot === 'leggings' ? null : 'leggings'); setIsPetSlotSelected(false); }}
                 locale={locale}
               />
               <EquipmentSlotBox
@@ -390,7 +507,7 @@ export default function CharacterClient({
                 slot="boots"
                 slotName={translations.boots}
                 isSelected={selectedSlot === 'boots'}
-                onClick={() => setSelectedSlot(selectedSlot === 'boots' ? null : 'boots')}
+                onClick={() => { setSelectedSlot(selectedSlot === 'boots' ? null : 'boots'); setIsPetSlotSelected(false); }}
                 locale={locale}
               />
             </div>
@@ -409,6 +526,17 @@ export default function CharacterClient({
               className="w-full max-w-xs px-4 py-3 bg-red-500 hover:bg-red-600 text-white rounded-lg disabled:opacity-50 font-bold transition-all shadow-md"
             >
               {translations.unequip} {slotNames[selectedSlot]}
+            </button>
+          )}
+
+          {/* Unequip Pet Button */}
+          {isPetSlotSelected && getEquippedPet() && (
+            <button
+              onClick={handleUnequipPet}
+              disabled={isUpdating}
+              className="w-full max-w-xs px-4 py-3 bg-red-500 hover:bg-red-600 text-white rounded-lg disabled:opacity-50 font-bold transition-all shadow-md"
+            >
+              {translations.unequip} {translations.pet}
             </button>
           )}
         </div>
@@ -440,6 +568,16 @@ export default function CharacterClient({
               }`}
             >
               {translations.inventory}
+            </button>
+            <button
+              onClick={() => setActiveTab('pets')}
+              className={`flex-1 py-2.5 rounded-lg font-bold transition-all ${
+                activeTab === 'pets'
+                  ? 'bg-[#F39C12] text-white shadow-md'
+                  : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+              }`}
+            >
+              {translations.pet}
             </button>
           </div>
 
@@ -541,7 +679,7 @@ export default function CharacterClient({
           )}
 
           {/* All Equipment Preview */}
-          {activeTab === 'equipped' && !selectedSlot && (
+          {activeTab === 'equipped' && !selectedSlot && !isPetSlotSelected && (
             <div className="space-y-3">
               <h3 className="font-bold text-gray-700 text-sm">
                 {locale === 'ms' ? 'Koleksi Peralatan' :
@@ -584,6 +722,108 @@ export default function CharacterClient({
                   );
                 })}
               </div>
+            </div>
+          )}
+
+          {/* Pet Selection (when pet slot selected) */}
+          {isPetSlotSelected && activeTab === 'equipped' && (
+            <div className="space-y-3">
+              <h3 className="font-bold text-gray-700 flex items-center gap-2">
+                <span className="w-3 h-3 rounded-full bg-[#F39C12]"></span>
+                {translations.pet}
+              </h3>
+              <div className="space-y-2 max-h-40 lg:max-h-48 overflow-y-auto pr-2">
+                {ownedPets.length > 0 ? (
+                  ownedPets.map(kidPet => (
+                    <button
+                      key={kidPet.id}
+                      onClick={() => handleEquipPet(kidPet.pet_id)}
+                      disabled={isUpdating}
+                      className="w-full flex items-center gap-4 p-3 bg-white hover:bg-gray-50 rounded-lg border-2 border-gray-200 hover:border-[#F39C12] transition-all disabled:opacity-50 shadow-sm"
+                    >
+                      <div
+                        className="w-12 h-12 rounded-lg flex items-center justify-center shadow-inner"
+                        style={{ backgroundColor: petRarityBgColors[kidPet.pet.rarity] }}
+                      >
+                        <Image
+                          src={getPetImageUrl(kidPet.pet.id)}
+                          alt={getPetName(kidPet.pet, locale)}
+                          width={40}
+                          height={40}
+                          className="object-contain"
+                        />
+                      </div>
+                      <div className="flex-1 text-left">
+                        <p className="font-bold" style={{ color: petRarityColors[kidPet.pet.rarity] }}>
+                          {getPetName(kidPet.pet, locale)}
+                        </p>
+                        <p className="text-xs text-gray-500 flex items-center gap-1">
+                          <span
+                            className="w-2 h-2 rounded-full"
+                            style={{ backgroundColor: petRarityColors[kidPet.pet.rarity] }}
+                          />
+                          {kidPet.pet.rarity.charAt(0).toUpperCase() + kidPet.pet.rarity.slice(1)}
+                        </p>
+                      </div>
+                      <span className="text-[#F39C12] font-bold bg-[#F39C12]/10 px-3 py-1 rounded-full text-sm">
+                        {translations.equip}
+                      </span>
+                    </button>
+                  ))
+                ) : (
+                  <p className="text-gray-500 text-center py-6 bg-gray-50 rounded-lg">
+                    {translations.noPets}
+                  </p>
+                )}
+              </div>
+            </div>
+          )}
+
+          {/* Pets Tab Content */}
+          {activeTab === 'pets' && (
+            <div className="space-y-2 max-h-40 lg:max-h-48 overflow-y-auto pr-2">
+              {ownedPets.length > 0 ? (
+                ownedPets.map(kidPet => (
+                  <div
+                    key={kidPet.id}
+                    className="flex items-center gap-4 p-3 bg-white rounded-lg border border-gray-200 shadow-sm"
+                  >
+                    <div
+                      className="w-12 h-12 rounded-lg flex items-center justify-center shadow-inner"
+                      style={{ backgroundColor: petRarityBgColors[kidPet.pet.rarity] }}
+                    >
+                      <Image
+                        src={getPetImageUrl(kidPet.pet.id)}
+                        alt={getPetName(kidPet.pet, locale)}
+                        width={40}
+                        height={40}
+                        className="object-contain"
+                      />
+                    </div>
+                    <div className="flex-1">
+                      <p className="font-bold" style={{ color: petRarityColors[kidPet.pet.rarity] }}>
+                        {getPetName(kidPet.pet, locale)}
+                      </p>
+                      <p className="text-xs text-gray-500 flex items-center gap-1">
+                        <span
+                          className="w-2 h-2 rounded-full"
+                          style={{ backgroundColor: petRarityColors[kidPet.pet.rarity] }}
+                        />
+                        {kidPet.pet.rarity.charAt(0).toUpperCase() + kidPet.pet.rarity.slice(1)} • {kidPet.pet.mob_type}
+                      </p>
+                    </div>
+                    {getEquippedPet()?.id === kidPet.pet.id && (
+                      <span className="text-[#F39C12] font-bold bg-[#F39C12]/10 px-3 py-1 rounded-full text-sm">
+                        ✓
+                      </span>
+                    )}
+                  </div>
+                ))
+              ) : (
+                <p className="text-gray-500 text-center py-8 bg-gray-50 rounded-lg">
+                  {translations.noPets}
+                </p>
+              )}
             </div>
           )}
         </div>

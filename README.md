@@ -132,6 +132,74 @@ curl -X POST https://your-app.vercel.app/api/generate-equipment \
 3. Update `src/types/index.ts` to add the new tier to `EquipmentTier` type
 4. Update components (`CharacterClient.tsx`, `dashboard/page.tsx`) to handle the new tier colors
 
+### Pet System
+
+Pets are Minecraft mob companions that kids can collect and display next to their avatar. Pets are awarded when a kid completes ALL activities in a theme.
+
+**Pet Rarity Tiers**:
+| Rarity | Examples | When to Award |
+|--------|----------|---------------|
+| Common | Chicken, Cow, Pig, Sheep, Rabbit | Early themes |
+| Uncommon | Cat, Wolf, Fox, Parrot, Turtle | Mid themes |
+| Rare | Bee, Panda, Axolotl, Ocelot, Llama | Later themes |
+| Epic | Skeleton, Zombie, Creeper, Spider, Slime | Advanced themes |
+| Legendary | Iron Golem, Snow Golem, Allay, Ender Dragon, Wither | Final/special themes |
+
+**Storage location**: `{SUPABASE_URL}/storage/v1/object/public/images/pets/{pet_id}.png`
+
+**Available Pet IDs**:
+- **Passive**: `chicken`, `cow`, `pig`, `sheep`, `rabbit`, `cat`, `fox`, `parrot`, `turtle`, `panda`, `axolotl`, `ocelot`, `llama`
+- **Neutral**: `wolf`, `bee`
+- **Hostile**: `skeleton`, `zombie`, `creeper`, `spider`, `slime`, `ender_dragon`, `wither`
+- **Utility**: `iron_golem`, `snow_golem`, `allay`
+
+**Generating Pet Images**:
+
+Use the pet generation API at `src/app/api/generate-pets/route.ts`:
+
+```bash
+# Check pet list
+curl https://your-app.vercel.app/api/generate-pets
+
+# Generate in batches of 5
+curl -X POST https://your-app.vercel.app/api/generate-pets \
+  -H "Content-Type: application/json" \
+  -d '{"startIndex": 0, "count": 5}'
+
+# Continue with next batches (0-4, 5-9, 10-14, 15-19, 20-24)
+curl -X POST https://your-app.vercel.app/api/generate-pets \
+  -H "Content-Type: application/json" \
+  -d '{"startIndex": 5, "count": 5}'
+```
+
+**Assigning Pet Rewards to Themes**:
+
+In your seed SQL, add a `pet_reward` to themes:
+
+```sql
+UPDATE themes
+SET pet_reward = 'wolf'
+WHERE id = 'your-theme-uuid';
+```
+
+Or when creating a new theme:
+
+```sql
+INSERT INTO themes (subject_id, code, name_ms, name_zh, name_en, pet_reward)
+VALUES (
+  'subject-uuid',
+  'tema_2',
+  '{"ms": "Tema 2", "zh": "主题2", "en": "Theme 2"}',
+  'panda'  -- Pet reward for completing all activities in this theme
+);
+```
+
+**How Pet Rewards Work**:
+1. Kid completes an activity
+2. System checks if all activities in the theme are now completed
+3. If all completed AND theme has a `pet_reward`, the pet is awarded
+4. Pet appears in kid's pet collection and can be equipped
+
 ### Step-by-Step: Adding New Lessons
 
 #### Step 1: Analyze Learning Materials

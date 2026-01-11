@@ -126,6 +126,55 @@ export default function ActivityClient({
         });
     }
 
+    // Check if theme is now complete and award pet if applicable
+    try {
+      // Get all activities in this theme
+      const { data: themeActivities } = await supabase
+        .from('activities')
+        .select('id')
+        .eq('theme_id', activity.theme_id);
+
+      if (themeActivities && themeActivities.length > 0) {
+        // Get kid's progress for all activities in this theme
+        const { data: progress } = await supabase
+          .from('kid_progress')
+          .select('activity_id, status')
+          .eq('kid_id', kid.id)
+          .in('activity_id', themeActivities.map(a => a.id));
+
+        // Check if all activities are completed
+        const completedCount = progress?.filter(p => p.status === 'completed').length ?? 0;
+        const allCompleted = completedCount >= themeActivities.length;
+
+        if (allCompleted) {
+          // Get theme's pet reward
+          const { data: theme } = await supabase
+            .from('themes')
+            .select('pet_reward')
+            .eq('id', activity.theme_id)
+            .single();
+
+          if (theme?.pet_reward) {
+            // Award pet to kid
+            await supabase
+              .from('kid_pets')
+              .upsert({
+                kid_id: kid.id,
+                pet_id: theme.pet_reward,
+                obtained_at: new Date().toISOString(),
+                obtained_from_theme: activity.theme_id,
+              }, {
+                onConflict: 'kid_id,pet_id',
+              });
+
+            console.log('[ActivityClient] Pet awarded:', theme.pet_reward);
+          }
+        }
+      }
+    } catch (petError) {
+      console.error('[ActivityClient] Error checking pet reward:', petError);
+    }
+
     setIsSubmitting(false);
     setGameState('complete');
     setShowConfetti(true);

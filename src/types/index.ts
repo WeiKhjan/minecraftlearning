@@ -12,6 +12,10 @@ export type EquipmentTier = 'leather' | 'chain' | 'iron' | 'gold' | 'diamond';
 
 export type EquipmentRarity = 'common' | 'rare' | 'epic' | 'legendary';
 
+export type PetMobType = 'passive' | 'neutral' | 'hostile' | 'utility';
+
+export type PetRarity = 'common' | 'uncommon' | 'rare' | 'epic' | 'legendary';
+
 export type ActivityType = 'alphabet' | 'matching' | 'syllable' | 'writing' | 'speaking' | 'singing' | 'math' | 'dictation';
 
 export type ProgressStatus = 'locked' | 'available' | 'in_progress' | 'completed';
@@ -195,6 +199,28 @@ export interface KidEquipped {
   leggings_id: string | null;
   boots_id: string | null;
   weapon_id: string | null;
+  pet_id: string | null;
+}
+
+// Pet
+export interface Pet {
+  id: string;
+  name: LocalizedText;
+  mob_type: PetMobType;
+  rarity: PetRarity;
+  description: LocalizedText | null;
+  image_url: string | null;
+  created_at: string;
+}
+
+// Kid Pet (owned pets)
+export interface KidPet {
+  id: string;
+  kid_id: string;
+  pet_id: string;
+  obtained_at: string;
+  obtained_from_theme: string | null;
+  pet?: Pet;
 }
 
 // Kid Progress

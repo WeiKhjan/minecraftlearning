@@ -42,10 +42,10 @@ export default async function CharacterPage({
     redirect(`/${locale}/kids`);
   }
 
-  // Fetch kid's equipped items
+  // Fetch kid's equipped items (including pet)
   const { data: equipped } = await supabase
     .from('kid_equipped')
-    .select('*, helmet:helmet_id(*), chestplate:chestplate_id(*), leggings:leggings_id(*), boots:boots_id(*), weapon:weapon_id(*)')
+    .select('*, helmet:helmet_id(*), chestplate:chestplate_id(*), leggings:leggings_id(*), boots:boots_id(*), weapon:weapon_id(*), pet:pet_id(*)')
     .eq('kid_id', kidId)
     .single();
 
@@ -53,6 +53,12 @@ export default async function CharacterPage({
   const { data: inventory } = await supabase
     .from('kid_inventory')
     .select('*, equipment:equipment_id(*)')
+    .eq('kid_id', kidId);
+
+  // Fetch kid's owned pets
+  const { data: ownedPets } = await supabase
+    .from('kid_pets')
+    .select('*, pet:pet_id(*)')
     .eq('kid_id', kidId);
 
   // Fetch all equipment for reference
@@ -90,6 +96,7 @@ export default async function CharacterPage({
             kid={kid}
             equipped={equipped}
             inventory={inventory || []}
+            ownedPets={ownedPets || []}
             allEquipment={allEquipment || []}
             locale={locale as Locale}
             translations={{
@@ -102,7 +109,9 @@ export default async function CharacterPage({
               leggings: t('character.leggings'),
               boots: t('character.boots'),
               weapon: t('character.weapon'),
+              pet: locale === 'ms' ? 'Pet' : locale === 'zh' ? '宠物' : 'Pet',
               noEquipment: t('character.noEquipment'),
+              noPets: locale === 'ms' ? 'Tiada pet lagi' : locale === 'zh' ? '还没有宠物' : 'No pets yet',
               levelRequired: locale === 'ms' ? 'Tahap diperlukan' : locale === 'zh' ? '所需等级' : 'Level required',
             }}
           />
