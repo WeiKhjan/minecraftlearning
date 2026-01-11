@@ -17,8 +17,8 @@ interface AlphabetActivityProps {
 type InputMode = 'tap' | 'draw' | 'type';
 
 export default function AlphabetActivity({ content, avatarUrl, locale, onComplete }: AlphabetActivityProps) {
-  const data = content.data as { letters: string[]; instruction: { ms: string; zh: string; en: string } };
-  const letters = data.letters;
+  const data = (content?.data || {}) as { letters: string[]; instruction: { ms: string; zh: string; en: string } };
+  const letters = data.letters || [];
 
   const [inputMode, setInputMode] = useState<InputMode>('tap');
   const [currentIndex, setCurrentIndex] = useState(0);

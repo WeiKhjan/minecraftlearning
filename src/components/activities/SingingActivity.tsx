@@ -11,8 +11,8 @@ interface SingingActivityProps {
 }
 
 export default function SingingActivity({ content, locale, onComplete }: SingingActivityProps) {
-  const data = content.data as SingingContent;
-  const { title, lyrics, melody_reference, youtube_id } = data;
+  const data = (content?.data || {}) as SingingContent;
+  const { title = '', lyrics = [], melody_reference, youtube_id } = data;
 
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentLineIndex, setCurrentLineIndex] = useState(-1);

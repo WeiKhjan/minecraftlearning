@@ -15,7 +15,7 @@ interface WritingActivityProps {
 }
 
 export default function WritingActivity({ content, avatarUrl, locale, onComplete }: WritingActivityProps) {
-  const data = content.data as WritingContent;
+  const data = (content?.data || {}) as WritingContent;
   const characters = data.characters || [];
   const words = data.words || [];
   const items = characters.length > 0 ? characters : words.map(w => w.word);

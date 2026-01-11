@@ -20,8 +20,8 @@ interface MatchPair {
 }
 
 export default function MatchingActivity({ content, locale, onComplete }: MatchingActivityProps) {
-  const data = content.data as MatchingContent;
-  const pairs = data.pairs;
+  const data = (content?.data || {}) as MatchingContent;
+  const pairs = data.pairs || [];
 
   const [selectedLetter, setSelectedLetter] = useState<string | null>(null);
   const [matchedPairs, setMatchedPairs] = useState<Set<string>>(new Set());

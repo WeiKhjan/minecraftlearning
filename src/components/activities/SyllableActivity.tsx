@@ -26,8 +26,8 @@ interface PronunciationFeedback {
 type ActivityState = 'ready' | 'listening' | 'analyzing' | 'feedback' | 'correct' | 'completed';
 
 export default function SyllableActivity({ content, avatarUrl, locale, onComplete }: SyllableActivityProps) {
-  const data = content.data as SyllableContent;
-  const syllables = data.syllables;
+  const data = (content?.data || {}) as SyllableContent;
+  const syllables = data.syllables || [];
 
   const [currentIndex, setCurrentIndex] = useState(0);
   const [readSyllables, setReadSyllables] = useState<Set<number>>(new Set());

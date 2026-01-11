@@ -15,7 +15,7 @@ interface DictationActivityProps {
 }
 
 export default function DictationActivity({ content, avatarUrl, locale, onComplete }: DictationActivityProps) {
-  const data = content.data as DictationContent;
+  const data = (content?.data || {}) as DictationContent;
   const words = data.words || [];
 
   const [currentIndex, setCurrentIndex] = useState(0);

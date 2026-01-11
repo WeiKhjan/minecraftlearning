@@ -14,8 +14,8 @@ interface SpeakingActivityProps {
 }
 
 export default function SpeakingActivity({ content, kidName, avatarUrl, locale, onComplete }: SpeakingActivityProps) {
-  const data = content.data as SpeakingContent;
-  const phrases = data.phrases;
+  const data = (content?.data || {}) as SpeakingContent;
+  const phrases = data.phrases || [];
 
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isRecording, setIsRecording] = useState(false);
