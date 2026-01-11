@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
-import type { Kid, Equipment, KidInventory, Locale, EquipmentSlot } from '@/types';
+import type { Kid, Equipment, KidInventory, Locale, EquipmentSlot, EquipmentTier } from '@/types';
 
 // Equipment slot emojis
 const slotEmojis: Record<EquipmentSlot, string> = {
@@ -14,13 +14,22 @@ const slotEmojis: Record<EquipmentSlot, string> = {
   weapon: '⚔️',
 };
 
-// Tier colors
-const tierColors: Record<string, string> = {
+// Tier colors for equipment
+const tierColors: Record<EquipmentTier, string> = {
   leather: '#8B4513',
   chain: '#A9A9A9',
   iron: '#C0C0C0',
   gold: '#FFD700',
   diamond: '#5DADE2',
+};
+
+// Tier gradient colors for body parts
+const tierGradients: Record<EquipmentTier, { main: string; highlight: string; shadow: string }> = {
+  leather: { main: '#8B4513', highlight: '#A0522D', shadow: '#5D3A1A' },
+  chain: { main: '#A9A9A9', highlight: '#C0C0C0', shadow: '#808080' },
+  iron: { main: '#C0C0C0', highlight: '#E0E0E0', shadow: '#909090' },
+  gold: { main: '#FFD700', highlight: '#FFE44D', shadow: '#C4A600' },
+  diamond: { main: '#5DADE2', highlight: '#85C1E9', shadow: '#3498DB' },
 };
 
 // Rarity colors
@@ -137,6 +146,13 @@ export default function CharacterClient({
   // Get owned equipment IDs
   const ownedEquipmentIds = new Set(inventory.map(inv => inv.equipment_id));
 
+  // Get equipment for each slot
+  const helmetEquipped = getEquippedItem('helmet');
+  const chestplateEquipped = getEquippedItem('chestplate');
+  const leggingsEquipped = getEquippedItem('leggings');
+  const bootsEquipped = getEquippedItem('boots');
+  const weaponEquipped = getEquippedItem('weapon');
+
   return (
     <div className="grid md:grid-cols-2 gap-6">
       {/* Character Display */}
@@ -145,69 +161,188 @@ export default function CharacterClient({
           {kid.name}
         </h2>
 
-        {/* Character Avatar */}
+        {/* Full Body Character Avatar */}
         <div className="flex justify-center mb-6">
           <div className="relative">
-            <div className="w-32 h-32 bg-[#5D8731] rounded-lg flex items-center justify-center">
-              <span className="text-6xl">{kid.avatar_seed || '🧒'}</span>
-            </div>
-            <div className="absolute -top-2 -right-2 bg-yellow-500 text-white text-xs px-2 py-1 rounded font-bold">
+            {/* Level Badge */}
+            <div className="absolute -top-2 -right-2 bg-yellow-500 text-white text-xs px-2 py-1 rounded font-bold z-20">
               Lv.{kid.level}
+            </div>
+
+            {/* Character Body Container */}
+            <div className="flex flex-col items-center">
+              {/* Weapon (left side) */}
+              <div className="absolute left-[-40px] top-[70px] z-10">
+                <button
+                  onClick={() => setSelectedSlot(selectedSlot === 'weapon' ? null : 'weapon')}
+                  className={`w-12 h-24 rounded-lg flex items-center justify-center transition-all hover:scale-105 ${
+                    selectedSlot === 'weapon' ? 'ring-4 ring-[#5DADE2]' : ''
+                  }`}
+                  style={{
+                    backgroundColor: weaponEquipped
+                      ? tierGradients[weaponEquipped.tier].main
+                      : '#9CA3AF',
+                  }}
+                  title={weaponEquipped ? getEquipmentName(weaponEquipped, locale) : translations.weapon}
+                >
+                  <span className="text-2xl">{weaponEquipped ? '⚔️' : '🔲'}</span>
+                </button>
+              </div>
+
+              {/* Head/Helmet */}
+              <button
+                onClick={() => setSelectedSlot(selectedSlot === 'helmet' ? null : 'helmet')}
+                className={`w-20 h-20 rounded-lg flex items-center justify-center transition-all hover:scale-105 relative ${
+                  selectedSlot === 'helmet' ? 'ring-4 ring-[#5DADE2]' : ''
+                }`}
+                style={{
+                  backgroundColor: helmetEquipped
+                    ? tierGradients[helmetEquipped.tier].main
+                    : '#FBBF24',
+                }}
+                title={helmetEquipped ? getEquipmentName(helmetEquipped, locale) : translations.helmet}
+              >
+                {helmetEquipped ? (
+                  <>
+                    <span className="text-3xl">🪖</span>
+                    <div
+                      className="absolute bottom-1 w-8 h-4 rounded"
+                      style={{ backgroundColor: '#FBBF24' }}
+                    >
+                      <span className="text-xs">{kid.avatar_seed || '😊'}</span>
+                    </div>
+                  </>
+                ) : (
+                  <span className="text-4xl">{kid.avatar_seed || '😊'}</span>
+                )}
+              </button>
+
+              {/* Torso/Chestplate */}
+              <button
+                onClick={() => setSelectedSlot(selectedSlot === 'chestplate' ? null : 'chestplate')}
+                className={`w-24 h-28 -mt-1 rounded-lg flex items-center justify-center transition-all hover:scale-105 relative ${
+                  selectedSlot === 'chestplate' ? 'ring-4 ring-[#5DADE2]' : ''
+                }`}
+                style={{
+                  backgroundColor: chestplateEquipped
+                    ? tierGradients[chestplateEquipped.tier].main
+                    : '#5D8731',
+                }}
+                title={chestplateEquipped ? getEquipmentName(chestplateEquipped, locale) : translations.chestplate}
+              >
+                {chestplateEquipped ? (
+                  <div className="flex flex-col items-center">
+                    <span className="text-4xl">🦺</span>
+                    <span
+                      className="text-xs font-bold mt-1 px-2 py-0.5 rounded"
+                      style={{
+                        backgroundColor: tierGradients[chestplateEquipped.tier].shadow,
+                        color: 'white'
+                      }}
+                    >
+                      {chestplateEquipped.tier.charAt(0).toUpperCase()}
+                    </span>
+                  </div>
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center">
+                    <div className="w-16 h-20 bg-[#4A7229] rounded-md" />
+                  </div>
+                )}
+                {/* Arms */}
+                <div
+                  className="absolute left-[-12px] top-2 w-3 h-20 rounded-full"
+                  style={{
+                    backgroundColor: chestplateEquipped
+                      ? tierGradients[chestplateEquipped.tier].shadow
+                      : '#4A7229',
+                  }}
+                />
+                <div
+                  className="absolute right-[-12px] top-2 w-3 h-20 rounded-full"
+                  style={{
+                    backgroundColor: chestplateEquipped
+                      ? tierGradients[chestplateEquipped.tier].shadow
+                      : '#4A7229',
+                  }}
+                />
+              </button>
+
+              {/* Legs/Leggings */}
+              <button
+                onClick={() => setSelectedSlot(selectedSlot === 'leggings' ? null : 'leggings')}
+                className={`w-20 h-24 -mt-1 rounded-b-lg flex items-center justify-center transition-all hover:scale-105 relative ${
+                  selectedSlot === 'leggings' ? 'ring-4 ring-[#5DADE2]' : ''
+                }`}
+                style={{
+                  backgroundColor: leggingsEquipped
+                    ? tierGradients[leggingsEquipped.tier].main
+                    : '#3B82F6',
+                }}
+                title={leggingsEquipped ? getEquipmentName(leggingsEquipped, locale) : translations.leggings}
+              >
+                {leggingsEquipped ? (
+                  <span className="text-3xl">👖</span>
+                ) : (
+                  <div className="flex gap-1">
+                    <div className="w-6 h-20 bg-[#2563EB] rounded-b-md" />
+                    <div className="w-6 h-20 bg-[#2563EB] rounded-b-md" />
+                  </div>
+                )}
+              </button>
+
+              {/* Feet/Boots */}
+              <button
+                onClick={() => setSelectedSlot(selectedSlot === 'boots' ? null : 'boots')}
+                className={`w-24 h-10 -mt-1 rounded-b-lg flex items-center justify-center gap-2 transition-all hover:scale-105 ${
+                  selectedSlot === 'boots' ? 'ring-4 ring-[#5DADE2]' : ''
+                }`}
+                style={{
+                  backgroundColor: bootsEquipped
+                    ? tierGradients[bootsEquipped.tier].main
+                    : '#78350F',
+                }}
+                title={bootsEquipped ? getEquipmentName(bootsEquipped, locale) : translations.boots}
+              >
+                {bootsEquipped ? (
+                  <span className="text-2xl">👢</span>
+                ) : (
+                  <>
+                    <div className="w-8 h-6 bg-[#92400E] rounded-md" />
+                    <div className="w-8 h-6 bg-[#92400E] rounded-md" />
+                  </>
+                )}
+              </button>
             </div>
           </div>
         </div>
 
-        {/* Equipment Slots */}
-        <div className="grid grid-cols-3 gap-2">
-          {/* Top Row - Helmet */}
-          <div className="col-start-2">
-            <EquipmentSlotButton
-              slot="helmet"
-              equipment={getEquippedItem('helmet')}
-              slotName={slotNames.helmet}
-              locale={locale}
-              isSelected={selectedSlot === 'helmet'}
-              onClick={() => setSelectedSlot(selectedSlot === 'helmet' ? null : 'helmet')}
-            />
-          </div>
-
-          {/* Middle Row - Weapon, Chestplate, (empty) */}
-          <EquipmentSlotButton
-            slot="weapon"
-            equipment={getEquippedItem('weapon')}
-            slotName={slotNames.weapon}
-            locale={locale}
-            isSelected={selectedSlot === 'weapon'}
-            onClick={() => setSelectedSlot(selectedSlot === 'weapon' ? null : 'weapon')}
-          />
-          <EquipmentSlotButton
-            slot="chestplate"
-            equipment={getEquippedItem('chestplate')}
-            slotName={slotNames.chestplate}
-            locale={locale}
-            isSelected={selectedSlot === 'chestplate'}
-            onClick={() => setSelectedSlot(selectedSlot === 'chestplate' ? null : 'chestplate')}
-          />
-          <div></div>
-
-          {/* Bottom Row - (empty), Leggings, Boots */}
-          <div></div>
-          <EquipmentSlotButton
-            slot="leggings"
-            equipment={getEquippedItem('leggings')}
-            slotName={slotNames.leggings}
-            locale={locale}
-            isSelected={selectedSlot === 'leggings'}
-            onClick={() => setSelectedSlot(selectedSlot === 'leggings' ? null : 'leggings')}
-          />
-          <EquipmentSlotButton
-            slot="boots"
-            equipment={getEquippedItem('boots')}
-            slotName={slotNames.boots}
-            locale={locale}
-            isSelected={selectedSlot === 'boots'}
-            onClick={() => setSelectedSlot(selectedSlot === 'boots' ? null : 'boots')}
-          />
+        {/* Equipment Slot Legend */}
+        <div className="flex flex-wrap justify-center gap-2 mt-4 text-xs">
+          {slots.map(slot => {
+            const item = getEquippedItem(slot);
+            return (
+              <div
+                key={slot}
+                onClick={() => setSelectedSlot(selectedSlot === slot ? null : slot)}
+                className={`flex items-center gap-1 px-2 py-1 rounded cursor-pointer transition-all ${
+                  selectedSlot === slot
+                    ? 'bg-[#5DADE2] text-white'
+                    : item
+                      ? 'bg-[#5D8731]/20 text-[#5D8731]'
+                      : 'bg-gray-200 text-gray-500'
+                }`}
+              >
+                <span>{slotEmojis[slot]}</span>
+                <span>{slotNames[slot]}</span>
+                {item && (
+                  <span
+                    className="w-2 h-2 rounded-full"
+                    style={{ backgroundColor: tierColors[item.tier] }}
+                  />
+                )}
+              </div>
+            );
+          })}
         </div>
 
         {/* Unequip Button */}
@@ -328,9 +463,9 @@ export default function CharacterClient({
         {activeTab === 'equipped' && !selectedSlot && (
           <div className="space-y-2">
             <h3 className="font-bold text-gray-700 mb-2">
-              {locale === 'ms' ? 'Pilih slot untuk menukar' :
-                locale === 'zh' ? '选择一个槽位来更换' :
-                'Select a slot to change'}
+              {locale === 'ms' ? 'Klik pada badan untuk menukar peralatan' :
+                locale === 'zh' ? '点击身体部位更换装备' :
+                'Click on body parts to change equipment'}
             </h3>
             <div className="grid grid-cols-5 gap-2">
               {allEquipment.slice(0, 10).map(equipment => {
@@ -361,48 +496,5 @@ export default function CharacterClient({
         )}
       </div>
     </div>
-  );
-}
-
-// Equipment Slot Button Component
-function EquipmentSlotButton({
-  slot,
-  equipment,
-  slotName,
-  locale,
-  isSelected,
-  onClick,
-}: {
-  slot: EquipmentSlot;
-  equipment: Equipment | null;
-  slotName: string;
-  locale: Locale;
-  isSelected: boolean;
-  onClick: () => void;
-}) {
-  return (
-    <button
-      onClick={onClick}
-      className={`
-        aspect-square rounded-lg border-4 flex flex-col items-center justify-center transition-all
-        ${isSelected
-          ? 'border-[#5DADE2] bg-[#5DADE2]/20'
-          : equipment
-            ? 'border-[#5D8731] bg-[#5D8731]/20'
-            : 'border-gray-400 bg-gray-200'
-        }
-        hover:scale-105
-      `}
-      title={slotName}
-    >
-      <span className="text-2xl">
-        {equipment ? slotEmojis[slot] : '❓'}
-      </span>
-      {equipment && (
-        <span className="text-xs font-bold truncate w-full text-center px-1" style={{ color: tierColors[equipment.tier] }}>
-          {equipment.tier.charAt(0).toUpperCase()}
-        </span>
-      )}
-    </button>
   );
 }
