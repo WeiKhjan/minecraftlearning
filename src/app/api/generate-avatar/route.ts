@@ -200,9 +200,9 @@ ${!equipment.boots ? '- FEET: Simple brown shoes' : ''}
 This is for a children's educational game - make the character look like an AWESOME hero that kids would want to be!
 ${hasEquipment ? `This ${themeVisual.quality} is ready for learning adventures!` : 'A brave young adventurer starting their journey!'}`;
 
-    // Use Gemini 2.5 Flash Image model for image generation
+    // Use Gemini 3 Flash Preview model for image generation
     const response = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-image:generateContent?key=${apiKey}`,
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${apiKey}`,
       {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
