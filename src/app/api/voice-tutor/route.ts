@@ -83,7 +83,7 @@ export async function POST(request: NextRequest) {
             },
             generationConfig: {
               temperature: 0.5,
-              maxOutputTokens: 500,
+              maxOutputTokens: 3000,
             },
           }),
         }
@@ -204,9 +204,9 @@ function generateTutorPrompt(
       en: `Word "${content}". Directly explain: say the word and its meaning in 1-2 sentences.`,
     },
     syllable: {
-      ms: `Suku kata "${content}". ${content.length === 1 ? `Ini huruf vokal. Terangkan bunyi vokal ini dengan jelas.` : `Ini gabungan konsonan dan vokal. Pecahkan bunyi konsonan "${content[0]}" dan vokal "${content.slice(1)}" kemudian gabungkan.`} Akhiri dengan: "Cuba sebut bersama saya: ${content}... ${content}... ${content}."`,
-      zh: `音节"${content}"。${content.length === 1 ? `这是元音字母。清楚地解释这个元音的发音。` : `这是辅音和元音的组合。分解辅音"${content[0]}"和元音"${content.slice(1)}"然后组合。`}最后说："跟我一起说：${content}... ${content}... ${content}。"`,
-      en: `Syllable "${content}". ${content.length === 1 ? `This is a vowel. Explain this vowel sound clearly.` : `This combines consonant "${content[0]}" and vowel "${content.slice(1)}". Break down then combine.`} End with: "Say it with me: ${content}... ${content}... ${content}."`,
+      ms: `Suku kata "${content}". ${content.length === 1 ? `Ini huruf vokal. Terangkan bunyi vokal ini dengan jelas.` : `Ini gabungan konsonan dan vokal. Pecahkan bunyi konsonan "${content[0]}" dan vokal "${content.slice(1)}" kemudian gabungkan.`} Akhiri dengan: "Cuba sebut bersama saya: ${content}... ${content}... ${content}." PENTING: Jawapan mesti ringkas, kurang dari 10 saat masa membaca.`,
+      zh: `音节"${content}"。${content.length === 1 ? `这是元音字母。清楚地解释这个元音的发音。` : `这是辅音和元音的组合。分解辅音"${content[0]}"和元音"${content.slice(1)}"然后组合。`}最后说："跟我一起说：${content}... ${content}... ${content}。" 重要：回答必须简短，朗读时间少于10秒。`,
+      en: `Syllable "${content}". ${content.length === 1 ? `This is a vowel. Explain this vowel sound clearly.` : `This combines consonant "${content[0]}" and vowel "${content.slice(1)}". Break down then combine.`} End with: "Say it with me: ${content}... ${content}... ${content}." IMPORTANT: Keep response brief, under 10 seconds speaking time.`,
     },
     sentence: {
       ms: `Baca ayat ini dengan jelas: "${content}"`,
