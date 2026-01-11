@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import VoiceTutorButton from '@/components/voice/VoiceTutorButton';
 import DrawingCanvas from './DrawingCanvas';
 import type { ActivityContent, Locale } from '@/types';
@@ -12,7 +12,7 @@ interface AlphabetActivityProps {
   onComplete: (score: number) => void;
 }
 
-type InputMode = 'tap' | 'draw';
+type InputMode = 'tap' | 'draw' | 'type';
 
 export default function AlphabetActivity({ content, locale, onComplete }: AlphabetActivityProps) {
   const data = content.data as { letters: string[]; instruction: { ms: string; zh: string; en: string } };
@@ -25,6 +25,8 @@ export default function AlphabetActivity({ content, locale, onComplete }: Alphab
   const [mistakes, setMistakes] = useState(0);
   const [feedback, setFeedback] = useState<{ type: 'correct' | 'wrong'; letter: string } | null>(null);
   const [drawFeedback, setDrawFeedback] = useState<{ type: 'correct' | 'wrong'; message: string } | null>(null);
+  const [typedLetter, setTypedLetter] = useState('');
+  const inputRef = useRef<HTMLInputElement>(null);
 
   // Shuffle letters on mount
   useEffect(() => {
@@ -111,10 +113,65 @@ export default function AlphabetActivity({ content, locale, onComplete }: Alphab
     }
   };
 
+  // Handle keyboard typing
+  const handleKeyboardInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const typed = e.target.value.slice(-1).toUpperCase(); // Get last typed character
+    setTypedLetter(typed);
+
+    if (!typed) return;
+
+    const expectedLetter = letters[currentIndex];
+
+    if (typed.toLowerCase() === expectedLetter.toLowerCase()) {
+      // Correct
+      setSelectedLetters([...selectedLetters, typed]);
+      setFeedback({ type: 'correct', letter: typed });
+
+      // Remove from shuffled
+      setShuffledLetters(shuffledLetters.filter((l, i) => {
+        if (l.toLowerCase() === typed.toLowerCase()) {
+          const firstIndex = shuffledLetters.findIndex(sl => sl.toLowerCase() === typed.toLowerCase());
+          return i !== firstIndex;
+        }
+        return true;
+      }));
+
+      const nextIndex = currentIndex + 1;
+      setCurrentIndex(nextIndex);
+
+      // Check if complete
+      if (nextIndex >= letters.length) {
+        const score = Math.max(0, 100 - (mistakes * 10));
+        setTimeout(() => onComplete(score), 500);
+      }
+
+      setTimeout(() => {
+        setFeedback(null);
+        setTypedLetter('');
+      }, 300);
+    } else {
+      // Wrong
+      setMistakes(mistakes + 1);
+      setFeedback({ type: 'wrong', letter: typed });
+      setTimeout(() => {
+        setFeedback(null);
+        setTypedLetter('');
+      }, 500);
+    }
+  };
+
+  // Focus input when switching to type mode
+  useEffect(() => {
+    if (inputMode === 'type' && inputRef.current) {
+      inputRef.current.focus();
+    }
+  }, [inputMode]);
+
   // Mode labels
   const modeLabels = {
     tap: { ms: 'Tekan', zh: '点击', en: 'Tap' },
     draw: { ms: 'Tulis', zh: '书写', en: 'Write' },
+    type: { ms: 'Taip', zh: '打字', en: 'Type' },
   };
 
   return (
@@ -133,6 +190,16 @@ export default function AlphabetActivity({ content, locale, onComplete }: Alphab
             👆 {modeLabels.tap[locale]}
           </button>
           <button
+            onClick={() => setInputMode('type')}
+            className={`px-4 py-2 rounded-lg font-bold text-sm transition-all ${
+              inputMode === 'type'
+                ? 'bg-[#5D8731] text-white shadow'
+                : 'text-gray-600 hover:text-gray-800'
+            }`}
+          >
+            ⌨️ {modeLabels.type[locale]}
+          </button>
+          <button
             onClick={() => setInputMode('draw')}
             className={`px-4 py-2 rounded-lg font-bold text-sm transition-all ${
               inputMode === 'draw'
@@ -147,11 +214,17 @@ export default function AlphabetActivity({ content, locale, onComplete }: Alphab
 
       {/* Instruction */}
       <p className="text-center text-gray-600">
-        {inputMode === 'tap' ? instruction : (
-          locale === 'ms' ? 'Tulis huruf yang ditunjukkan' :
-          locale === 'zh' ? '写出显示的字母' :
-          'Write the letter shown'
-        )}
+        {inputMode === 'tap' ? instruction :
+          inputMode === 'type' ? (
+            locale === 'ms' ? 'Taip huruf yang ditunjukkan di papan kekunci' :
+            locale === 'zh' ? '在键盘上输入显示的字母' :
+            'Type the letter shown on the keyboard'
+          ) : (
+            locale === 'ms' ? 'Tulis huruf yang ditunjukkan' :
+            locale === 'zh' ? '写出显示的字母' :
+            'Write the letter shown'
+          )
+        }
       </p>
 
       {/* Progress */}
@@ -192,6 +265,8 @@ export default function AlphabetActivity({ content, locale, onComplete }: Alphab
           <p className="text-lg font-bold text-[#5D8731]">
             {inputMode === 'tap' ? (
               locale === 'ms' ? 'Cari huruf: ' : locale === 'zh' ? '找到字母：' : 'Find letter: '
+            ) : inputMode === 'type' ? (
+              locale === 'ms' ? 'Taip huruf: ' : locale === 'zh' ? '输入字母：' : 'Type letter: '
             ) : (
               locale === 'ms' ? 'Tulis huruf: ' : locale === 'zh' ? '写字母：' : 'Write letter: '
             )}
@@ -226,6 +301,41 @@ export default function AlphabetActivity({ content, locale, onComplete }: Alphab
           onRecognized={handleDrawRecognized}
           disabled={currentIndex >= letters.length}
         />
+      ) : inputMode === 'type' ? (
+        /* Type Mode - Keyboard Input */
+        <div className="flex flex-col items-center gap-4">
+          <div className="relative">
+            <input
+              ref={inputRef}
+              type="text"
+              value={typedLetter}
+              onChange={handleKeyboardInput}
+              disabled={currentIndex >= letters.length}
+              autoFocus
+              className={`
+                w-24 h-24 text-5xl font-bold text-center uppercase rounded-lg border-4 transition-all
+                ${feedback?.type === 'correct'
+                  ? 'bg-green-100 border-green-500 text-green-700'
+                  : feedback?.type === 'wrong'
+                    ? 'bg-red-100 border-red-500 text-red-700 animate-shake'
+                    : 'bg-white border-[#5D8731] text-gray-800 focus:ring-4 focus:ring-[#5D8731]/30'
+                }
+              `}
+              placeholder="?"
+              maxLength={1}
+            />
+            {feedback && (
+              <span className={`absolute -top-2 -right-2 text-2xl ${feedback.type === 'correct' ? 'animate-pop' : ''}`}>
+                {feedback.type === 'correct' ? '✅' : '❌'}
+              </span>
+            )}
+          </div>
+          <p className="text-sm text-gray-500">
+            {locale === 'ms' ? 'Tekan kekunci di papan kekunci anda' :
+              locale === 'zh' ? '按键盘上的键' :
+              'Press a key on your keyboard'}
+          </p>
+        </div>
       ) : (
         /* Tap Mode - Letter Grid */
         <div className="grid grid-cols-6 sm:grid-cols-9 gap-2">
