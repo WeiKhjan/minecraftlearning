@@ -1,0 +1,450 @@
+{
+  "_description": "Complete JSON content format schemas for all activity types in MYLearnt",
+  "_note": "Subject content language is FIXED: bm=Malay, bc=Chinese, en=English, math=universal",
+
+  "alphabet": {
+    "description": "Letter/character learning activity",
+    "use_cases": ["Learning ABCs", "Learning Chinese characters", "Letter recognition"],
+    "schema": {
+      "type": "alphabet",
+      "data": {
+        "letters": ["string array of letters/characters"],
+        "instruction": {
+          "ms": "Malay instruction text",
+          "zh": "Chinese instruction text",
+          "en": "English instruction text"
+        }
+      }
+    },
+    "example_bm": {
+      "type": "alphabet",
+      "data": {
+        "letters": ["A", "B", "C", "D", "E"],
+        "instruction": {
+          "ms": "Tekan huruf untuk mendengar bunyi dan contoh perkataan",
+          "zh": "点击字母听发音和示例单词",
+          "en": "Tap a letter to hear its sound and example word"
+        }
+      }
+    },
+    "example_bc": {
+      "type": "alphabet",
+      "data": {
+        "letters": ["一", "二", "三", "四", "五"],
+        "instruction": {
+          "ms": "Tekan aksara untuk mendengar sebutan",
+          "zh": "点击汉字听发音",
+          "en": "Tap a character to hear its pronunciation"
+        }
+      }
+    }
+  },
+
+  "matching": {
+    "description": "Match letters/syllables with images and words",
+    "use_cases": ["Vocabulary building", "Letter-word association", "Picture matching"],
+    "schema": {
+      "type": "matching",
+      "data": {
+        "pairs": [
+          {
+            "letter": "string or null - single letter for letter matching",
+            "syllable": "string or null - syllable for syllable matching",
+            "word": "string - the word in subject language",
+            "image": "string - relative path to image",
+            "meaning_ms": "string - Malay meaning/word",
+            "meaning_zh": "string - Chinese meaning/word",
+            "meaning_en": "string - English meaning/word"
+          }
+        ]
+      }
+    },
+    "example_bm_letters": {
+      "type": "matching",
+      "data": {
+        "pairs": [
+          {
+            "letter": "A",
+            "syllable": null,
+            "word": "ayam",
+            "image": "images/vocab/ayam.png",
+            "meaning_ms": "ayam",
+            "meaning_zh": "鸡",
+            "meaning_en": "chicken"
+          },
+          {
+            "letter": "B",
+            "syllable": null,
+            "word": "bola",
+            "image": "images/vocab/bola.png",
+            "meaning_ms": "bola",
+            "meaning_zh": "球",
+            "meaning_en": "ball"
+          },
+          {
+            "letter": "C",
+            "syllable": null,
+            "word": "cawan",
+            "image": "images/vocab/cawan.png",
+            "meaning_ms": "cawan",
+            "meaning_zh": "杯子",
+            "meaning_en": "cup"
+          }
+        ]
+      }
+    },
+    "example_bm_syllables": {
+      "type": "matching",
+      "data": {
+        "pairs": [
+          {
+            "letter": null,
+            "syllable": "ba",
+            "word": "baju",
+            "image": "images/vocab/baju.png",
+            "meaning_ms": "pakaian",
+            "meaning_zh": "衣服",
+            "meaning_en": "clothes"
+          },
+          {
+            "letter": null,
+            "syllable": "su",
+            "word": "susu",
+            "image": "images/vocab/susu.png",
+            "meaning_ms": "minuman putih",
+            "meaning_zh": "牛奶",
+            "meaning_en": "milk"
+          }
+        ]
+      }
+    }
+  },
+
+  "syllable": {
+    "description": "Pronunciation practice with speech recognition",
+    "use_cases": ["Suku kata practice", "Pronunciation drilling", "Word building"],
+    "schema": {
+      "type": "syllable",
+      "data": {
+        "syllables": ["string array - syllables to practice"],
+        "audio_urls": ["string array - pre-generated audio URLs (can be empty)"],
+        "words": [
+          {
+            "word": "string - complete word",
+            "syllables": ["string array - word broken into syllables"],
+            "meaning_ms": "string",
+            "meaning_zh": "string",
+            "meaning_en": "string",
+            "image": "string or null - image path",
+            "audio_url": "string or null - audio file URL"
+          }
+        ]
+      }
+    },
+    "example_bm": {
+      "type": "syllable",
+      "data": {
+        "syllables": ["ba", "bi", "bu", "be", "bo"],
+        "audio_urls": [],
+        "words": [
+          {
+            "word": "baju",
+            "syllables": ["ba", "ju"],
+            "meaning_ms": "pakaian",
+            "meaning_zh": "衣服",
+            "meaning_en": "clothes",
+            "image": "images/vocab/baju.png",
+            "audio_url": null
+          },
+          {
+            "word": "biru",
+            "syllables": ["bi", "ru"],
+            "meaning_ms": "warna langit",
+            "meaning_zh": "蓝色",
+            "meaning_en": "blue",
+            "image": "images/vocab/biru.png",
+            "audio_url": null
+          },
+          {
+            "word": "buku",
+            "syllables": ["bu", "ku"],
+            "meaning_ms": "untuk membaca",
+            "meaning_zh": "书",
+            "meaning_en": "book",
+            "image": "images/vocab/buku.png",
+            "audio_url": null
+          }
+        ]
+      }
+    }
+  },
+
+  "writing": {
+    "description": "Handwriting and character tracing practice",
+    "use_cases": ["Chinese character writing", "Letter formation", "Stroke practice"],
+    "schema": {
+      "type": "writing",
+      "data": {
+        "characters": ["string array - characters to practice"],
+        "trace_guides": "boolean - show tracing guidelines",
+        "words": [
+          {
+            "word": "string - the character/word",
+            "stroke_order": ["string array - stroke descriptions"],
+            "meaning_ms": "string",
+            "meaning_zh": "string",
+            "meaning_en": "string"
+          }
+        ]
+      }
+    },
+    "example_bc": {
+      "type": "writing",
+      "data": {
+        "characters": ["一", "二", "三", "人", "大"],
+        "trace_guides": true,
+        "words": [
+          {
+            "word": "一",
+            "stroke_order": ["horizontal"],
+            "meaning_ms": "satu",
+            "meaning_zh": "一",
+            "meaning_en": "one"
+          },
+          {
+            "word": "二",
+            "stroke_order": ["horizontal", "horizontal"],
+            "meaning_ms": "dua",
+            "meaning_zh": "二",
+            "meaning_en": "two"
+          },
+          {
+            "word": "人",
+            "stroke_order": ["left-falling", "right-falling"],
+            "meaning_ms": "orang",
+            "meaning_zh": "人",
+            "meaning_en": "person"
+          }
+        ]
+      }
+    }
+  },
+
+  "speaking": {
+    "description": "Phrase repetition with AI pronunciation feedback",
+    "use_cases": ["Conversation practice", "Greeting learning", "Sentence formation"],
+    "schema": {
+      "type": "speaking",
+      "data": {
+        "phrases": [
+          {
+            "text": "string - phrase in subject language",
+            "translation_ms": "string",
+            "translation_zh": "string",
+            "translation_en": "string",
+            "audio_url": "string or null"
+          }
+        ],
+        "use_kid_name": "boolean - replace {name} with kid's name"
+      }
+    },
+    "example_bm": {
+      "type": "speaking",
+      "data": {
+        "phrases": [
+          {
+            "text": "Selamat pagi",
+            "translation_ms": "Selamat pagi",
+            "translation_zh": "早上好",
+            "translation_en": "Good morning",
+            "audio_url": null
+          },
+          {
+            "text": "Nama saya {name}",
+            "translation_ms": "Nama saya {name}",
+            "translation_zh": "我的名字是{name}",
+            "translation_en": "My name is {name}",
+            "audio_url": null
+          },
+          {
+            "text": "Terima kasih",
+            "translation_ms": "Terima kasih",
+            "translation_zh": "谢谢",
+            "translation_en": "Thank you",
+            "audio_url": null
+          }
+        ],
+        "use_kid_name": true
+      }
+    },
+    "example_en": {
+      "type": "speaking",
+      "data": {
+        "phrases": [
+          {
+            "text": "Hello, how are you?",
+            "translation_ms": "Halo, apa khabar?",
+            "translation_zh": "你好，你好吗？",
+            "translation_en": "Hello, how are you?",
+            "audio_url": null
+          },
+          {
+            "text": "I am fine, thank you",
+            "translation_ms": "Saya sihat, terima kasih",
+            "translation_zh": "我很好，谢谢",
+            "translation_en": "I am fine, thank you",
+            "audio_url": null
+          }
+        ],
+        "use_kid_name": false
+      }
+    }
+  },
+
+  "math": {
+    "description": "Mathematics exercises with hints",
+    "use_cases": ["Addition", "Subtraction", "Multiplication", "Division", "Number recognition"],
+    "schema": {
+      "type": "math",
+      "data": {
+        "problems": [
+          {
+            "question": "string - the math problem",
+            "answer": "number - correct answer",
+            "hint_ms": "string - Malay hint",
+            "hint_zh": "string - Chinese hint",
+            "hint_en": "string - English hint"
+          }
+        ],
+        "operation": "string - addition|subtraction|multiplication|division|mixed",
+        "difficulty": "number - 1 (easy) to 5 (hard)"
+      }
+    },
+    "example_addition": {
+      "type": "math",
+      "data": {
+        "problems": [
+          {
+            "question": "2 + 3 = ?",
+            "answer": 5,
+            "hint_ms": "Kira dengan jari: 2 jari tambah 3 jari",
+            "hint_zh": "用手指数：2根手指加3根手指",
+            "hint_en": "Count with fingers: 2 fingers plus 3 fingers"
+          },
+          {
+            "question": "5 + 4 = ?",
+            "answer": 9,
+            "hint_ms": "Cuba kira dari 5: 6, 7, 8, 9",
+            "hint_zh": "从5开始数：6、7、8、9",
+            "hint_en": "Count from 5: 6, 7, 8, 9"
+          },
+          {
+            "question": "7 + 3 = ?",
+            "answer": 10,
+            "hint_ms": "7 tambah 3 sama dengan satu puluh",
+            "hint_zh": "7加3等于10",
+            "hint_en": "7 plus 3 equals ten"
+          }
+        ],
+        "operation": "addition",
+        "difficulty": 1
+      }
+    },
+    "example_subtraction": {
+      "type": "math",
+      "data": {
+        "problems": [
+          {
+            "question": "10 - 4 = ?",
+            "answer": 6,
+            "hint_ms": "Ambil 4 daripada 10",
+            "hint_zh": "从10中减去4",
+            "hint_en": "Take 4 away from 10"
+          }
+        ],
+        "operation": "subtraction",
+        "difficulty": 2
+      }
+    }
+  },
+
+  "dictation": {
+    "description": "Listen and write words activity",
+    "use_cases": ["Spelling practice", "Listening comprehension", "Vocabulary testing"],
+    "schema": {
+      "type": "dictation",
+      "data": {
+        "words": [
+          {
+            "word": "string - word to spell",
+            "meaning_ms": "string",
+            "meaning_zh": "string",
+            "meaning_en": "string",
+            "audio_url": "string or null"
+          }
+        ]
+      }
+    },
+    "example_bm": {
+      "type": "dictation",
+      "data": {
+        "words": [
+          {
+            "word": "rumah",
+            "meaning_ms": "tempat tinggal",
+            "meaning_zh": "房子",
+            "meaning_en": "house",
+            "audio_url": null
+          },
+          {
+            "word": "makan",
+            "meaning_ms": "aktiviti memakan makanan",
+            "meaning_zh": "吃",
+            "meaning_en": "eat",
+            "audio_url": null
+          },
+          {
+            "word": "sekolah",
+            "meaning_ms": "tempat belajar",
+            "meaning_zh": "学校",
+            "meaning_en": "school",
+            "audio_url": null
+          }
+        ]
+      }
+    }
+  },
+
+  "_grade_guidelines": {
+    "primary_1": {
+      "focus": ["alphabet", "matching", "simple syllable"],
+      "vocabulary_count": "5-10 words per activity",
+      "complexity": "Single syllables, basic words"
+    },
+    "primary_2": {
+      "focus": ["syllable", "matching", "basic speaking"],
+      "vocabulary_count": "8-12 words per activity",
+      "complexity": "Two-syllable words, simple sentences"
+    },
+    "primary_3": {
+      "focus": ["syllable", "writing", "speaking", "basic math"],
+      "vocabulary_count": "10-15 words per activity",
+      "complexity": "Multi-syllable words, compound sentences"
+    },
+    "primary_4": {
+      "focus": ["writing", "speaking", "dictation", "math"],
+      "vocabulary_count": "12-18 words per activity",
+      "complexity": "Abstract concepts, longer texts"
+    },
+    "primary_5": {
+      "focus": ["speaking", "dictation", "advanced math"],
+      "vocabulary_count": "15-20 words per activity",
+      "complexity": "Complex sentences, multi-step math"
+    },
+    "primary_6": {
+      "focus": ["dictation", "speaking", "complex math"],
+      "vocabulary_count": "18-25 words per activity",
+      "complexity": "Essay preparation, advanced concepts"
+    }
+  }
+}
