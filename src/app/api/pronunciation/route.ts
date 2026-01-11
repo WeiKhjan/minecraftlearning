@@ -42,43 +42,28 @@ export async function POST(request: NextRequest) {
 
     // Use Gemini for intelligent pronunciation analysis
     const response = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${apiKey}`,
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`,
       {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           contents: [{
             parts: [{
-              text: `You are a pronunciation assessment assistant for children learning to read Malay syllables.
-
-The child should say: "${expected}"
-The child said: "${spoken}"
-Language: ${locale === 'ms' ? 'Malay' : locale === 'zh' ? 'Chinese' : 'English'}
-
-Analyze if the child's pronunciation is correct or close enough to be accepted.
-Consider:
-- Minor variations in transcription are OK (e.g., "ba" vs "baa")
-- If the syllable sounds similar, accept it
-- Be encouraging for children
-
-Respond in this exact JSON format:
-{
-  "isCorrect": true/false,
-  "confidence": 0.0-1.0,
-  "feedbackMs": "Malay feedback message",
-  "feedbackZh": "Chinese feedback message",
-  "feedbackEn": "English feedback message",
-  "correctionMs": "If wrong, how to say it correctly in Malay",
-  "correctionZh": "If wrong, how to say it correctly in Chinese",
-  "correctionEn": "If wrong, how to say it correctly in English"
-}
-
-Only respond with JSON, no other text.`
+              text: `Analyze pronunciation. Expected: "${expected}", Spoken: "${spoken}". Be lenient - accept if sounds similar. Return JSON only.`
             }]
           }],
+          systemInstruction: {
+            parts: [{
+              text: `You assess children's pronunciation. Be encouraging and lenient.
+Return ONLY valid JSON with this exact structure:
+{"isCorrect":boolean,"confidence":number,"feedbackMs":"string","feedbackZh":"string","feedbackEn":"string","correctionMs":"string","correctionZh":"string","correctionEn":"string"}
+No markdown, no explanation, just the JSON object.`
+            }]
+          },
           generationConfig: {
-            temperature: 0.2,
-            maxOutputTokens: 500,
+            temperature: 0.1,
+            maxOutputTokens: 300,
+            responseMimeType: 'application/json',
           },
         }),
       }
@@ -101,13 +86,20 @@ Only respond with JSON, no other text.`
 
     // Parse the JSON response
     try {
-      // Extract JSON from the response (handle markdown code blocks)
-      const jsonMatch = textContent.match(/\{[\s\S]*\}/);
-      if (!jsonMatch) {
-        throw new Error('No JSON found in response');
-      }
+      console.log('[pronunciation] Raw Gemini response:', textContent);
 
-      const parsed = JSON.parse(jsonMatch[0]);
+      // Try to parse directly first (with responseMimeType: 'application/json')
+      let parsed;
+      try {
+        parsed = JSON.parse(textContent);
+      } catch {
+        // Fallback: Extract JSON from the response (handle markdown code blocks)
+        const jsonMatch = textContent.match(/\{[\s\S]*\}/);
+        if (!jsonMatch) {
+          throw new Error('No JSON found in response');
+        }
+        parsed = JSON.parse(jsonMatch[0]);
+      }
 
       const result: PronunciationResponse = {
         isCorrect: parsed.isCorrect === true,
