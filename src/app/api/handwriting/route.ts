@@ -34,16 +34,17 @@ export async function POST(request: NextRequest) {
 
     const apiKey = process.env.GEMINI_API_KEY;
 
-    // If no API key, do simple fallback
+    // If no API key, return error - recognition requires AI
     if (!apiKey) {
+      console.error('[Handwriting] No GEMINI_API_KEY configured');
       return NextResponse.json({
-        isCorrect: true, // Be generous when no AI available
-        recognizedLetter: expectedLetter,
-        confidence: 0.5,
+        isCorrect: false,
+        recognizedLetter: '?',
+        confidence: 0,
         feedback: {
-          ms: 'Bagus! Teruskan latihan.',
-          zh: '好！继续练习。',
-          en: 'Good! Keep practicing.',
+          ms: 'Pengecaman tulisan tidak tersedia. Sila hubungi pentadbir.',
+          zh: '手写识别不可用。请联系管理员。',
+          en: 'Handwriting recognition unavailable. Please contact admin.',
         },
       });
     }
@@ -57,54 +58,59 @@ export async function POST(request: NextRequest) {
     const expectedText = isWord ? expectedLetter : expectedLetter.toUpperCase();
 
     const prompt = isWord
-      ? `You are analyzing a child's handwritten WORD drawing.
+      ? `You are a handwriting recognition system for children's Malay spelling practice.
 
-The child should have written the Malay word: "${expectedText}"
+TASK: Look at this handwritten image and recognize what WORD the child wrote.
 
-Look at this image and determine:
-1. What word did the child write? (Look for any recognizable word)
-2. Is it the correct word "${expectedText}"?
+IMPORTANT:
+1. First, identify what word is actually written in the image
+2. The expected correct answer is: "${expectedText}"
+3. Compare what you see with the expected answer
 
-Be generous in your assessment - this is for young children learning to write Malay:
-- Accept imperfect shapes if recognizable
-- Accept slight spelling variations if the intent is clear
-- Focus on recognizing the overall word, not individual letter perfection
+Recognition rules:
+- Read the handwritten text carefully letter by letter
+- Accept messy but readable handwriting
+- The word must match "${expectedText}" to be correct
+- Minor imperfections in letter shapes are OK if the word is recognizable
+- If the child wrote a different word, mark isCorrect as false
 
-Respond ONLY with this exact JSON format, no other text:
+Respond ONLY with this JSON format:
 {
-  "recognizedLetter": "${expectedText}",
-  "isCorrect": true,
-  "confidence": 0.8,
-  "feedbackMs": "Malay feedback for the child",
-  "feedbackZh": "Chinese feedback for the child",
-  "feedbackEn": "English feedback for the child"
+  "recognizedLetter": "[THE ACTUAL WORD YOU SEE WRITTEN]",
+  "isCorrect": [true if it matches "${expectedText}", false otherwise],
+  "confidence": [0.0 to 1.0],
+  "feedbackMs": "[Malay feedback]",
+  "feedbackZh": "[Chinese feedback]",
+  "feedbackEn": "[English feedback]"
 }
 
-If nothing is drawn or completely unrecognizable, set recognizedLetter to "?" and isCorrect to false.`
-      : `You are analyzing a child's handwritten letter drawing.
+If blank or unreadable, use recognizedLetter: "?" and isCorrect: false.`
+      : `You are a handwriting recognition system for children learning to write letters.
 
-The child should have written the letter: "${expectedText}"
+TASK: Look at this handwritten image and recognize what LETTER the child wrote.
 
-Look at this image and determine:
-1. What letter did the child write? (Look for any recognizable letter shape)
-2. Is it the correct letter "${expectedText}"?
+IMPORTANT:
+1. First, identify what letter is actually drawn in the image
+2. The expected correct answer is: "${expectedText}"
+3. Compare what you see with the expected answer
 
-Be generous in your assessment - this is for young children learning to write:
-- Accept uppercase or lowercase
-- Accept imperfect shapes if recognizable
-- Focus on the intent, not perfection
+Recognition rules:
+- Accept uppercase or lowercase versions of the same letter
+- Accept imperfect but recognizable letter shapes
+- The letter must match "${expectedText}" to be correct
+- If the child wrote a different letter, mark isCorrect as false
 
-Respond ONLY with this exact JSON format, no other text:
+Respond ONLY with this JSON format:
 {
-  "recognizedLetter": "A",
-  "isCorrect": true,
-  "confidence": 0.8,
-  "feedbackMs": "Malay feedback for the child",
-  "feedbackZh": "Chinese feedback for the child",
-  "feedbackEn": "English feedback for the child"
+  "recognizedLetter": "[THE ACTUAL LETTER YOU SEE]",
+  "isCorrect": [true if it matches "${expectedText}", false otherwise],
+  "confidence": [0.0 to 1.0],
+  "feedbackMs": "[Malay feedback]",
+  "feedbackZh": "[Chinese feedback]",
+  "feedbackEn": "[English feedback]"
 }
 
-If nothing is drawn or completely unrecognizable, set recognizedLetter to "?" and isCorrect to false.`;
+If blank or unreadable, use recognizedLetter: "?" and isCorrect: false.`;
 
     // Use Gemini Vision for handwriting recognition
     const response = await fetch(
@@ -136,16 +142,36 @@ If nothing is drawn or completely unrecognizable, set recognizedLetter to "?" an
     );
 
     if (!response.ok) {
-      console.error('Gemini API error:', await response.text());
-      // Fallback response
-      return NextResponse.json(createFallbackResponse(expectedLetter, isWord, true));
+      const errorText = await response.text();
+      console.error('[Handwriting] Gemini API error:', errorText);
+      // Return error - don't pretend it's correct
+      return NextResponse.json({
+        isCorrect: false,
+        recognizedLetter: '?',
+        confidence: 0,
+        feedback: {
+          ms: 'Cuba lagi - pengecaman tidak berjaya.',
+          zh: '请再试一次 - 识别失败。',
+          en: 'Try again - recognition failed.',
+        },
+      });
     }
 
     const data = await response.json();
     const textContent = data.candidates?.[0]?.content?.parts?.[0]?.text;
 
     if (!textContent) {
-      return NextResponse.json(createFallbackResponse(expectedLetter, isWord, true));
+      console.error('[Handwriting] No text content in response:', JSON.stringify(data));
+      return NextResponse.json({
+        isCorrect: false,
+        recognizedLetter: '?',
+        confidence: 0,
+        feedback: {
+          ms: 'Cuba tulis dengan lebih jelas.',
+          zh: '请写得更清楚。',
+          en: 'Please write more clearly.',
+        },
+      });
     }
 
     // Parse the JSON response
@@ -176,8 +202,17 @@ If nothing is drawn or completely unrecognizable, set recognizedLetter to "?" an
 
       return NextResponse.json(result);
     } catch (parseError) {
-      console.error('Failed to parse Gemini response:', parseError, textContent);
-      return NextResponse.json(createFallbackResponse(expectedLetter, isWord, true));
+      console.error('[Handwriting] Failed to parse Gemini response:', parseError, textContent);
+      return NextResponse.json({
+        isCorrect: false,
+        recognizedLetter: '?',
+        confidence: 0,
+        feedback: {
+          ms: 'Cuba tulis dengan lebih jelas.',
+          zh: '请写得更清楚。',
+          en: 'Please write more clearly.',
+        },
+      });
     }
   } catch (error) {
     console.error('Handwriting API error:', error);
@@ -186,21 +221,4 @@ If nothing is drawn or completely unrecognizable, set recognizedLetter to "?" an
       { status: 500 }
     );
   }
-}
-
-function createFallbackResponse(expectedText: string, isWord: boolean, isCorrect: boolean): HandwritingResponse {
-  const contentType = isWord ? 'perkataan' : 'huruf';
-  const contentTypeZh = isWord ? '单词' : '字母';
-  const contentTypeEn = isWord ? 'word' : 'letter';
-
-  return {
-    isCorrect,
-    recognizedLetter: isCorrect ? expectedText : '?',
-    confidence: 0.5,
-    feedback: {
-      ms: isCorrect ? 'Bagus! Teruskan!' : `Cuba tulis ${contentType} dengan lebih jelas.`,
-      zh: isCorrect ? '很好！继续！' : `请把${contentTypeZh}写得更清楚。`,
-      en: isCorrect ? 'Good! Keep going!' : `Try writing the ${contentTypeEn} more clearly.`,
-    },
-  };
 }
