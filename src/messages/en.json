@@ -140,7 +140,11 @@
     "enterSchool": "Enter school name",
     "grade": "Grade",
     "createKid": "Create Profile",
-    "clickToPlay": "Click on a child profile to start learning"
+    "clickToPlay": "Click on a child profile to start learning",
+    "deleteKid": "Delete Child",
+    "delete": "Delete",
+    "confirmDelete": "Delete Child Profile?",
+    "confirmDeleteMessage": "Are you sure you want to delete {name}'s profile? This action cannot be undone."
   },
   "errors": {
     "notAuthenticated": "Please login to continue",

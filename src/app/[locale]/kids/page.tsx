@@ -3,17 +3,8 @@ import { redirect } from 'next/navigation';
 import { getTranslations } from 'next-intl/server';
 import { Link } from '@/i18n/routing';
 import LanguageSwitcher from '@/components/i18n/LanguageSwitcher';
-import type { Kid } from '@/types';
-
-// Grade display mapping
-const gradeLabels: Record<string, { ms: string; zh: string; en: string }> = {
-  primary_1: { ms: 'Darjah 1', zh: '一年级', en: 'Primary 1' },
-  primary_2: { ms: 'Darjah 2', zh: '二年级', en: 'Primary 2' },
-  primary_3: { ms: 'Darjah 3', zh: '三年级', en: 'Primary 3' },
-  primary_4: { ms: 'Darjah 4', zh: '四年级', en: 'Primary 4' },
-  primary_5: { ms: 'Darjah 5', zh: '五年级', en: 'Primary 5' },
-  primary_6: { ms: 'Darjah 6', zh: '六年级', en: 'Primary 6' },
-};
+import KidCard from '@/components/kids/KidCard';
+import type { Kid, Locale } from '@/types';
 
 export default async function KidsPage({
   params,
@@ -50,6 +41,12 @@ export default async function KidsPage({
           MineCraft Learning
         </h1>
         <div className="flex items-center gap-4">
+          <Link
+            href="/admin"
+            className="text-white hover:text-gray-200 text-sm underline"
+          >
+            {locale === 'ms' ? 'Panel Kemajuan' : locale === 'zh' ? '进度面板' : 'Progress'}
+          </Link>
           <LanguageSwitcher />
           <form action={`/${locale}/auth/signout`} method="POST">
             <button
@@ -79,47 +76,7 @@ export default async function KidsPage({
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mb-8">
             {kids && kids.length > 0 ? (
               kids.map((kid: Kid) => (
-                <Link
-                  key={kid.id}
-                  href={`/dashboard?kid=${kid.id}`}
-                  className="minecraft-card hover:scale-105 transition-transform cursor-pointer text-center"
-                >
-                  {/* Avatar */}
-                  <div className="w-20 h-20 mx-auto mb-3 bg-[#5D8731] rounded-lg flex items-center justify-center">
-                    <span className="text-4xl">
-                      {kid.avatar_seed || '🧒'}
-                    </span>
-                  </div>
-
-                  {/* Name */}
-                  <h3 className="font-bold text-gray-800 text-lg mb-1">
-                    {kid.name}
-                  </h3>
-
-                  {/* Grade */}
-                  <p className="text-sm text-gray-600">
-                    {gradeLabels[kid.grade]?.[locale as 'ms' | 'zh' | 'en'] || kid.grade}
-                  </p>
-
-                  {/* Level */}
-                  <div className="mt-2 flex items-center justify-center gap-1">
-                    <span className="text-yellow-500">⭐</span>
-                    <span className="text-sm font-medium text-gray-700">
-                      Level {kid.level}
-                    </span>
-                  </div>
-
-                  {/* XP Bar */}
-                  <div className="mt-2 w-full bg-gray-200 rounded-full h-2">
-                    <div
-                      className="bg-[#5D8731] h-2 rounded-full transition-all"
-                      style={{ width: `${Math.min((kid.total_xp % 100), 100)}%` }}
-                    />
-                  </div>
-                  <p className="text-xs text-gray-500 mt-1">
-                    {kid.total_xp} XP
-                  </p>
-                </Link>
+                <KidCard key={kid.id} kid={kid} locale={locale as Locale} />
               ))
             ) : (
               <div className="col-span-full text-center py-8">

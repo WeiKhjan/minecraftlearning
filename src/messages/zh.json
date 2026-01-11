@@ -140,7 +140,11 @@
     "enterSchool": "输入学校名称",
     "grade": "年级",
     "createKid": "创建档案",
-    "clickToPlay": "点击孩子档案开始学习"
+    "clickToPlay": "点击孩子档案开始学习",
+    "deleteKid": "删除孩子",
+    "delete": "删除",
+    "confirmDelete": "删除孩子档案？",
+    "confirmDeleteMessage": "您确定要删除 {name} 的档案吗？此操作无法撤销。"
   },
   "errors": {
     "notAuthenticated": "请登录以继续",

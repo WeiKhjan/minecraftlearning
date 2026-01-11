@@ -207,6 +207,20 @@ CREATE TABLE IF NOT EXISTS voice_sessions (
 );
 
 -- =====================
+-- HELPER FUNCTIONS (before RLS policies)
+-- =====================
+
+-- Security definer function to check admin status without triggering RLS
+CREATE OR REPLACE FUNCTION is_admin()
+RETURNS BOOLEAN AS $$
+BEGIN
+  RETURN EXISTS (
+    SELECT 1 FROM parents WHERE id = auth.uid() AND is_admin = true
+  );
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER STABLE;
+
+-- =====================
 -- ROW LEVEL SECURITY (RLS)
 -- =====================
 
@@ -235,9 +249,7 @@ CREATE POLICY "Users can insert own parent profile" ON parents
 
 -- Admin can view all parents
 CREATE POLICY "Admins can view all parents" ON parents
-  FOR SELECT USING (
-    EXISTS (SELECT 1 FROM parents WHERE id = auth.uid() AND is_admin = true)
-  );
+  FOR SELECT USING (is_admin());
 
 -- Kids policies
 CREATE POLICY "Parents can view own kids" ON kids
@@ -254,9 +266,7 @@ CREATE POLICY "Parents can delete own kids" ON kids
 
 -- Admin can view all kids
 CREATE POLICY "Admins can view all kids" ON kids
-  FOR SELECT USING (
-    EXISTS (SELECT 1 FROM parents WHERE id = auth.uid() AND is_admin = true)
-  );
+  FOR SELECT USING (is_admin());
 
 -- Subjects, themes, equipment, activities - public read access
 CREATE POLICY "Anyone can view subjects" ON subjects FOR SELECT USING (true);
@@ -299,9 +309,7 @@ CREATE POLICY "Parents can manage kid progress" ON kid_progress
 
 -- Admin can view all progress
 CREATE POLICY "Admins can view all progress" ON kid_progress
-  FOR SELECT USING (
-    EXISTS (SELECT 1 FROM parents WHERE id = auth.uid() AND is_admin = true)
-  );
+  FOR SELECT USING (is_admin());
 
 -- Kid subject progress policies
 CREATE POLICY "Parents can view kid subject progress" ON kid_subject_progress

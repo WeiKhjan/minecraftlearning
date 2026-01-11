@@ -140,7 +140,11 @@
     "enterSchool": "Masukkan nama sekolah",
     "grade": "Darjah",
     "createKid": "Cipta Profil",
-    "clickToPlay": "Klik pada profil anak untuk mula belajar"
+    "clickToPlay": "Klik pada profil anak untuk mula belajar",
+    "deleteKid": "Padam Anak",
+    "delete": "Padam",
+    "confirmDelete": "Padam Profil Anak?",
+    "confirmDeleteMessage": "Adakah anda pasti mahu memadam profil {name}? Tindakan ini tidak dapat dibatalkan."
   },
   "errors": {
     "notAuthenticated": "Sila log masuk untuk meneruskan",

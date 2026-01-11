@@ -1,0 +1,286 @@
+import { createClient } from '@/lib/supabase/server';
+import { redirect, notFound } from 'next/navigation';
+import { getTranslations } from 'next-intl/server';
+import { Link } from '@/i18n/routing';
+import LanguageSwitcher from '@/components/i18n/LanguageSwitcher';
+import type { Activity, Theme, Subject, Equipment, Locale, ProgressStatus } from '@/types';
+
+// Activity type icons
+const activityIcons: Record<string, string> = {
+  alphabet: '🔤',
+  matching: '🎯',
+  syllable: '📖',
+  writing: '✏️',
+  speaking: '🎤',
+  singing: '🎵',
+  math: '🔢',
+};
+
+function getActivityTitle(activity: Activity, locale: Locale): string {
+  switch (locale) {
+    case 'ms': return activity.title_ms;
+    case 'zh': return activity.title_zh;
+    case 'en': return activity.title_en;
+    default: return activity.title_en;
+  }
+}
+
+function getThemeName(theme: Theme, locale: Locale): string {
+  switch (locale) {
+    case 'ms': return theme.name_ms;
+    case 'zh': return theme.name_zh;
+    case 'en': return theme.name_en;
+    default: return theme.name_en;
+  }
+}
+
+function getSubjectName(subject: Subject, locale: Locale): string {
+  switch (locale) {
+    case 'ms': return subject.name_ms;
+    case 'zh': return subject.name_zh;
+    case 'en': return subject.name_en;
+    default: return subject.name_en;
+  }
+}
+
+function getEquipmentName(equipment: Equipment | null, locale: Locale): string {
+  if (!equipment) return '';
+  switch (locale) {
+    case 'ms': return equipment.name_ms || equipment.name;
+    case 'zh': return equipment.name_zh || equipment.name;
+    case 'en': return equipment.name_en || equipment.name;
+    default: return equipment.name;
+  }
+}
+
+export default async function ThemePage({
+  params,
+  searchParams,
+}: {
+  params: Promise<{ locale: string; code: string; themeId: string }>;
+  searchParams: Promise<{ kid?: string }>;
+}) {
+  const { locale, code, themeId } = await params;
+  const { kid: kidId } = await searchParams;
+  const t = await getTranslations();
+  const supabase = await createClient();
+
+  // Check authentication
+  const { data: { user }, error: authError } = await supabase.auth.getUser();
+
+  if (authError || !user) {
+    redirect(`/${locale}/login`);
+  }
+
+  // Redirect if no kid selected
+  if (!kidId) {
+    redirect(`/${locale}/kids`);
+  }
+
+  // Verify kid ownership
+  const { data: kid } = await supabase
+    .from('kids')
+    .select('*')
+    .eq('id', kidId)
+    .eq('parent_id', user.id)
+    .single();
+
+  if (!kid) {
+    redirect(`/${locale}/kids`);
+  }
+
+  // Fetch the subject
+  const { data: subject } = await supabase
+    .from('subjects')
+    .select('*')
+    .eq('code', code)
+    .single();
+
+  if (!subject) {
+    notFound();
+  }
+
+  // Fetch the theme
+  const { data: theme } = await supabase
+    .from('themes')
+    .select('*')
+    .eq('id', themeId)
+    .single();
+
+  if (!theme) {
+    notFound();
+  }
+
+  // Fetch activities for this theme with equipment rewards
+  const { data: activities } = await supabase
+    .from('activities')
+    .select('*, equipment:equipment_reward_id(*)')
+    .eq('theme_id', themeId)
+    .order('order_index', { ascending: true });
+
+  // Fetch kid's progress for these activities
+  const { data: progressData } = await supabase
+    .from('kid_progress')
+    .select('*')
+    .eq('kid_id', kidId)
+    .in('activity_id', activities?.map(a => a.id) || []);
+
+  // Create progress map
+  const progressMap = new Map(
+    progressData?.map(p => [p.activity_id, p]) || []
+  );
+
+  // Determine activity status based on sequence
+  const getActivityStatus = (index: number): ProgressStatus => {
+    const activityId = activities?.[index]?.id;
+    const progress = progressMap.get(activityId);
+
+    if (progress?.status === 'completed') return 'completed';
+    if (progress?.status === 'in_progress') return 'in_progress';
+
+    // First activity is always available
+    if (index === 0) return 'available';
+
+    // Check if previous activity is completed
+    const prevActivityId = activities?.[index - 1]?.id;
+    const prevProgress = progressMap.get(prevActivityId);
+    if (prevProgress?.status === 'completed') return 'available';
+
+    return 'locked';
+  };
+
+  return (
+    <main className="min-h-screen bg-gradient-to-b from-[#87CEEB] to-[#5DADE2] flex flex-col">
+      {/* Header */}
+      <header className="w-full p-4 flex justify-between items-center">
+        <Link href={`/dashboard?kid=${kidId}`} className="text-2xl font-bold text-white drop-shadow-lg">
+          MineCraft Learning
+        </Link>
+        <div className="flex items-center gap-4">
+          <LanguageSwitcher />
+          <Link
+            href={`/subject/${code}?kid=${kidId}`}
+            className="text-white hover:text-gray-200 text-sm underline"
+          >
+            {t('common.back')}
+          </Link>
+        </div>
+      </header>
+
+      {/* Main Content */}
+      <div className="flex-1 px-4 py-6">
+        <div className="max-w-4xl mx-auto">
+          {/* Breadcrumb */}
+          <div className="text-white/80 text-sm mb-4">
+            <Link href={`/dashboard?kid=${kidId}`} className="hover:text-white">
+              {t('dashboard.title')}
+            </Link>
+            {' > '}
+            <Link href={`/subject/${code}?kid=${kidId}`} className="hover:text-white">
+              {getSubjectName(subject, locale as Locale)}
+            </Link>
+            {' > '}
+            <span className="text-white">{getThemeName(theme, locale as Locale)}</span>
+          </div>
+
+          {/* Theme Header */}
+          <div className="minecraft-card mb-6">
+            <div className="flex items-center gap-4">
+              <div
+                className="w-16 h-16 rounded-lg flex items-center justify-center text-4xl"
+                style={{ backgroundColor: subject.color || '#5D8731' }}
+              >
+                {subject.icon}
+              </div>
+              <div>
+                <h1 className="text-2xl font-bold text-gray-800">
+                  {getThemeName(theme, locale as Locale)}
+                </h1>
+                <p className="text-gray-600">
+                  {activities?.length || 0} {t('subjects.progress', { completed: progressData?.filter(p => p.status === 'completed').length || 0, total: activities?.length || 0 })}
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* Activities List */}
+          <div className="space-y-4">
+            {activities && activities.length > 0 ? (
+              activities.map((activity: Activity & { equipment?: Equipment }, index: number) => {
+                const status = getActivityStatus(index);
+                const progress = progressMap.get(activity.id);
+                const isLocked = status === 'locked';
+                const isCompleted = status === 'completed';
+
+                return (
+                  <Link
+                    key={activity.id}
+                    href={isLocked ? '#' : `/activity/${activity.id}?kid=${kidId}`}
+                    className={`minecraft-card block transition-all ${
+                      isLocked
+                        ? 'opacity-60 cursor-not-allowed'
+                        : 'hover:scale-[1.02] cursor-pointer'
+                    }`}
+                    onClick={(e) => isLocked && e.preventDefault()}
+                  >
+                    <div className="flex items-center gap-4">
+                      {/* Activity Icon */}
+                      <div className={`w-14 h-14 rounded-lg flex items-center justify-center text-2xl ${
+                        isCompleted
+                          ? 'bg-[#5D8731] text-white'
+                          : isLocked
+                            ? 'bg-gray-400 text-gray-600'
+                            : 'bg-[#5DADE2] text-white'
+                      }`}>
+                        {isLocked ? '🔒' : isCompleted ? '✓' : activityIcons[activity.type] || '📚'}
+                      </div>
+
+                      {/* Activity Info */}
+                      <div className="flex-1">
+                        <h3 className="font-bold text-gray-800 text-lg">
+                          {getActivityTitle(activity, locale as Locale)}
+                        </h3>
+                        <div className="flex items-center gap-4 mt-1">
+                          <span className="text-sm text-gray-500">
+                            +{activity.xp_reward} XP
+                          </span>
+                          {activity.equipment && (
+                            <span className="text-sm text-yellow-600">
+                              🎁 {getEquipmentName(activity.equipment, locale as Locale)}
+                            </span>
+                          )}
+                        </div>
+
+                        {/* Stars for completed */}
+                        {isCompleted && progress?.stars && (
+                          <div className="flex gap-1 mt-1">
+                            {[1, 2, 3].map(star => (
+                              <span key={star} className={star <= (progress.stars || 0) ? 'text-yellow-500' : 'text-gray-300'}>
+                                ⭐
+                              </span>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Status/Arrow */}
+                      <div className="text-gray-400 text-2xl">
+                        {isCompleted ? '✓' : isLocked ? '' : '→'}
+                      </div>
+                    </div>
+                  </Link>
+                );
+              })
+            ) : (
+              <div className="minecraft-card text-center py-8">
+                <p className="text-gray-600">
+                  {locale === 'ms' ? 'Tiada aktiviti lagi' : locale === 'zh' ? '暂无活动' : 'No activities yet'}
+                </p>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+    </main>
+  );
+}
