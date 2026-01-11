@@ -117,12 +117,12 @@ function EquipmentSlotBox({
     <button
       onClick={onClick}
       className={`
-        relative w-16 h-16 sm:w-20 sm:h-20
+        relative w-14 h-14 sm:w-16 sm:h-16
         bg-[#8B8B8B] rounded-sm
-        border-4 transition-all duration-150
+        border-[3px] transition-all duration-150
         hover:scale-105 hover:brightness-110
         ${isSelected
-          ? 'border-[#5DADE2] ring-2 ring-[#5DADE2] ring-offset-2'
+          ? 'border-[#5DADE2] ring-2 ring-[#5DADE2] ring-offset-1'
           : 'border-t-[#FFFFFF] border-l-[#FFFFFF] border-r-[#555555] border-b-[#555555]'
         }
       `}
@@ -138,12 +138,12 @@ function EquipmentSlotBox({
           <Image
             src={getEquipmentImageUrl(item.tier, slot)}
             alt={getEquipmentName(item, locale)}
-            width={48}
-            height={48}
+            width={40}
+            height={40}
             className="object-contain drop-shadow-lg"
           />
         ) : (
-          <div className="text-[#555555]/50 text-xs font-bold text-center leading-tight">
+          <div className="text-[#555555]/50 text-[10px] font-bold text-center leading-tight">
             {slotName}
           </div>
         )}
@@ -152,7 +152,7 @@ function EquipmentSlotBox({
       {/* Tier indicator */}
       {item && (
         <div
-          className="absolute -bottom-1 -right-1 w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold text-white border-2 border-white shadow-md"
+          className="absolute -bottom-1 -right-1 w-4 h-4 rounded-full flex items-center justify-center text-[8px] font-bold text-white border border-white shadow-md"
           style={{ backgroundColor: tierColors[item.tier] }}
         >
           {item.tier.charAt(0).toUpperCase()}
@@ -294,28 +294,28 @@ export default function CharacterClient({
     locale === 'zh' ? '点击插槽装备' : 'Click slot to equip';
 
   return (
-    <div className="space-y-4 lg:space-y-0 lg:grid lg:grid-cols-2 lg:gap-6 lg:h-[calc(100vh-120px)]">
+    <div className="space-y-4 lg:space-y-0 lg:grid lg:grid-cols-2 lg:gap-6">
 
       {/* Left Panel - Character & Equipment */}
-      <div className="minecraft-card lg:col-span-1 p-4 sm:p-6">
+      <div className="minecraft-card lg:col-span-1 p-4 sm:p-6 h-fit">
         {/* Header with name and level */}
-        <div className="flex items-center justify-between mb-6">
+        <div className="flex items-center justify-between mb-4">
           <h2 className="text-xl sm:text-2xl font-bold text-gray-800 minecraft-font">
             {kid.name}
           </h2>
-          <div className="flex items-center gap-2 bg-gradient-to-r from-yellow-400 to-yellow-500 px-4 py-2 rounded-lg shadow-md">
-            <span className="text-yellow-900 font-bold text-lg">Lv.{kid.level}</span>
+          <div className="flex items-center gap-2 bg-gradient-to-r from-yellow-400 to-yellow-500 px-3 py-1.5 rounded-lg shadow-md">
+            <span className="text-yellow-900 font-bold">Lv.{kid.level}</span>
           </div>
         </div>
 
         {/* Main Equipment Layout - RPG Style Grid */}
-        <div className="flex flex-col items-center gap-6">
+        <div className="flex flex-col items-center gap-4">
 
           {/* Character Avatar Display */}
           <div className="relative">
             {/* Avatar Frame - Minecraft style */}
             <div
-              className="w-32 h-32 sm:w-40 sm:h-40 rounded-lg overflow-hidden border-4"
+              className="w-28 h-28 sm:w-32 sm:h-32 rounded-lg overflow-hidden border-4"
               style={{
                 borderColor: '#555555',
                 boxShadow: 'inset -3px -3px 0 #373737, inset 3px 3px 0 #C6C6C6, 0 4px 12px rgba(0,0,0,0.3)',
@@ -326,23 +326,23 @@ export default function CharacterClient({
                 <Image
                   src={generatedAvatar}
                   alt={`${kid.name}'s Avatar`}
-                  width={160}
-                  height={160}
+                  width={128}
+                  height={128}
                   className="w-full h-full object-cover"
                   unoptimized={generatedAvatar.startsWith('data:')}
                 />
               ) : (
                 <div className="w-full h-full flex items-center justify-center">
-                  <span className="text-6xl">{kid.avatar_seed || '😊'}</span>
+                  <span className="text-5xl">{kid.avatar_seed || '😊'}</span>
                 </div>
               )}
             </div>
           </div>
 
           {/* Equipment Slots Grid - Classic RPG Layout */}
-          <div className="w-full max-w-sm">
+          <div className="w-full max-w-xs">
             {/* Top row - Helmet */}
-            <div className="flex justify-center mb-3">
+            <div className="flex justify-center mb-2">
               <EquipmentSlotBox
                 item={getEquippedItem('helmet')}
                 slot="helmet"
@@ -354,7 +354,7 @@ export default function CharacterClient({
             </div>
 
             {/* Middle row - Weapon, Chestplate, (empty for symmetry) */}
-            <div className="flex justify-center gap-3 mb-3">
+            <div className="flex justify-center gap-2 mb-2">
               <EquipmentSlotBox
                 item={getEquippedItem('weapon')}
                 slot="weapon"
@@ -372,11 +372,11 @@ export default function CharacterClient({
                 locale={locale}
               />
               {/* Empty slot for visual balance */}
-              <div className="w-16 h-16 sm:w-20 sm:h-20" />
+              <div className="w-14 h-14 sm:w-16 sm:h-16" />
             </div>
 
             {/* Bottom row - Leggings, Boots */}
-            <div className="flex justify-center gap-3">
+            <div className="flex justify-center gap-2">
               <EquipmentSlotBox
                 item={getEquippedItem('leggings')}
                 slot="leggings"
@@ -397,7 +397,7 @@ export default function CharacterClient({
           </div>
 
           {/* Instruction text */}
-          <p className="text-sm text-gray-500 text-center">
+          <p className="text-xs text-gray-500 text-center">
             {clickToEquipLabel}
           </p>
 
