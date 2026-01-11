@@ -65,6 +65,21 @@ export default async function DashboardPage({
     redirect(`/${locale}/kids`);
   }
 
+  // Calculate correct level based on XP and fix if mismatched
+  // Level formula: XP thresholds are 0, 100, 300, 600, 1000... (triangular numbers * 100)
+  // Inverse: level = floor((1 + sqrt(1 + 8 * XP / 100)) / 2)
+  const calculateLevel = (xp: number) => Math.max(1, Math.floor((1 + Math.sqrt(1 + 8 * xp / 100)) / 2));
+  const correctLevel = calculateLevel(kid.total_xp);
+
+  // Auto-fix level if it's incorrect
+  if (kid.level !== correctLevel) {
+    await supabase
+      .from('kids')
+      .update({ level: correctLevel })
+      .eq('id', kid.id);
+    kid.level = correctLevel; // Update local object too
+  }
+
   // Fetch subjects with their themes and activity counts
   const { data: subjects } = await supabase
     .from('subjects')

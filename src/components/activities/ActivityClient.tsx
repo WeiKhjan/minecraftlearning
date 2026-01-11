@@ -87,19 +87,31 @@ export default function ActivityClient({
       .eq('kid_id', kid.id)
       .eq('activity_id', activity.id);
 
-    // Award XP to kid
-    const newXP = kid.total_xp + activity.xp_reward;
+    // Award XP to kid - first fetch current XP to ensure accuracy
+    const { data: currentKid } = await supabase
+      .from('kids')
+      .select('total_xp')
+      .eq('id', kid.id)
+      .single();
+
+    const currentXP = currentKid?.total_xp ?? kid.total_xp;
+    const newXP = currentXP + activity.xp_reward;
+
     // Level formula: XP thresholds are 0, 100, 300, 600, 1000... (triangular numbers * 100)
     // Inverse: level = floor((1 + sqrt(1 + 8 * XP / 100)) / 2)
     const newLevel = Math.max(1, Math.floor((1 + Math.sqrt(1 + 8 * newXP / 100)) / 2));
 
-    await supabase
+    const { error: updateError } = await supabase
       .from('kids')
       .update({
         total_xp: newXP,
         level: newLevel,
       })
       .eq('id', kid.id);
+
+    if (updateError) {
+      console.error('[ActivityClient] Failed to update kid XP/level:', updateError);
+    }
 
     // Award equipment if first completion and equipment exists
     if (activity.equipment) {
