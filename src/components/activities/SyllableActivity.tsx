@@ -11,6 +11,7 @@ import type { ActivityContent, Locale, SyllableContent } from '@/types';
 interface SyllableActivityProps {
   content: ActivityContent;
   kidName: string;
+  avatarUrl?: string | null;
   locale: Locale;
   onComplete: (score: number) => void;
 }
@@ -24,7 +25,7 @@ interface PronunciationFeedback {
 
 type ActivityState = 'ready' | 'listening' | 'analyzing' | 'feedback' | 'correct' | 'completed';
 
-export default function SyllableActivity({ content, locale, onComplete }: SyllableActivityProps) {
+export default function SyllableActivity({ content, avatarUrl, locale, onComplete }: SyllableActivityProps) {
   const data = content.data as SyllableContent;
   const syllables = data.syllables;
 
@@ -123,10 +124,7 @@ export default function SyllableActivity({ content, locale, onComplete }: Syllab
         }, 1500);
       } else {
         setActivityState('feedback');
-        // Play the correct pronunciation
-        setTimeout(() => {
-          playCorrectSound(currentSyllable, { contentType: 'syllable' });
-        }, 500);
+        // User can click the voice button manually to hear correct pronunciation
       }
     } catch (error) {
       console.error('Analysis error:', error);
@@ -141,7 +139,7 @@ export default function SyllableActivity({ content, locale, onComplete }: Syllab
         },
       });
     }
-  }, [currentSyllable, locale, attempts, playCorrectSound]);
+  }, [currentSyllable, locale, attempts]);
 
   // Start listening
   const handleStartListening = useCallback(() => {
@@ -218,6 +216,7 @@ export default function SyllableActivity({ content, locale, onComplete }: Syllab
       {/* Loading Overlay during analysis */}
       <LoadingOverlay
         isLoading={activityState === 'analyzing'}
+        avatarUrl={avatarUrl}
         locale={locale}
         message={analyzingMessage[locale]}
       />

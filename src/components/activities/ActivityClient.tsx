@@ -139,6 +139,7 @@ export default function ActivityClient({
     const activityProps = {
       content: activity.content,
       kidName: kid.name,
+      avatarUrl: kid.generated_avatar_url,
       locale,
       onComplete: handleComplete,
     };
