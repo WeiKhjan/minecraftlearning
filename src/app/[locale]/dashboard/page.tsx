@@ -91,7 +91,7 @@ export default async function DashboardPage({
     { data: subjects },
     { data: kidProgress }
   ] = await Promise.all([
-    // Fetch kid's equipped items
+    // Fetch kid's equipped items (use maybeSingle to handle missing rows)
     supabase
       .from('kid_equipped')
       .select(`
@@ -102,7 +102,7 @@ export default async function DashboardPage({
         weapon:weapon_id(id, tier, slot)
       `)
       .eq('kid_id', kidId)
-      .single(),
+      .maybeSingle(),
     // Fetch subjects with their themes and activity counts
     supabase
       .from('subjects')

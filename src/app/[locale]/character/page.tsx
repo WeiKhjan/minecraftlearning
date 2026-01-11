@@ -44,7 +44,7 @@ export default async function CharacterPage({
 
   // Parallel fetch: equipped items, inventory, pets, and all equipment
   const [
-    { data: equipped },
+    { data: equippedData, error: equippedError },
     { data: inventory },
     { data: ownedPets },
     { data: allEquipment }
@@ -53,7 +53,7 @@ export default async function CharacterPage({
       .from('kid_equipped')
       .select('*, helmet:helmet_id(*), chestplate:chestplate_id(*), leggings:leggings_id(*), boots:boots_id(*), weapon:weapon_id(*), pet:pet_id(*)')
       .eq('kid_id', kidId)
-      .single(),
+      .maybeSingle(),
     supabase
       .from('kid_inventory')
       .select('*, equipment:equipment_id(*)')
@@ -67,6 +67,17 @@ export default async function CharacterPage({
       .select('*')
       .order('required_level', { ascending: true })
   ]);
+
+  // Create kid_equipped row if it doesn't exist
+  let equipped = equippedData;
+  if (!equipped && !equippedError) {
+    const { data: newEquipped } = await supabase
+      .from('kid_equipped')
+      .insert({ kid_id: kidId })
+      .select('*, helmet:helmet_id(*), chestplate:chestplate_id(*), leggings:leggings_id(*), boots:boots_id(*), weapon:weapon_id(*), pet:pet_id(*)')
+      .single();
+    equipped = newEquipped;
+  }
 
   return (
     <main className="min-h-screen bg-gradient-to-b from-[#87CEEB] to-[#5DADE2] flex flex-col">
