@@ -175,46 +175,28 @@ BEGIN
     5
   );
 
-  -- Activity 6: Nyanyikan Lagu Mari Belajar
+  -- Activity 6: Ejaan Perkataan (Dictation)
   SELECT id INTO v_equipment_id FROM equipment WHERE name = 'Leather Leggings' LIMIT 1;
 
   INSERT INTO activities (theme_id, type, title_ms, title_zh, title_en, instructions_ms, instructions_zh, instructions_en, content, xp_reward, equipment_reward_id, order_index)
   VALUES (
     v_theme_id,
-    'singing',
-    'Nyanyikan Lagu Mari Belajar',
-    '唱歌《让我们学习》',
-    'Sing "Let''s Learn" Song',
-    'Nyanyi lagu Mari Belajar bersama-sama',
-    '一起唱《让我们学习》歌曲',
-    'Sing the "Let''s Learn" song together',
+    'dictation',
+    'Ejaan Perkataan',
+    '听写单词',
+    'Word Dictation',
+    'Dengar perkataan dan tulis dengan betul',
+    '听单词并正确写出来',
+    'Listen to the word and write it correctly',
     '{
-      "type": "singing",
+      "type": "dictation",
       "data": {
-        "title": "Mari Belajar",
-        "melody_reference": "Bapaku Pulang dari Kota",
-        "youtube_id": "969_1kBcjbk",
-        "lyrics": [
-          {"line": "Marilah sebut sama-sama", "timing": 0},
-          {"line": "Abjad ''a'' bunyinya a", "timing": 3},
-          {"line": "''a'' untuk apa, cuba teka", "timing": 6},
-          {"line": "Angkatlah tangan jawab segera", "timing": 9},
-          {"line": "Marilah sebut sama-sama", "timing": 12},
-          {"line": "Abjad ''e'' bunyinya e", "timing": 15},
-          {"line": "''e'' untuk apa, cuba teka", "timing": 18},
-          {"line": "Angkatlah tangan jawab segera", "timing": 21},
-          {"line": "Marilah sebut sama-sama", "timing": 24},
-          {"line": "Abjad ''i'' bunyinya i", "timing": 27},
-          {"line": "''i'' untuk apa, cuba teka", "timing": 30},
-          {"line": "Angkatlah tangan jawab segera", "timing": 33},
-          {"line": "Marilah sebut sama-sama", "timing": 36},
-          {"line": "Abjad ''o'' bunyinya o", "timing": 39},
-          {"line": "''o'' untuk apa, cuba teka", "timing": 42},
-          {"line": "Angkatlah tangan jawab segera", "timing": 45},
-          {"line": "Marilah sebut sama-sama", "timing": 48},
-          {"line": "Abjad ''u'' bunyinya u", "timing": 51},
-          {"line": "''u'' untuk apa, cuba teka", "timing": 54},
-          {"line": "Angkatlah tangan jawab segera", "timing": 57}
+        "words": [
+          {"word": "ayam", "meaning_ms": "ayam", "meaning_zh": "鸡", "meaning_en": "chicken"},
+          {"word": "epal", "meaning_ms": "epal", "meaning_zh": "苹果", "meaning_en": "apple"},
+          {"word": "ikan", "meaning_ms": "ikan", "meaning_zh": "鱼", "meaning_en": "fish"},
+          {"word": "oren", "meaning_ms": "oren", "meaning_zh": "橙子", "meaning_en": "orange"},
+          {"word": "ular", "meaning_ms": "ular", "meaning_zh": "蛇", "meaning_en": "snake"}
         ]
       }
     }'::jsonb,
@@ -259,61 +241,6 @@ BEGIN
     30,
     v_equipment_id,
     7
-  );
-
-  -- Activity 8: Ejaan Perkataan (Dictation)
-  SELECT id INTO v_equipment_id FROM equipment WHERE name = 'Iron Chestplate' LIMIT 1;
-
-  INSERT INTO activities (theme_id, type, title_ms, title_zh, title_en, instructions_ms, instructions_zh, instructions_en, content, xp_reward, equipment_reward_id, order_index)
-  VALUES (
-    v_theme_id,
-    'dictation',
-    'Ejaan Perkataan',
-    '听写单词',
-    'Word Dictation',
-    'Dengar perkataan dan tulis dengan betul',
-    '听单词并正确写出来',
-    'Listen to the word and write it correctly',
-    '{
-      "type": "dictation",
-      "data": {
-        "words": [
-          {
-            "word": "ayam",
-            "meaning_ms": "ayam",
-            "meaning_zh": "鸡",
-            "meaning_en": "chicken"
-          },
-          {
-            "word": "epal",
-            "meaning_ms": "epal",
-            "meaning_zh": "苹果",
-            "meaning_en": "apple"
-          },
-          {
-            "word": "ikan",
-            "meaning_ms": "ikan",
-            "meaning_zh": "鱼",
-            "meaning_en": "fish"
-          },
-          {
-            "word": "oren",
-            "meaning_ms": "oren",
-            "meaning_zh": "橙子",
-            "meaning_en": "orange"
-          },
-          {
-            "word": "ular",
-            "meaning_ms": "ular",
-            "meaning_zh": "蛇",
-            "meaning_en": "snake"
-          }
-        ]
-      }
-    }'::jsonb,
-    35,
-    v_equipment_id,
-    8
   );
 
 END $$;
