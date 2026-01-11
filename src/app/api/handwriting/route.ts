@@ -135,8 +135,7 @@ If blank or unreadable, use recognizedLetter: "?" and isCorrect: false.`;
           }],
           generationConfig: {
             temperature: 0.1,
-            maxOutputTokens: 300,
-            responseMimeType: 'application/json',
+            maxOutputTokens: 500,
           },
         }),
       }
@@ -177,7 +176,7 @@ If blank or unreadable, use recognizedLetter: "?" and isCorrect: false.`;
 
     // Parse the JSON response
     try {
-      // Try direct parse first (with responseMimeType: 'application/json')
+      // Try direct parse first
       let parsed;
       try {
         parsed = JSON.parse(textContent);
@@ -194,10 +193,30 @@ If blank or unreadable, use recognizedLetter: "?" and isCorrect: false.`;
         // Extract JSON object
         const jsonMatch = jsonText.match(/\{[\s\S]*\}/);
         if (!jsonMatch) {
+          // Check if response is incomplete (just "{" or partial)
+          if (textContent.trim() === '{' || textContent.length < 10) {
+            console.error('[Handwriting] Incomplete response from AI, retrying might help');
+            return NextResponse.json({
+              isCorrect: false,
+              recognizedLetter: '?',
+              confidence: 0,
+              feedback: {
+                ms: 'Cuba hantar sekali lagi.',
+                zh: '请再试一次。',
+                en: 'Please try submitting again.',
+              },
+            });
+          }
           console.error('[Handwriting] No JSON found in:', textContent);
           throw new Error('No JSON found');
         }
-        parsed = JSON.parse(jsonMatch[0]);
+
+        try {
+          parsed = JSON.parse(jsonMatch[0]);
+        } catch (jsonError) {
+          console.error('[Handwriting] Invalid JSON:', jsonMatch[0]);
+          throw jsonError;
+        }
       }
 
       const recognizedText = (parsed.recognizedLetter || '?').toLowerCase().trim();
