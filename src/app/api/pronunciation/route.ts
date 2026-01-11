@@ -4,6 +4,7 @@ interface PronunciationRequest {
   expected: string;  // The syllable the kid should say
   spoken: string;    // What the kid actually said
   locale: string;    // Language: ms, zh, en
+  contentType?: string; // Type of content: syllable, word, letter, etc.
 }
 
 interface PronunciationResponse {
@@ -23,7 +24,7 @@ interface PronunciationResponse {
 
 export async function POST(request: NextRequest) {
   try {
-    const { expected, spoken, locale = 'ms' }: PronunciationRequest = await request.json();
+    const { expected, spoken, locale = 'ms', contentType = 'syllable' }: PronunciationRequest = await request.json();
 
     if (!expected || !spoken) {
       return NextResponse.json(
@@ -49,20 +50,24 @@ export async function POST(request: NextRequest) {
         body: JSON.stringify({
           contents: [{
             parts: [{
-              text: `Child should say: "${expected}"
+              text: `MALAY ${contentType.toUpperCase()} PRONUNCIATION TEST
+Expected Malay ${contentType}: "${expected}"
 Child said: "${spoken}"
-Is it correct or close enough? Be lenient for children.`
+Is pronunciation correct or close enough? Be lenient for children learning Malay.`
             }]
           }],
           systemInstruction: {
             parts: [{
-              text: `You assess children's pronunciation for Malaysian primary school. Be encouraging.
-IMPORTANT: feedbackMs must be in MALAY (Bahasa Malaysia), feedbackZh must be in SIMPLIFIED CHINESE, feedbackEn must be in ENGLISH.
-Example feedbackMs: "Bagus!" or "Cuba lagi!"
-Example feedbackZh: "很好!" or "再试一次!"
-Example feedbackEn: "Good job!" or "Try again!"
+              text: `You assess children's MALAY (Bahasa Malaysia) pronunciation for Malaysian primary school.
+This is a MALAY SUKU KATA (syllable) lesson - the child is learning to pronounce Malay syllables like "ba", "ca", "ge", etc.
+Compare the spoken text to the expected Malay syllable phonetically. Accept if it sounds similar in Malay pronunciation.
+Be encouraging for children.
+IMPORTANT: feedbackMs must be in MALAY, feedbackZh in SIMPLIFIED CHINESE, feedbackEn in ENGLISH.
+Example feedbackMs: "Bagus!" or "Cuba lagi sebut '${expected}'!"
+Example feedbackZh: "很好!" or "再试一次说'${expected}'!"
+Example feedbackEn: "Good job!" or "Try again saying '${expected}'!"
 Return ONLY this JSON:
-{"isCorrect":true/false,"confidence":0.8,"feedbackMs":"Malay text here","feedbackZh":"Chinese text here","feedbackEn":"English text here","correctionMs":"Malay correction","correctionZh":"Chinese correction","correctionEn":"English correction"}`
+{"isCorrect":true/false,"confidence":0.8,"feedbackMs":"Malay text","feedbackZh":"Chinese text","feedbackEn":"English text","correctionMs":"Malay correction","correctionZh":"Chinese correction","correctionEn":"English correction"}`
             }]
           },
           generationConfig: {

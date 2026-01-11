@@ -113,6 +113,7 @@ export default function SyllableActivity({ content, avatarUrl, locale, onComplet
           expected: currentSyllable,
           spoken: spokenText,
           locale,
+          contentType: 'syllable', // Tell AI this is Malay suku kata lesson
         }),
       });
 
