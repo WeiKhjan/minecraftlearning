@@ -204,9 +204,9 @@ function generateTutorPrompt(
       en: `Word "${content}". Directly explain: say the word and its meaning in 1-2 sentences.`,
     },
     syllable: {
-      ms: `Suku kata "${content}". Terus ajar: pecahkan bunyi dan sebut perlahan. Contoh: "Suku kata 'ba', bunyi 'b' dan 'a' bersama, 'ba'."`,
-      zh: `音节"${content}"。直接教：分解声音并慢慢说。例如："音节'ba'，'b'和'a'一起，'ba'。"`,
-      en: `Syllable "${content}". Directly teach: break down the sounds and say slowly. Example: "Syllable 'ba', sounds 'b' and 'a' together, 'ba'."`,
+      ms: `Suku kata "${content}". ${content.length === 1 ? `Ini huruf vokal. Terangkan bunyi vokal ini dengan jelas.` : `Ini gabungan konsonan dan vokal. Pecahkan bunyi konsonan "${content[0]}" dan vokal "${content.slice(1)}" kemudian gabungkan.`} Akhiri dengan: "Cuba sebut bersama saya: ${content}... ${content}... ${content}."`,
+      zh: `音节"${content}"。${content.length === 1 ? `这是元音字母。清楚地解释这个元音的发音。` : `这是辅音和元音的组合。分解辅音"${content[0]}"和元音"${content.slice(1)}"然后组合。`}最后说："跟我一起说：${content}... ${content}... ${content}。"`,
+      en: `Syllable "${content}". ${content.length === 1 ? `This is a vowel. Explain this vowel sound clearly.` : `This combines consonant "${content[0]}" and vowel "${content.slice(1)}". Break down then combine.`} End with: "Say it with me: ${content}... ${content}... ${content}."`,
     },
     sentence: {
       ms: `Baca ayat ini dengan jelas: "${content}"`,

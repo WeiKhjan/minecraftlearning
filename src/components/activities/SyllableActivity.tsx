@@ -149,6 +149,30 @@ export default function SyllableActivity({ content, locale, onComplete }: Syllab
     startListening();
   }, [resetTranscript, startListening]);
 
+  // Stop listening and trigger analysis with whatever was captured
+  const handleStopListening = useCallback(() => {
+    stopListening();
+    // Give a small delay to ensure final transcript is captured
+    setTimeout(() => {
+      // If there's a transcript, analyze it
+      if (transcript) {
+        handleAnalyzePronunciation(transcript);
+      } else {
+        // No transcript captured, show feedback and return to ready
+        setActivityState('ready');
+        setFeedback({
+          isCorrect: false,
+          confidence: 0,
+          feedback: {
+            ms: 'Tiada suara dikesan. Sila cuba lagi.',
+            zh: '没有检测到声音。请再试一次。',
+            en: 'No voice detected. Please try again.',
+          },
+        });
+      }
+    }, 100);
+  }, [stopListening, transcript, handleAnalyzePronunciation]);
+
   // Move to next syllable
   const handleMoveToNext = useCallback(() => {
     const newRead = new Set(readSyllables);
@@ -259,8 +283,8 @@ export default function SyllableActivity({ content, locale, onComplete }: Syllab
                 </p>
               </div>
               <button
-                onClick={stopListening}
-                className="bg-red-600 text-white px-6 py-3 rounded-full font-bold hover:bg-red-700 transition-all"
+                onClick={handleStopListening}
+                className="bg-red-600 text-white px-6 py-3 rounded-full font-bold hover:bg-red-700 transition-all cursor-pointer"
               >
                 {locale === 'ms' ? 'Berhenti' : locale === 'zh' ? '停止' : 'Stop'}
               </button>
