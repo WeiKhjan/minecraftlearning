@@ -28,7 +28,7 @@ export default function LoginPage() {
       {/* Header */}
       <header className="w-full p-4 flex justify-between items-center">
         <Link href="/" className="text-2xl font-bold text-white drop-shadow-lg">
-          MineCraft Learning
+          MYLearnt
         </Link>
         <LanguageSwitcher />
       </header>

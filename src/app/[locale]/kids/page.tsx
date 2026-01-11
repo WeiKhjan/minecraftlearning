@@ -38,7 +38,7 @@ export default async function KidsPage({
       {/* Header */}
       <header className="w-full p-4 flex justify-between items-center">
         <h1 className="text-2xl font-bold text-white drop-shadow-lg">
-          MineCraft Learning
+          MYLearnt
         </h1>
         <div className="flex items-center gap-4">
           <Link

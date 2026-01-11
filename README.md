@@ -1,4 +1,4 @@
-# MineCraft Learning
+# MYLearnt
 
 A gamified learning platform for Malaysian primary school kids (Primary 1-6) with Minecraft theming.
 

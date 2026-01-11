@@ -13,7 +13,7 @@ export default function LandingPage() {
       {/* Header */}
       <header className="w-full p-4 flex justify-between items-center">
         <div className="text-2xl font-bold text-white drop-shadow-lg">
-          MineCraft Learning
+          MYLearnt
         </div>
         <LanguageSwitcher />
       </header>
@@ -23,7 +23,7 @@ export default function LandingPage() {
         {/* Logo/Title Area */}
         <div className="text-center mb-8">
           <h1 className="text-5xl md:text-7xl font-bold text-white drop-shadow-lg mb-4 minecraft-font">
-            MineCraft Learning
+            MYLearnt
           </h1>
           <p className="text-xl md:text-2xl text-white/90 drop-shadow">
             {t('common.welcome')}!
@@ -71,7 +71,7 @@ export default function LandingPage() {
 
       {/* Footer */}
       <footer className="w-full p-4 text-center text-white/70 text-sm">
-        <p>MineCraft Learning - Making education fun!</p>
+        <p>MYLearnt - Making education fun!</p>
       </footer>
     </main>
   );

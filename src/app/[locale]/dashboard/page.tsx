@@ -146,7 +146,7 @@ export default async function DashboardPage({
       {/* Header */}
       <header className="w-full p-4 flex justify-between items-center">
         <Link href={`/${locale}/kids`} className="text-2xl font-bold text-white drop-shadow-lg">
-          MineCraft Learning
+          MYLearnt
         </Link>
         <div className="flex items-center gap-4">
           {/* Avatar + Character Link */}

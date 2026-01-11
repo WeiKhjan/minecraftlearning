@@ -1,4 +1,4 @@
--- MineCraft Learning Seed Data
+-- MYLearnt Seed Data
 -- Run this after schema.sql to populate initial content
 
 -- =====================
