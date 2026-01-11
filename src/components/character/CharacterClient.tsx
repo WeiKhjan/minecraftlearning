@@ -217,17 +217,15 @@ export default function CharacterClient({
     locale === 'zh' ? 'AI头像' : 'AI Avatar';
 
   return (
-    <div className="space-y-6">
-      {/* Main Character Grid */}
-      <div className="grid md:grid-cols-2 gap-6">
-        {/* Character Display */}
-        <div className="minecraft-card">
-          <h2 className="text-xl font-bold text-gray-800 mb-4 text-center">
+    <div className="space-y-4 lg:space-y-0 lg:grid lg:grid-cols-3 lg:gap-4 lg:h-[calc(100vh-120px)]">
+      {/* Character Display */}
+      <div className="minecraft-card lg:col-span-1 lg:overflow-hidden">
+          <h2 className="text-lg font-bold text-gray-800 mb-2 text-center">
             {kid.name}
           </h2>
 
           {/* Full Body Character Avatar */}
-          <div className="flex justify-center mb-6">
+          <div className="flex justify-center mb-2 lg:mb-4">
             <div className="relative">
               {/* Level Badge */}
               <div className="absolute -top-2 -right-2 bg-yellow-500 text-white text-xs px-2 py-1 rounded font-bold z-20">
@@ -382,7 +380,7 @@ export default function CharacterClient({
           </div>
 
           {/* Equipment Slot Legend */}
-          <div className="flex flex-wrap justify-center gap-2 mt-4 text-xs">
+          <div className="flex flex-wrap justify-center gap-1 lg:gap-2 mt-2 text-xs">
             {slots.map(slot => {
               const item = getEquippedItem(slot);
               return (
@@ -415,20 +413,20 @@ export default function CharacterClient({
             <button
               onClick={() => handleUnequip(selectedSlot)}
               disabled={isUpdating}
-              className="mt-4 w-full px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg disabled:opacity-50"
+              className="mt-2 w-full px-3 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg disabled:opacity-50 text-sm"
             >
               {translations.unequip} {slotNames[selectedSlot]}
             </button>
           )}
-        </div>
+      </div>
 
-        {/* Inventory Panel */}
-        <div className="minecraft-card">
+      {/* Inventory Panel */}
+      <div className="minecraft-card lg:col-span-1 lg:overflow-hidden">
           {/* Tabs */}
-          <div className="flex gap-2 mb-4">
+          <div className="flex gap-2 mb-3">
             <button
               onClick={() => setActiveTab('equipped')}
-              className={`flex-1 py-2 rounded-lg font-bold transition-all ${
+              className={`flex-1 py-1.5 rounded-lg font-bold transition-all text-sm ${
                 activeTab === 'equipped'
                   ? 'bg-[#5D8731] text-white'
                   : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
@@ -438,7 +436,7 @@ export default function CharacterClient({
             </button>
             <button
               onClick={() => setActiveTab('inventory')}
-              className={`flex-1 py-2 rounded-lg font-bold transition-all ${
+              className={`flex-1 py-1.5 rounded-lg font-bold transition-all text-sm ${
                 activeTab === 'inventory'
                   ? 'bg-[#5D8731] text-white'
                   : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
@@ -451,10 +449,10 @@ export default function CharacterClient({
           {/* Equipment Selection (when slot selected) */}
           {selectedSlot && activeTab === 'equipped' && (
             <div className="space-y-2">
-              <h3 className="font-bold text-gray-700">
+              <h3 className="font-bold text-gray-700 text-sm">
                 {slotNames[selectedSlot]}
               </h3>
-              <div className="space-y-2 max-h-64 overflow-y-auto">
+              <div className="space-y-2 max-h-48 lg:max-h-[calc(100vh-280px)] overflow-y-auto">
                 {getInventoryForSlot(selectedSlot).length > 0 ? (
                   getInventoryForSlot(selectedSlot).map(equipment => (
                     <button
@@ -493,7 +491,7 @@ export default function CharacterClient({
 
           {/* Full Inventory */}
           {activeTab === 'inventory' && (
-            <div className="space-y-2 max-h-80 overflow-y-auto">
+            <div className="space-y-2 max-h-48 lg:max-h-[calc(100vh-280px)] overflow-y-auto">
               {inventory.length > 0 ? (
                 inventory.map(inv => (
                   <div
@@ -527,7 +525,7 @@ export default function CharacterClient({
           {/* All Equipment Preview */}
           {activeTab === 'equipped' && !selectedSlot && (
             <div className="space-y-2">
-              <h3 className="font-bold text-gray-700 mb-2">
+              <h3 className="font-bold text-gray-700 mb-2 text-sm">
                 {locale === 'ms' ? 'Klik pada badan untuk menukar peralatan' :
                   locale === 'zh' ? '点击身体部位更换装备' :
                   'Click on body parts to change equipment'}
@@ -540,7 +538,7 @@ export default function CharacterClient({
                   return (
                     <div
                       key={equipment.id}
-                      className={`aspect-square rounded flex items-center justify-center text-2xl relative ${
+                      className={`aspect-square rounded flex items-center justify-center text-xl lg:text-2xl relative ${
                         owned
                           ? 'bg-gray-100'
                           : 'bg-gray-300 opacity-50'
@@ -559,112 +557,96 @@ export default function CharacterClient({
               </div>
             </div>
           )}
-        </div>
       </div>
 
       {/* AI Generated Avatar Section */}
-      <div className="minecraft-card">
-        <h2 className="text-xl font-bold text-gray-800 mb-4 text-center">
+      <div className="minecraft-card lg:col-span-1 lg:overflow-hidden">
+        <h2 className="text-lg font-bold text-gray-800 mb-3 text-center">
           {aiAvatarTitle}
         </h2>
 
-        <div className="flex flex-col md:flex-row items-center gap-6">
+        <div className="flex flex-col items-center gap-3">
           {/* Generated Avatar Display */}
-          <div className="flex-1 flex justify-center">
-            <div className="w-64 h-64 bg-gray-100 rounded-xl overflow-hidden flex items-center justify-center border-4 border-[#5D8731]">
-              {generatedAvatar ? (
-                <Image
-                  src={generatedAvatar}
-                  alt={`${kid.name}'s AI Avatar`}
-                  width={256}
-                  height={256}
-                  className="w-full h-full object-cover"
-                  unoptimized={generatedAvatar.startsWith('data:')}
-                />
-              ) : (
-                <div className="text-center text-gray-400 p-4">
-                  <span className="text-6xl block mb-2">🎨</span>
-                  <p>
-                    {locale === 'ms' ? 'Tiada avatar dijana lagi' :
-                      locale === 'zh' ? '尚未生成头像' :
-                      'No avatar generated yet'}
-                  </p>
-                </div>
-              )}
-            </div>
-          </div>
-
-          {/* Generate Controls */}
-          <div className="flex-1 space-y-4">
-            <div className="text-gray-600 text-sm">
-              {locale === 'ms' ? (
-                <p>Klik butang di bawah untuk menjana avatar AI berdasarkan peralatan semasa anda. Avatar akan disimpan secara automatik.</p>
-              ) : locale === 'zh' ? (
-                <p>点击下方按钮根据当前装备生成AI头像。头像将自动保存。</p>
-              ) : (
-                <p>Click the button below to generate an AI avatar based on your current equipment. The avatar will be saved automatically.</p>
-              )}
-            </div>
-
-            {/* Current Equipment Summary */}
-            <div className="bg-gray-50 rounded-lg p-3">
-              <p className="text-xs text-gray-500 mb-2">
-                {locale === 'ms' ? 'Peralatan Semasa:' :
-                  locale === 'zh' ? '当前装备：' :
-                  'Current Equipment:'}
-              </p>
-              <div className="flex flex-wrap gap-2">
-                {slots.map(slot => {
-                  const item = getEquippedItem(slot);
-                  return item ? (
-                    <span
-                      key={slot}
-                      className="text-xs px-2 py-1 rounded"
-                      style={{
-                        backgroundColor: tierColors[item.tier] + '30',
-                        color: tierColors[item.tier],
-                      }}
-                    >
-                      {slotEmojis[slot]} {item.tier}
-                    </span>
-                  ) : null;
-                })}
-                {!slots.some(slot => getEquippedItem(slot)) && (
-                  <span className="text-xs text-gray-400">
-                    {locale === 'ms' ? 'Tiada peralatan' :
-                      locale === 'zh' ? '无装备' :
-                      'No equipment'}
-                  </span>
-                )}
-              </div>
-            </div>
-
-            {/* Error Message */}
-            {generateError && (
-              <div className="bg-red-50 text-red-600 text-sm p-3 rounded-lg">
-                {generateError}
+          <div className="w-40 h-40 lg:w-48 lg:h-48 bg-gray-100 rounded-xl overflow-hidden flex items-center justify-center border-4 border-[#5D8731]">
+            {generatedAvatar ? (
+              <Image
+                src={generatedAvatar}
+                alt={`${kid.name}'s AI Avatar`}
+                width={192}
+                height={192}
+                className="w-full h-full object-cover"
+                unoptimized={generatedAvatar.startsWith('data:')}
+              />
+            ) : (
+              <div className="text-center text-gray-400 p-2">
+                <span className="text-4xl block mb-1">🎨</span>
+                <p className="text-xs">
+                  {locale === 'ms' ? 'Tiada avatar dijana' :
+                    locale === 'zh' ? '尚未生成头像' :
+                    'No avatar yet'}
+                </p>
               </div>
             )}
-
-            {/* Generate Button */}
-            <button
-              onClick={handleGenerateAvatar}
-              disabled={isGenerating}
-              className="w-full px-6 py-3 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white rounded-lg font-bold text-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
-            >
-              {isGenerating ? (
-                <>
-                  <span className="animate-spin">⏳</span>
-                  {generatingLabel}
-                </>
-              ) : (
-                <>
-                  <span>✨</span>
-                  {generatedAvatar ? regenerateLabel : generateLabel}
-                </>
-              )}
-            </button>
           </div>
+
+          {/* Current Equipment Summary */}
+          <div className="bg-gray-50 rounded-lg p-2 w-full">
+            <p className="text-xs text-gray-500 mb-1">
+              {locale === 'ms' ? 'Peralatan:' :
+                locale === 'zh' ? '装备：' :
+                'Equipment:'}
+            </p>
+            <div className="flex flex-wrap gap-1">
+              {slots.map(slot => {
+                const item = getEquippedItem(slot);
+                return item ? (
+                  <span
+                    key={slot}
+                    className="text-xs px-1.5 py-0.5 rounded"
+                    style={{
+                      backgroundColor: tierColors[item.tier] + '30',
+                      color: tierColors[item.tier],
+                    }}
+                  >
+                    {slotEmojis[slot]}
+                  </span>
+                ) : null;
+              })}
+              {!slots.some(slot => getEquippedItem(slot)) && (
+                <span className="text-xs text-gray-400">
+                  {locale === 'ms' ? 'Tiada' :
+                    locale === 'zh' ? '无' :
+                    'None'}
+                </span>
+              )}
+            </div>
+          </div>
+
+          {/* Error Message */}
+          {generateError && (
+            <div className="bg-red-50 text-red-600 text-xs p-2 rounded-lg w-full">
+              {generateError}
+            </div>
+          )}
+
+          {/* Generate Button */}
+          <button
+            onClick={handleGenerateAvatar}
+            disabled={isGenerating}
+            className="w-full px-4 py-2 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white rounded-lg font-bold text-sm transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+          >
+            {isGenerating ? (
+              <>
+                <span className="animate-spin">⏳</span>
+                {generatingLabel}
+              </>
+            ) : (
+              <>
+                <span>✨</span>
+                {generatedAvatar ? regenerateLabel : generateLabel}
+              </>
+            )}
+          </button>
         </div>
       </div>
     </div>
