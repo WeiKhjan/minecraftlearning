@@ -1,7 +1,7 @@
 import { createClient } from '@/lib/supabase/server';
 import { redirect } from 'next/navigation';
 import { getTranslations } from 'next-intl/server';
-import { Link } from '@/i18n/routing';
+import Link from 'next/link';
 import LanguageSwitcher from '@/components/i18n/LanguageSwitcher';
 import type { Subject, Theme, Activity, KidProgress, Locale, ActivityType } from '@/types';
 
@@ -157,13 +157,13 @@ export default async function KidProgressPage({
     <main className="min-h-screen bg-gradient-to-b from-[#87CEEB] to-[#5DADE2] flex flex-col">
       {/* Header */}
       <header className="w-full p-4 flex justify-between items-center">
-        <Link href="/kids" className="text-2xl font-bold text-white drop-shadow-lg">
+        <Link href={`/${locale}/kids`} className="text-2xl font-bold text-white drop-shadow-lg">
           MineCraft Learning
         </Link>
         <div className="flex items-center gap-4">
           <LanguageSwitcher />
           <Link
-            href="/admin"
+            href={`/${locale}/admin`}
             className="text-white hover:text-gray-200 text-sm underline"
           >
             {t('common.back')}

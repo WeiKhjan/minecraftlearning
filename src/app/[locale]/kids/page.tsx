@@ -1,7 +1,7 @@
 import { createClient } from '@/lib/supabase/server';
 import { redirect } from 'next/navigation';
 import { getTranslations } from 'next-intl/server';
-import { Link } from '@/i18n/routing';
+import Link from 'next/link';
 import LanguageSwitcher from '@/components/i18n/LanguageSwitcher';
 import KidCard from '@/components/kids/KidCard';
 import type { Kid, Locale } from '@/types';
@@ -42,7 +42,7 @@ export default async function KidsPage({
         </h1>
         <div className="flex items-center gap-4">
           <Link
-            href="/admin"
+            href={`/${locale}/admin`}
             className="text-white hover:text-gray-200 text-sm underline"
           >
             {locale === 'ms' ? 'Panel Kemajuan' : locale === 'zh' ? '进度面板' : 'Progress'}
@@ -89,7 +89,7 @@ export default async function KidsPage({
 
             {/* Add New Kid Card */}
             <Link
-              href="/kids/new"
+              href={`/${locale}/kids/new`}
               className="minecraft-card hover:scale-105 transition-transform cursor-pointer text-center border-2 border-dashed border-gray-300 bg-white/50"
             >
               <div className="w-20 h-20 mx-auto mb-3 bg-gray-200 rounded-lg flex items-center justify-center">

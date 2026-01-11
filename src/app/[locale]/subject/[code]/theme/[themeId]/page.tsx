@@ -1,7 +1,7 @@
 import { createClient } from '@/lib/supabase/server';
 import { redirect, notFound } from 'next/navigation';
 import { getTranslations } from 'next-intl/server';
-import { Link } from '@/i18n/routing';
+import Link from 'next/link';
 import LanguageSwitcher from '@/components/i18n/LanguageSwitcher';
 import type { Activity, Theme, Subject, Equipment, Locale, ProgressStatus } from '@/types';
 
@@ -153,13 +153,13 @@ export default async function ThemePage({
     <main className="min-h-screen bg-gradient-to-b from-[#87CEEB] to-[#5DADE2] flex flex-col">
       {/* Header */}
       <header className="w-full p-4 flex justify-between items-center">
-        <Link href={`/dashboard?kid=${kidId}`} className="text-2xl font-bold text-white drop-shadow-lg">
+        <Link href={`/${locale}/dashboard?kid=${kidId}`} className="text-2xl font-bold text-white drop-shadow-lg">
           MineCraft Learning
         </Link>
         <div className="flex items-center gap-4">
           <LanguageSwitcher />
           <Link
-            href={`/subject/${code}?kid=${kidId}`}
+            href={`/${locale}/subject/${code}?kid=${kidId}`}
             className="text-white hover:text-gray-200 text-sm underline"
           >
             {t('common.back')}
@@ -172,11 +172,11 @@ export default async function ThemePage({
         <div className="max-w-4xl mx-auto">
           {/* Breadcrumb */}
           <div className="text-white/80 text-sm mb-4">
-            <Link href={`/dashboard?kid=${kidId}`} className="hover:text-white">
+            <Link href={`/${locale}/dashboard?kid=${kidId}`} className="hover:text-white">
               {t('dashboard.title')}
             </Link>
             {' > '}
-            <Link href={`/subject/${code}?kid=${kidId}`} className="hover:text-white">
+            <Link href={`/${locale}/subject/${code}?kid=${kidId}`} className="hover:text-white">
               {getSubjectName(subject, locale as Locale)}
             </Link>
             {' > '}
@@ -215,13 +215,12 @@ export default async function ThemePage({
                 return (
                   <Link
                     key={activity.id}
-                    href={isLocked ? '#' : `/activity/${activity.id}?kid=${kidId}`}
+                    href={isLocked ? '#' : `/${locale}/activity/${activity.id}?kid=${kidId}`}
                     className={`minecraft-card block transition-all ${
                       isLocked
                         ? 'opacity-60 cursor-not-allowed'
                         : 'hover:scale-[1.02] cursor-pointer'
                     }`}
-                    onClick={(e) => isLocked && e.preventDefault()}
                   >
                     <div className="flex items-center gap-4">
                       {/* Activity Icon */}
