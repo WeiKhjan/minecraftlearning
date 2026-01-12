@@ -317,10 +317,13 @@ export function buildSyllablePronunciationRegistry(): AudioItem[] {
 
   for (const locale of locales) {
     for (const syl of ALL_SYLLABLES) {
+      // Repeat syllable 3 times for better TTS generation
+      // Short single syllables often fail, repetition helps
+      const text = `${syl}. ${syl}. ${syl}.`;
       items.push({
         id: `syllable_pronunciation_${locale}_${syl}`,
         type: 'syllable_pronunciation',
-        text: syl,
+        text,
         locale,
         filePath: `syllable/${locale}/pronunciation/${syl}`,
         priority: 1,
@@ -337,7 +340,9 @@ export function buildVocabularyRegistry(): AudioItem[] {
 
   for (const vocab of VOCABULARY_WORDS) {
     for (const locale of locales) {
-      const text = vocab[locale] || vocab.word;
+      const word = vocab[locale] || vocab.word;
+      // Repeat word for better TTS generation, especially short words
+      const text = `${word}. ${word}.`;
       items.push({
         id: `vocabulary_${locale}_${slugify(vocab.word)}`,
         type: 'vocabulary',
@@ -387,7 +392,9 @@ export function buildDictationRegistry(): AudioItem[] {
     const vocab = VOCABULARY_WORDS.find(v => v.word === word);
 
     for (const locale of locales) {
-      const text = vocab ? (vocab[locale] || word) : word;
+      const dictWord = vocab ? (vocab[locale] || word) : word;
+      // Repeat word for better TTS generation
+      const text = `${dictWord}. ${dictWord}.`;
       items.push({
         id: `dictation_${locale}_${slugify(word)}`,
         type: 'dictation',
@@ -411,10 +418,12 @@ export function buildMatchingRegistry(): AudioItem[] {
 
   for (const locale of locales) {
     for (const letter of letters) {
+      // Repeat letter for better TTS generation
+      const text = `${letter}. ${letter}. ${letter}.`;
       items.push({
         id: `matching_${locale}_letter_${letter.toLowerCase()}`,
         type: 'matching',
-        text: letter,
+        text,
         locale,
         filePath: `matching/${locale}/letter_${letter.toLowerCase()}`,
         priority: 2,
