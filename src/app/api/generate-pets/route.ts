@@ -67,25 +67,25 @@ async function generatePetImage(
 
   const glow = rarityGlow[pet.rarity] || 'simple clean';
 
-  const prompt = `Generate a Minecraft-style pixel art pet companion icon.
+  const prompt = `Create a Minecraft game inventory-style pixel art icon of a ${pet.name}.
+
+CRITICAL STYLE - MUST be authentic Minecraft pixel art:
+- BLOCKY 16x16 or 32x32 pixel art style like actual Minecraft mobs
+- Square/rectangular shapes only - NO smooth curves
+- Visible individual pixels with hard edges
+- Minecraft color palette (limited, blocky colors)
+- Look exactly like a mob from the Minecraft game
 
 Subject: ${pet.name} - ${pet.description}
-Mob Type: ${pet.mobType} mob from Minecraft
 
-Style Requirements:
-- Authentic Minecraft 8-bit/16-bit pixel art style
-- Clean blocky pixels, no anti-aliasing
-- ${glow}
-- Cute chibi-like proportions (big head, small body)
-- Pet shown as companion icon (like a buddy that follows player)
-- Transparent or gradient dark background
-- Single mob centered, facing slightly to the side
-- Friendly expression (even for hostile mobs - make them look cute!)
-- NO text, NO labels
-- Sharp pixel edges
-- Recognizable Minecraft mob aesthetic
+Visual Details:
+- ${glow} effect around the pet
+- Cute but BLOCKY appearance (Minecraft aesthetic)
+- Dark or transparent background
+- Centered, facing forward or slight angle
+- Friendly expression
 
-Make it look like an adorable Minecraft pet companion!`;
+DO NOT make it look realistic or smooth - it MUST look like genuine Minecraft pixel art with visible square pixels!`;
 
   try {
     const response = await fetch(
@@ -147,10 +147,12 @@ Make it look like an adorable Minecraft pet companion!`;
 
     const { data: urlData } = supabase.storage.from('images').getPublicUrl(fileName);
 
-    // Update pet record with image URL
+    // Update pet record with RELATIVE path (app constructs full URL)
+    // Format: /pets/{id}.png -> app prepends images -> images/pets/{id}.png
+    const relativePath = `/pets/${pet.id}.png`;
     await supabase
       .from('pets')
-      .update({ image_url: urlData.publicUrl })
+      .update({ image_url: relativePath })
       .eq('id', pet.id);
 
     return { id: pet.id, imageUrl: urlData.publicUrl };
