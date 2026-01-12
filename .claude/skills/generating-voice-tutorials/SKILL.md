@@ -1,42 +1,74 @@
 ---
 name: generating-voice-tutorials
-description: Generates voice-guided tutorials and TTS audio content for the MYLearnt learning platform. Creates pre-generated audio clips for activities, AI tutor voice guidance, and text-to-speech for educational content. Supports Malay (ms), Chinese (zh), and English (en) languages. Uses Gemini 2.5 Flash TTS API with rate limiting (7 RPM).
+description: Generates voice-guided tutorials and TTS audio content for the MYLearnt learning platform. Creates pre-generated audio clips for activities, AI tutor voice guidance, and text-to-speech for educational content. Supports Malay (ms), Chinese (zh), and English (en) languages. Uses Gemini 2.5 Flash TTS API with automatic fallback.
 ---
 
 # Generating Voice Tutorials
 
-Creates voice-guided content and pre-generated audio files for the MYLearnt educational platform.
+Creates voice-guided content and audio files for the MYLearnt educational platform.
+
+## Pre-Generation Policy
+
+> **IMPORTANT**: Not all audio needs pre-generation. The system has automatic fallback to on-the-fly TTS.
+
+| Activity Type | Pre-Generation | Reason |
+|---------------|----------------|--------|
+| **Suku Kata (Syllable)** | ✅ REQUIRED | Core learning content, must be consistent |
+| **Ejaan (Dictation)** | ✅ REQUIRED | Words must be pronounced correctly for spelling practice |
+| **Speaking** | ❌ NOT NEEDED | Phrases use on-the-fly TTS (fallback works fine) |
+| **Matching** | ❌ NOT NEEDED | Uses on-the-fly TTS (fallback works fine) |
+| **Vocabulary** | ❌ NOT NEEDED | Uses on-the-fly TTS (fallback works fine) |
+
+### When Preparing New Lessons
+
+1. **Suku Kata activities**: Generate audio for all syllables before deploying
+2. **Ejaan activities**: Generate audio for all dictation words before deploying
+3. **Speaking/Matching/Other**: No pre-generation needed - automatic fallback handles it
 
 ## Quick Start
 
-### Most Common Task: Generate Audio Batch via Vercel API
+### For New Suku Kata Lessons (REQUIRED)
 
 ```bash
-# Check registry stats
-curl https://minecraftlearning.vercel.app/api/generate-audio-batch
-
-# Generate batch (uses Vercel credentials)
+# Generate syllable pronunciation for new syllables
 curl -X POST https://minecraftlearning.vercel.app/api/generate-audio-batch \
   -H "Content-Type: application/json" \
   -d '{"category":"syllable_pronunciation","locale":"ms","startIndex":0,"count":5}'
 
-# Dry run (test without generating)
+# Generate syllable guides (educational explanations)
 curl -X POST https://minecraftlearning.vercel.app/api/generate-audio-batch \
   -H "Content-Type: application/json" \
-  -d '{"category":"all","locale":"all","startIndex":0,"count":5,"dryRun":true}'
+  -d '{"category":"syllable_guide","locale":"ms","startIndex":0,"count":5}'
+```
+
+### For New Ejaan (Dictation) Lessons (REQUIRED)
+
+```bash
+# Generate dictation word audio
+curl -X POST https://minecraftlearning.vercel.app/api/generate-audio-batch \
+  -H "Content-Type: application/json" \
+  -d '{"category":"dictation","locale":"ms","startIndex":0,"count":5}'
+```
+
+### For Speaking/Matching/Vocabulary (NOT NEEDED)
+No pre-generation required. The system automatically uses on-the-fly TTS.
+
+### Check Registry Stats
+```bash
+curl https://minecraftlearning.vercel.app/api/generate-audio-batch
 ```
 
 ### Quick Reference: Audio Categories
-| Category | Count (per locale) | Use For |
-|----------|-------------------|---------|
-| `syllable_pronunciation` | 90 | Just the syllable sound ("ba") |
-| `syllable_guide` | 90 | Educational explanation + practice |
-| `vocabulary` | 79 | Word pronunciation |
-| `phrase` | 36 | Speaking activity sentences |
-| `dictation` | 17 | Dictation word audio |
-| `matching` | 5 | Matching activity sounds |
+| Category | Pre-Generate? | Count (per locale) |
+|----------|---------------|-------------------|
+| `syllable_pronunciation` | ✅ YES | 90 |
+| `syllable_guide` | ✅ YES | 90 |
+| `dictation` | ✅ YES | 17 |
+| `vocabulary` | ❌ No (fallback) | 79 |
+| `phrase` | ❌ No (fallback) | 36 |
+| `matching` | ❌ No (fallback) | 5 |
 
-**Total**: ~951 files across all 3 locales
+**Required pre-generation**: ~197 files per locale (syllable + dictation only)
 
 ---
 
