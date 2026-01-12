@@ -280,36 +280,41 @@ export default async function SubjectPage({
                               {locale === 'ms' ? 'Ganjaran:' : locale === 'zh' ? '奖励:' : 'Rewards:'}
                             </span>
                             {/* Pet Reward */}
-                            {theme.pet && (
-                              <div className="flex items-center gap-1.5 bg-purple-100 px-2 py-1 rounded-full" title={getPetName(theme.pet, locale as Locale)}>
-                                {theme.pet.image_url ? (
-                                  <img src={theme.pet.image_url} alt={getPetName(theme.pet, locale as Locale)} className="w-5 h-5 object-contain" />
-                                ) : (
-                                  <span className="text-sm">🐾</span>
-                                )}
-                                <span className="text-xs text-purple-700 font-medium">
-                                  {getPetName(theme.pet, locale as Locale)}
-                                </span>
-                              </div>
-                            )}
+                            {theme.pet && (() => {
+                              const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://glwxvgxgquwfgwbwqbiz.supabase.co';
+                              const petImageUrl = theme.pet.image_url?.startsWith('http')
+                                ? theme.pet.image_url
+                                : theme.pet.image_url
+                                  ? `${supabaseUrl}/storage/v1/object/public/images${theme.pet.image_url}`
+                                  : null;
+                              return (
+                                <div className="flex items-center gap-1.5 bg-purple-100 px-2 py-1 rounded-full" title={getPetName(theme.pet, locale as Locale)}>
+                                  {petImageUrl ? (
+                                    <img src={petImageUrl} alt={getPetName(theme.pet, locale as Locale)} className="w-5 h-5 object-contain" />
+                                  ) : (
+                                    <span className="text-sm">🐾</span>
+                                  )}
+                                  <span className="text-xs text-purple-700 font-medium">
+                                    {getPetName(theme.pet, locale as Locale)}
+                                  </span>
+                                </div>
+                              );
+                            })()}
                             {/* Equipment Rewards */}
                             {equipment.slice(0, 3).map((equip) => {
                               const equipName = locale === 'ms' ? equip.name_ms || equip.name : locale === 'zh' ? equip.name_zh || equip.name : equip.name_en || equip.name;
-                              // Equipment type icons
-                              const equipIcon = equip.name.toLowerCase().includes('helmet') ? '🪖' :
-                                equip.name.toLowerCase().includes('chestplate') || equip.name.toLowerCase().includes('armor') ? '🛡️' :
-                                equip.name.toLowerCase().includes('leggings') || equip.name.toLowerCase().includes('pants') ? '👖' :
-                                equip.name.toLowerCase().includes('boots') || equip.name.toLowerCase().includes('shoes') ? '👢' :
-                                equip.name.toLowerCase().includes('sword') ? '⚔️' :
-                                equip.name.toLowerCase().includes('axe') ? '🪓' :
-                                equip.name.toLowerCase().includes('pickaxe') ? '⛏️' : '🎁';
+                              // Convert relative path to Supabase storage URL
+                              const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://glwxvgxgquwfgwbwqbiz.supabase.co';
+                              const imageUrl = equip.image_url?.startsWith('http')
+                                ? equip.image_url
+                                : `${supabaseUrl}/storage/v1/object/public/images${equip.image_url}`;
                               return (
                                 <div
                                   key={equip.id}
                                   className="flex items-center gap-1.5 bg-yellow-100 px-2 py-1 rounded-full"
                                   title={equipName}
                                 >
-                                  <span className="text-sm">{equipIcon}</span>
+                                  <img src={imageUrl} alt={equip.name} className="w-5 h-5 object-contain" />
                                   <span className="text-xs text-yellow-700 font-medium hidden sm:inline">
                                     {equipName}
                                   </span>
