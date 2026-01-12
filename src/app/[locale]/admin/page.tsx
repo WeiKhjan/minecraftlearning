@@ -9,6 +9,11 @@ interface KidWithProgress extends Kid {
   totalActivities: number;
   completedActivities: number;
   lastActiveAt: string | null;
+  parents?: {
+    email: string;
+    display_name: string | null;
+    last_login_at: string | null;
+  };
 }
 
 export default async function AdminPage({
@@ -34,15 +39,16 @@ export default async function AdminPage({
     .eq('id', user.id)
     .single();
 
-  // For now, allow all parents to access admin (for their own kids)
-  // In production, check is_admin for full access
+  const isAdmin = parent?.is_admin === true;
 
-  // Fetch all kids for this parent
-  const { data: kids } = await supabase
-    .from('kids')
-    .select('*')
-    .eq('parent_id', user.id)
-    .order('created_at', { ascending: false });
+  // Fetch kids - admin sees all, regular users see only their own
+  let kidsQuery = supabase.from('kids').select('*, parents!inner(email, display_name, last_login_at)');
+
+  if (!isAdmin) {
+    kidsQuery = kidsQuery.eq('parent_id', user.id);
+  }
+
+  const { data: kids } = await kidsQuery.order('created_at', { ascending: false });
 
   // Fetch all subjects
   const { data: subjects } = await supabase
@@ -129,9 +135,16 @@ export default async function AdminPage({
       {/* Main Content */}
       <div className="flex-1 px-4 py-6">
         <div className="max-w-6xl mx-auto">
-          <h1 className="text-3xl font-bold text-white drop-shadow-lg mb-6 text-center">
-            {locale === 'ms' ? 'Panel Kemajuan' : locale === 'zh' ? '进度面板' : 'Progress Dashboard'}
-          </h1>
+          <div className="flex items-center justify-center gap-3 mb-6">
+            <h1 className="text-3xl font-bold text-white drop-shadow-lg text-center">
+              {locale === 'ms' ? 'Panel Kemajuan' : locale === 'zh' ? '进度面板' : 'Progress Dashboard'}
+            </h1>
+            {isAdmin && (
+              <span className="bg-yellow-500 text-white px-3 py-1 rounded-full text-sm font-bold">
+                ADMIN
+              </span>
+            )}
+          </div>
 
           {/* Summary Cards */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
@@ -183,6 +196,11 @@ export default async function AdminPage({
                       <th className="text-left py-3 px-2">
                         {locale === 'ms' ? 'Nama' : locale === 'zh' ? '名字' : 'Name'}
                       </th>
+                      {isAdmin && (
+                        <th className="text-left py-3 px-2">
+                          {locale === 'ms' ? 'Ibu Bapa' : locale === 'zh' ? '家长' : 'Parent'}
+                        </th>
+                      )}
                       <th className="text-center py-3 px-2">
                         {locale === 'ms' ? 'Darjah' : locale === 'zh' ? '年级' : 'Grade'}
                       </th>
@@ -196,6 +214,11 @@ export default async function AdminPage({
                       <th className="text-center py-3 px-2">
                         {locale === 'ms' ? 'Aktiviti Terakhir' : locale === 'zh' ? '最后活动' : 'Last Active'}
                       </th>
+                      {isAdmin && (
+                        <th className="text-center py-3 px-2">
+                          {locale === 'ms' ? 'Log Masuk Terakhir' : locale === 'zh' ? '最后登录' : 'Last Login'}
+                        </th>
+                      )}
                       <th className="text-center py-3 px-2"></th>
                     </tr>
                   </thead>
@@ -213,6 +236,11 @@ export default async function AdminPage({
                               <span className="font-medium">{kid.name}</span>
                             </div>
                           </td>
+                          {isAdmin && (
+                            <td className="py-3 px-2 text-sm text-gray-600">
+                              {kid.parents?.display_name || kid.parents?.email || '-'}
+                            </td>
+                          )}
                           <td className="text-center py-3 px-2 text-sm">
                             {gradeLabels[kid.grade] || kid.grade}
                           </td>
@@ -240,6 +268,11 @@ export default async function AdminPage({
                           <td className="text-center py-3 px-2 text-sm text-gray-500">
                             {formatDate(kid.lastActiveAt)}
                           </td>
+                          {isAdmin && (
+                            <td className="text-center py-3 px-2 text-sm text-gray-500">
+                              {formatDate(kid.parents?.last_login_at || null)}
+                            </td>
+                          )}
                           <td className="text-center py-3 px-2">
                             <Link
                               href={`/${locale}/admin/kid/${kid.id}`}

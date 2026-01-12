@@ -70,6 +70,7 @@ export interface Theme {
   description_en: string | null;
   order_index: number;
   required_grade: Grade | null;
+  pet_reward: string | null;
 }
 
 // Activity
@@ -126,6 +127,7 @@ export interface SyllableContent {
   // Simple format: flat array of syllables
   syllables?: string[];
   audio_urls?: string[]; // Pre-generated audio URLs for each syllable
+  voice_guides?: string[]; // Pre-generated voice guidance texts (for directTTS to save API cost)
   // Word format: array of word objects with syllables
   words?: {
     word: string;
@@ -156,6 +158,7 @@ export interface SpeakingContent {
     translation_zh: string;
     translation_en: string;
     audio_url?: string; // Pre-generated audio URL
+    voice_guide?: string; // Pre-generated voice guidance text (for directTTS to save API cost)
   }[];
   use_kid_name: boolean;
 }

@@ -3,7 +3,23 @@ import { redirect, notFound } from 'next/navigation';
 import { getTranslations } from 'next-intl/server';
 import Link from 'next/link';
 import LanguageSwitcher from '@/components/i18n/LanguageSwitcher';
-import type { Subject, Theme, Locale } from '@/types';
+import type { Subject, Theme, Locale, Equipment, Pet, LocalizedText } from '@/types';
+
+// Extended theme type with rewards
+interface ThemeWithRewards extends Theme {
+  pet?: {
+    id: string;
+    name: LocalizedText;
+    image_url: string | null;
+    rarity: string;
+  } | null;
+}
+
+// Helper to get pet name based on locale
+function getPetName(pet: { name: LocalizedText } | null | undefined, locale: Locale): string {
+  if (!pet) return '';
+  return pet.name[locale] || pet.name.en;
+}
 
 // Get theme name based on locale
 function getThemeName(theme: Theme, locale: Locale): string {
@@ -57,14 +73,24 @@ export default async function SubjectPage({
     redirect(`/${locale}/login`);
   }
 
+  // Check if user is admin
+  const { data: parent } = await supabase
+    .from('parents')
+    .select('is_admin')
+    .eq('id', user.id)
+    .single();
+
+  const isAdmin = parent?.is_admin === true;
+
   // Parallel fetch: kid verification and subject (independent queries)
+  // Admin can access any kid, regular users can only access their own
+  let kidQuery = supabase.from('kids').select('*').eq('id', kidId);
+  if (!isAdmin) {
+    kidQuery = kidQuery.eq('parent_id', user.id);
+  }
+
   const [{ data: kid }, { data: subject }] = await Promise.all([
-    supabase
-      .from('kids')
-      .select('*')
-      .eq('id', kidId)
-      .eq('parent_id', user.id)
-      .single(),
+    kidQuery.single(),
     supabase
       .from('subjects')
       .select('*')
@@ -80,26 +106,39 @@ export default async function SubjectPage({
     notFound();
   }
 
-  // Fetch themes for this subject
+  // Fetch themes for this subject with pet rewards
   const { data: themes } = await supabase
     .from('themes')
-    .select('*')
+    .select('*, pet:pet_reward(id, name, image_url, rarity)')
     .eq('subject_id', subject.id)
     .order('order_index', { ascending: true });
 
   const themeIds = themes?.map(t => t.id) || [];
 
-  // Parallel fetch: activities and progress (both depend on themeIds)
+  // Parallel fetch: activities with equipment, progress, and pets
   const [{ data: allActivities }, { data: progress }] = await Promise.all([
     supabase
       .from('activities')
-      .select('id, theme_id')
+      .select('id, theme_id, equipment_reward_id, equipment:equipment_reward_id(id, name, name_ms, name_zh, name_en, image_url, rarity)')
       .in('theme_id', themeIds),
     supabase
       .from('kid_progress')
       .select('activity_id, status')
       .eq('kid_id', kidId)
   ]);
+
+  // Group equipment rewards by theme
+  const themeEquipment = new Map<string, Array<{ id: string; name: string; name_ms: string | null; name_zh: string | null; name_en: string | null; image_url: string; rarity: string }>>();
+  allActivities?.forEach(activity => {
+    if (activity.equipment) {
+      const current = themeEquipment.get(activity.theme_id) || [];
+      // Avoid duplicates
+      if (!current.find(e => e.id === activity.equipment.id)) {
+        current.push(activity.equipment);
+      }
+      themeEquipment.set(activity.theme_id, current);
+    }
+  });
 
   // Calculate completed activities per theme
   const themeProgress = new Map<string, { completed: number; total: number }>();
@@ -182,10 +221,12 @@ export default async function SubjectPage({
           {/* Themes List */}
           <div className="space-y-4">
             {themes && themes.length > 0 ? (
-              themes.map((theme: Theme, index: number) => {
+              themes.map((theme: ThemeWithRewards, index: number) => {
                 const prog = themeProgress.get(theme.id) || { completed: 0, total: 0 };
                 const progressPercent = prog.total > 0 ? (prog.completed / prog.total) * 100 : 0;
-                const isLocked = index > 0 && (themeProgress.get(themes[index - 1]?.id)?.completed || 0) < (themeProgress.get(themes[index - 1]?.id)?.total || 1);
+                // Admin bypasses locking
+                const isLocked = !isAdmin && index > 0 && (themeProgress.get(themes[index - 1]?.id)?.completed || 0) < (themeProgress.get(themes[index - 1]?.id)?.total || 1);
+                const equipment = themeEquipment.get(theme.id) || [];
 
                 return (
                   <Link
@@ -227,6 +268,48 @@ export default async function SubjectPage({
                             {prog.completed}/{prog.total}
                           </span>
                         </div>
+
+                        {/* Rewards Section */}
+                        {(theme.pet || equipment.length > 0) && (
+                          <div className="mt-3 flex items-center gap-3 flex-wrap">
+                            <span className="text-xs text-gray-500 font-medium">
+                              {locale === 'ms' ? 'Ganjaran:' : locale === 'zh' ? '奖励:' : 'Rewards:'}
+                            </span>
+                            {/* Pet Reward */}
+                            {theme.pet && (
+                              <div className="flex items-center gap-1.5 bg-purple-100 px-2 py-1 rounded-full" title={getPetName(theme.pet, locale as Locale)}>
+                                {theme.pet.image_url ? (
+                                  <img src={theme.pet.image_url} alt={getPetName(theme.pet, locale as Locale)} className="w-5 h-5 object-contain" />
+                                ) : (
+                                  <span className="text-sm">🐾</span>
+                                )}
+                                <span className="text-xs text-purple-700 font-medium">
+                                  {getPetName(theme.pet, locale as Locale)}
+                                </span>
+                              </div>
+                            )}
+                            {/* Equipment Rewards */}
+                            {equipment.slice(0, 3).map((equip) => (
+                              <div
+                                key={equip.id}
+                                className="flex items-center gap-1.5 bg-yellow-100 px-2 py-1 rounded-full"
+                                title={locale === 'ms' ? equip.name_ms || equip.name : locale === 'zh' ? equip.name_zh || equip.name : equip.name_en || equip.name}
+                              >
+                                {equip.image_url ? (
+                                  <img src={equip.image_url} alt={equip.name} className="w-5 h-5 object-contain" />
+                                ) : (
+                                  <span className="text-sm">⚔️</span>
+                                )}
+                                <span className="text-xs text-yellow-700 font-medium hidden sm:inline">
+                                  {locale === 'ms' ? equip.name_ms || equip.name : locale === 'zh' ? equip.name_zh || equip.name : equip.name_en || equip.name}
+                                </span>
+                              </div>
+                            ))}
+                            {equipment.length > 3 && (
+                              <span className="text-xs text-gray-400">+{equipment.length - 3}</span>
+                            )}
+                          </div>
+                        )}
                       </div>
 
                       {/* Arrow */}

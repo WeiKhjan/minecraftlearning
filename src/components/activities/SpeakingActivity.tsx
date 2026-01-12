@@ -113,10 +113,11 @@ export default function SpeakingActivity({ content, kidName, avatarUrl, locale, 
             &quot;{getText(currentPhrase?.text || '')}&quot;
           </p>
           <VoiceTutorButton
-            text={getText(currentPhrase?.text || '')}
+            text={currentPhrase?.voice_guide || getText(currentPhrase?.text || '')}
             locale={locale}
             size="md"
             contentType="sentence"
+            directTTS={!!currentPhrase?.voice_guide}
             audioUrl={currentPhrase?.audio_url}
           />
         </div>

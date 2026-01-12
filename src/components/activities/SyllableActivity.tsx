@@ -264,10 +264,11 @@ export default function SyllableActivity({ content, avatarUrl, locale, onComplet
           <div className="flex items-center justify-center gap-4 mb-4">
             <p className="text-6xl font-bold">{currentItem}</p>
             <VoiceTutorButton
-              text={currentItem}
+              text={!isWordMode && data.voice_guides?.[currentIndex] ? data.voice_guides[currentIndex] : currentItem}
               locale={locale}
               size="md"
               contentType={isWordMode ? 'word' : 'syllable'}
+              directTTS={!isWordMode && !!data.voice_guides?.[currentIndex]}
               audioUrl={isWordMode ? currentWord?.audio_url : data.audio_urls?.[currentIndex]}
             />
           </div>

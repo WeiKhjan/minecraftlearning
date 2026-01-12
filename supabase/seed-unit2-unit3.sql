@@ -214,19 +214,22 @@ BEGIN
             "text": "Selamat pagi, kawan-kawan.",
             "translation_ms": "Selamat pagi, kawan-kawan.",
             "translation_zh": "早安，朋友们。",
-            "translation_en": "Good morning, friends."
+            "translation_en": "Good morning, friends.",
+            "voice_guide": "Ayat ini ialah Selamat pagi, kawan-kawan. Kita guna untuk memberi salam pada waktu pagi kepada rakan-rakan. Sebut dengan saya: Selamat pagi, kawan-kawan."
           },
           {
             "text": "Nama saya {name}.",
             "translation_ms": "Nama saya {name}.",
             "translation_zh": "我的名字是 {name}。",
-            "translation_en": "My name is {name}."
+            "translation_en": "My name is {name}.",
+            "voice_guide": "Ayat ini ialah Nama saya. Kita guna untuk memperkenalkan diri kita kepada orang lain. Sebut dengan saya: Nama saya..."
           },
           {
             "text": "Terima kasih, ayah.",
             "translation_ms": "Terima kasih, ayah.",
             "translation_zh": "谢谢爸爸。",
-            "translation_en": "Thank you, father."
+            "translation_en": "Thank you, father.",
+            "voice_guide": "Ayat ini ialah Terima kasih, ayah. Kita guna untuk mengucapkan terima kasih kepada ayah. Sebut dengan saya: Terima kasih, ayah."
           }
         ],
         "use_kid_name": true
@@ -477,31 +480,36 @@ BEGIN
             "text": "Ini Kampung Murni.",
             "translation_ms": "Ini Kampung Murni.",
             "translation_zh": "这是甘榜慕尼。",
-            "translation_en": "This is Kampung Murni."
+            "translation_en": "This is Kampung Murni.",
+            "voice_guide": "Ayat ini ialah Ini Kampung Murni. Kampung Murni adalah kata nama khas untuk tempat. Sebut dengan saya: Ini Kampung Murni."
           },
           {
             "text": "Ini Puan Chan.",
             "translation_ms": "Ini Puan Chan.",
             "translation_zh": "这是陈夫人。",
-            "translation_en": "This is Mrs. Chan."
+            "translation_en": "This is Mrs. Chan.",
+            "voice_guide": "Ayat ini ialah Ini Puan Chan. Puan Chan adalah kata nama khas untuk orang. Sebut dengan saya: Ini Puan Chan."
           },
           {
             "text": "Ini Encik Tan.",
             "translation_ms": "Ini Encik Tan.",
             "translation_zh": "这是陈先生。",
-            "translation_en": "This is Mr. Tan."
+            "translation_en": "This is Mr. Tan.",
+            "voice_guide": "Ayat ini ialah Ini Encik Tan. Encik Tan adalah kata nama khas untuk orang. Sebut dengan saya: Ini Encik Tan."
           },
           {
             "text": "Ini kereta Proton Waja.",
             "translation_ms": "Ini kereta Proton Waja.",
             "translation_zh": "这是宝腾Waja汽车。",
-            "translation_en": "This is a Proton Waja car."
+            "translation_en": "This is a Proton Waja car.",
+            "voice_guide": "Ayat ini ialah Ini kereta Proton Waja. Proton Waja adalah kata nama khas untuk kereta. Sebut dengan saya: Ini kereta Proton Waja."
           },
           {
             "text": "Saya sayang datuk dan nenek.",
             "translation_ms": "Saya sayang datuk dan nenek.",
             "translation_zh": "我爱爷爷和奶奶。",
-            "translation_en": "I love grandfather and grandmother."
+            "translation_en": "I love grandfather and grandmother.",
+            "voice_guide": "Ayat ini ialah Saya sayang datuk dan nenek. Kita guna untuk menyatakan kasih sayang kepada datuk dan nenek. Sebut dengan saya: Saya sayang datuk dan nenek."
           }
         ],
         "use_kid_name": false

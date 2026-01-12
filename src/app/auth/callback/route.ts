@@ -30,7 +30,14 @@ export async function GET(request: Request) {
             display_name: user.user_metadata?.full_name || user.email?.split('@')[0],
             preferred_language: 'ms',
             is_admin: false,
+            last_login_at: new Date().toISOString(),
           });
+        } else {
+          // Update last login time for existing users
+          await supabase
+            .from('parents')
+            .update({ last_login_at: new Date().toISOString() })
+            .eq('id', user.id);
         }
       }
 

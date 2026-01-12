@@ -77,6 +77,21 @@ export default async function ThemePage({
     redirect(`/${locale}/login`);
   }
 
+  // Check if user is admin
+  const { data: parent } = await supabase
+    .from('parents')
+    .select('is_admin')
+    .eq('id', user.id)
+    .single();
+
+  const isAdmin = parent?.is_admin === true;
+
+  // Admin can access any kid, regular users can only access their own
+  let kidQuery = supabase.from('kids').select('*').eq('id', kidId);
+  if (!isAdmin) {
+    kidQuery = kidQuery.eq('parent_id', user.id);
+  }
+
   // Parallel fetch: kid, subject, theme, and activities (all independent)
   const [
     { data: kid },
@@ -84,12 +99,7 @@ export default async function ThemePage({
     { data: theme },
     { data: activities }
   ] = await Promise.all([
-    supabase
-      .from('kids')
-      .select('*')
-      .eq('id', kidId)
-      .eq('parent_id', user.id)
-      .single(),
+    kidQuery.single(),
     supabase
       .from('subjects')
       .select('*')

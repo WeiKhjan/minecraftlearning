@@ -22,6 +22,15 @@ export default async function KidsPage({
     redirect(`/${locale}/login`);
   }
 
+  // Check if user is admin
+  const { data: parent } = await supabase
+    .from('parents')
+    .select('is_admin')
+    .eq('id', user.id)
+    .single();
+
+  const isAdmin = parent?.is_admin === true;
+
   // Fetch kids for this parent
   const { data: kids, error: kidsError } = await supabase
     .from('kids')
