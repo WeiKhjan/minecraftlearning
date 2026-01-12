@@ -45,15 +45,25 @@ const EQUIPMENT_LIST = [
   { id: 'leather_moccasins', tier: 'leather', piece: 'boots', color: 'brown leather moccasins' },
   { id: 'wooden_club', tier: 'leather', piece: 'club', color: 'wooden' },
 
-  // Chain Tier
+  // Chain Tier (Base)
   { id: 'chain_helmet', tier: 'chain', piece: 'helmet', color: 'silver chainmail' },
   { id: 'chain_chestplate', tier: 'chain', piece: 'chestplate', color: 'silver chainmail' },
   { id: 'chain_leggings', tier: 'chain', piece: 'leggings', color: 'silver chainmail' },
   { id: 'chain_boots', tier: 'chain', piece: 'boots', color: 'silver chainmail' },
   { id: 'stone_sword', tier: 'chain', piece: 'sword', color: 'grey stone' },
 
-  // Iron Tier
+  // Chain Tier Variants (Unit 9)
+  { id: 'chain_cap', tier: 'chain', piece: 'helmet', color: 'light silver chainmail cap' },
+  { id: 'chain_vest', tier: 'chain', piece: 'chestplate', color: 'light silver chainmail vest' },
+  { id: 'chain_pants', tier: 'chain', piece: 'leggings', color: 'light silver chainmail pants' },
+  { id: 'chain_shoes', tier: 'chain', piece: 'boots', color: 'light silver chainmail shoes' },
+  { id: 'stone_axe', tier: 'chain', piece: 'axe', color: 'grey stone' },
+  { id: 'stone_dagger', tier: 'chain', piece: 'dagger', color: 'grey stone' },
+
+  // Iron Tier (Base)
   { id: 'iron_helmet', tier: 'iron', piece: 'helmet', color: 'shiny silver iron' },
+  // Iron Tier Variants
+  { id: 'iron_cap', tier: 'iron', piece: 'helmet', color: 'polished silver iron cap' },
   { id: 'iron_chestplate', tier: 'iron', piece: 'chestplate', color: 'shiny silver iron' },
   { id: 'iron_leggings', tier: 'iron', piece: 'leggings', color: 'shiny silver iron' },
   { id: 'iron_boots', tier: 'iron', piece: 'boots', color: 'shiny silver iron' },
@@ -90,6 +100,12 @@ async function generateEquipmentImage(
     leggings: 'armor leggings/pants that cover legs',
     boots: 'armor boots/shoes that cover feet',
     sword: 'sword weapon with handle and blade',
+    axe: 'battle axe weapon with wooden handle and blade head',
+    dagger: 'short dagger/knife weapon for quick attacks',
+    pickaxe: 'mining pickaxe tool with wooden handle and pointed head',
+    shovel: 'digging shovel tool with wooden handle and flat blade',
+    hoe: 'farming hoe tool with wooden handle and flat blade',
+    club: 'wooden club/mace weapon for blunt attacks',
   };
 
   const pieceDesc = pieceDescriptions[equipment.piece];
