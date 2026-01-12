@@ -10,35 +10,35 @@
 -- Leather Tier Variants (for Units 4-8)
 INSERT INTO equipment (name, name_ms, name_zh, name_en, slot, tier, rarity, required_level, image_url) VALUES
 -- Unit 4 Equipment Set
-('Leather Helmet 2', 'Topi Keledar Kulit 2', '皮革头盔 2', 'Leather Helmet 2', 'helmet', 'leather', 'common', 4, 'images/equipment/leather_helmet_2.png'),
-('Leather Chestplate 2', 'Baju Besi Kulit 2', '皮革胸甲 2', 'Leather Chestplate 2', 'chestplate', 'leather', 'common', 4, 'images/equipment/leather_chestplate_2.png'),
-('Leather Leggings 2', 'Seluar Kulit 2', '皮革护腿 2', 'Leather Leggings 2', 'leggings', 'leather', 'common', 4, 'images/equipment/leather_leggings_2.png'),
-('Leather Boots 2', 'Kasut Kulit 2', '皮革靴子 2', 'Leather Boots 2', 'boots', 'leather', 'common', 4, 'images/equipment/leather_boots_2.png'),
-('Wooden Axe', 'Kapak Kayu', '木斧', 'Wooden Axe', 'weapon', 'leather', 'common', 4, 'images/equipment/wooden_axe.png'),
+('Leather Helmet 2', 'Topi Keledar Kulit 2', '皮革头盔 2', 'Leather Helmet 2', 'helmet', 'leather', 'common', 4, '/equipment/leather_helmet_2.png'),
+('Leather Chestplate 2', 'Baju Besi Kulit 2', '皮革胸甲 2', 'Leather Chestplate 2', 'chestplate', 'leather', 'common', 4, '/equipment/leather_chestplate_2.png'),
+('Leather Leggings 2', 'Seluar Kulit 2', '皮革护腿 2', 'Leather Leggings 2', 'leggings', 'leather', 'common', 4, '/equipment/leather_leggings_2.png'),
+('Leather Boots 2', 'Kasut Kulit 2', '皮革靴子 2', 'Leather Boots 2', 'boots', 'leather', 'common', 4, '/equipment/leather_boots_2.png'),
+('Wooden Axe', 'Kapak Kayu', '木斧', 'Wooden Axe', 'weapon', 'leather', 'common', 4, '/equipment/wooden_axe.png'),
 -- Unit 5 Equipment Set
-('Leather Cap', 'Topi Kulit', '皮革帽', 'Leather Cap', 'helmet', 'leather', 'common', 5, 'images/equipment/leather_cap.png'),
-('Leather Vest', 'Vest Kulit', '皮革背心', 'Leather Vest', 'chestplate', 'leather', 'common', 5, 'images/equipment/leather_vest.png'),
-('Leather Pants', 'Seluar Panjang Kulit', '皮革长裤', 'Leather Pants', 'leggings', 'leather', 'common', 5, 'images/equipment/leather_pants.png'),
-('Leather Shoes', 'Kasut Kulit Ringan', '皮革轻便鞋', 'Leather Shoes', 'boots', 'leather', 'common', 5, 'images/equipment/leather_shoes.png'),
-('Wooden Pickaxe', 'Beliung Kayu', '木镐', 'Wooden Pickaxe', 'weapon', 'leather', 'common', 5, 'images/equipment/wooden_pickaxe.png'),
+('Leather Cap', 'Topi Kulit', '皮革帽', 'Leather Cap', 'helmet', 'leather', 'common', 5, '/equipment/leather_cap.png'),
+('Leather Vest', 'Vest Kulit', '皮革背心', 'Leather Vest', 'chestplate', 'leather', 'common', 5, '/equipment/leather_vest.png'),
+('Leather Pants', 'Seluar Panjang Kulit', '皮革长裤', 'Leather Pants', 'leggings', 'leather', 'common', 5, '/equipment/leather_pants.png'),
+('Leather Shoes', 'Kasut Kulit Ringan', '皮革轻便鞋', 'Leather Shoes', 'boots', 'leather', 'common', 5, '/equipment/leather_shoes.png'),
+('Wooden Pickaxe', 'Beliung Kayu', '木镐', 'Wooden Pickaxe', 'weapon', 'leather', 'common', 5, '/equipment/wooden_pickaxe.png'),
 -- Unit 6 Equipment Set
-('Leather Hood', 'Tudung Kulit', '皮革兜帽', 'Leather Hood', 'helmet', 'leather', 'common', 6, 'images/equipment/leather_hood.png'),
-('Leather Tunic', 'Tunik Kulit', '皮革束腰外衣', 'Leather Tunic', 'chestplate', 'leather', 'common', 6, 'images/equipment/leather_tunic.png'),
-('Leather Trousers', 'Seluar Kulit Panjang', '皮革裤子', 'Leather Trousers', 'leggings', 'leather', 'common', 6, 'images/equipment/leather_trousers.png'),
-('Leather Sandals', 'Sandal Kulit', '皮革凉鞋', 'Leather Sandals', 'boots', 'leather', 'common', 6, 'images/equipment/leather_sandals.png'),
-('Wooden Shovel', 'Penyodok Kayu', '木铲', 'Wooden Shovel', 'weapon', 'leather', 'common', 6, 'images/equipment/wooden_shovel.png'),
+('Leather Hood', 'Tudung Kulit', '皮革兜帽', 'Leather Hood', 'helmet', 'leather', 'common', 6, '/equipment/leather_hood.png'),
+('Leather Tunic', 'Tunik Kulit', '皮革束腰外衣', 'Leather Tunic', 'chestplate', 'leather', 'common', 6, '/equipment/leather_tunic.png'),
+('Leather Trousers', 'Seluar Kulit Panjang', '皮革裤子', 'Leather Trousers', 'leggings', 'leather', 'common', 6, '/equipment/leather_trousers.png'),
+('Leather Sandals', 'Sandal Kulit', '皮革凉鞋', 'Leather Sandals', 'boots', 'leather', 'common', 6, '/equipment/leather_sandals.png'),
+('Wooden Shovel', 'Penyodok Kayu', '木铲', 'Wooden Shovel', 'weapon', 'leather', 'common', 6, '/equipment/wooden_shovel.png'),
 -- Unit 7 Equipment Set
-('Leather Bandana', 'Bandana Kulit', '皮革头巾', 'Leather Bandana', 'helmet', 'leather', 'common', 7, 'images/equipment/leather_bandana.png'),
-('Leather Jerkin', 'Jerkin Kulit', '皮革紧身上衣', 'Leather Jerkin', 'chestplate', 'leather', 'common', 7, 'images/equipment/leather_jerkin.png'),
-('Leather Shorts', 'Seluar Pendek Kulit', '皮革短裤', 'Leather Shorts', 'leggings', 'leather', 'common', 7, 'images/equipment/leather_shorts.png'),
-('Leather Slippers', 'Selipar Kulit', '皮革拖鞋', 'Leather Slippers', 'boots', 'leather', 'common', 7, 'images/equipment/leather_slippers.png'),
-('Wooden Hoe', 'Cangkul Kayu', '木锄', 'Wooden Hoe', 'weapon', 'leather', 'common', 7, 'images/equipment/wooden_hoe.png'),
+('Leather Bandana', 'Bandana Kulit', '皮革头巾', 'Leather Bandana', 'helmet', 'leather', 'common', 7, '/equipment/leather_bandana.png'),
+('Leather Jerkin', 'Jerkin Kulit', '皮革紧身上衣', 'Leather Jerkin', 'chestplate', 'leather', 'common', 7, '/equipment/leather_jerkin.png'),
+('Leather Shorts', 'Seluar Pendek Kulit', '皮革短裤', 'Leather Shorts', 'leggings', 'leather', 'common', 7, '/equipment/leather_shorts.png'),
+('Leather Slippers', 'Selipar Kulit', '皮革拖鞋', 'Leather Slippers', 'boots', 'leather', 'common', 7, '/equipment/leather_slippers.png'),
+('Wooden Hoe', 'Cangkul Kayu', '木锄', 'Wooden Hoe', 'weapon', 'leather', 'common', 7, '/equipment/wooden_hoe.png'),
 -- Unit 8 Equipment Set
-('Leather Headband', 'Ikat Kepala Kulit', '皮革头带', 'Leather Headband', 'helmet', 'leather', 'common', 8, 'images/equipment/leather_headband.png'),
-('Leather Armor', 'Armor Kulit', '皮革盔甲', 'Leather Armor', 'chestplate', 'leather', 'common', 8, 'images/equipment/leather_armor.png'),
-('Leather Kilt', 'Kilt Kulit', '皮革短裙', 'Leather Kilt', 'leggings', 'leather', 'common', 8, 'images/equipment/leather_kilt.png'),
-('Leather Moccasins', 'Mokasin Kulit', '皮革软皮鞋', 'Leather Moccasins', 'boots', 'leather', 'common', 8, 'images/equipment/leather_moccasins.png'),
-('Wooden Club', 'Belantan Kayu', '木棒', 'Wooden Club', 'weapon', 'leather', 'common', 8, 'images/equipment/wooden_club.png')
+('Leather Headband', 'Ikat Kepala Kulit', '皮革头带', 'Leather Headband', 'helmet', 'leather', 'common', 8, '/equipment/leather_headband.png'),
+('Leather Armor', 'Armor Kulit', '皮革盔甲', 'Leather Armor', 'chestplate', 'leather', 'common', 8, '/equipment/leather_armor.png'),
+('Leather Kilt', 'Kilt Kulit', '皮革短裙', 'Leather Kilt', 'leggings', 'leather', 'common', 8, '/equipment/leather_kilt.png'),
+('Leather Moccasins', 'Mokasin Kulit', '皮革软皮鞋', 'Leather Moccasins', 'boots', 'leather', 'common', 8, '/equipment/leather_moccasins.png'),
+('Wooden Club', 'Belantan Kayu', '木棒', 'Wooden Club', 'weapon', 'leather', 'common', 8, '/equipment/wooden_club.png')
 ON CONFLICT DO NOTHING;
 
 -- =====================
@@ -48,17 +48,17 @@ ON CONFLICT DO NOTHING;
 
 INSERT INTO pets (id, name, mob_type, rarity, description, image_url) VALUES
 -- Unit 4: Baby Cow
-('baby_cow', '{"ms": "Anak Lembu", "zh": "小牛", "en": "Baby Cow"}', 'passive', 'common', '{"ms": "Seekor anak lembu yang comel dan suka makan rumput", "zh": "一只可爱的小牛，喜欢吃草", "en": "A cute baby cow that loves eating grass"}', 'images/pets/baby_cow.png'),
+('baby_cow', '{"ms": "Anak Lembu", "zh": "小牛", "en": "Baby Cow"}', 'passive', 'common', '{"ms": "Seekor anak lembu yang comel dan suka makan rumput", "zh": "一只可爱的小牛，喜欢吃草", "en": "A cute baby cow that loves eating grass"}', '/pets/baby_cow.png'),
 -- Unit 5: Baby Rabbit
-('baby_rabbit', '{"ms": "Anak Arnab", "zh": "小兔子", "en": "Baby Rabbit"}', 'passive', 'common', '{"ms": "Seekor anak arnab yang lincah dan suka melompat", "zh": "一只活泼的小兔子，喜欢跳跃", "en": "An agile baby rabbit that loves hopping"}', 'images/pets/baby_rabbit.png'),
+('baby_rabbit', '{"ms": "Anak Arnab", "zh": "小兔子", "en": "Baby Rabbit"}', 'passive', 'common', '{"ms": "Seekor anak arnab yang lincah dan suka melompat", "zh": "一只活泼的小兔子，喜欢跳跃", "en": "An agile baby rabbit that loves hopping"}', '/pets/baby_rabbit.png'),
 -- Unit 6: Wolf Pup
-('wolf_pup', '{"ms": "Anak Serigala", "zh": "小狼", "en": "Wolf Pup"}', 'neutral', 'rare', '{"ms": "Seekor anak serigala yang setia dan berani", "zh": "一只忠诚勇敢的小狼", "en": "A loyal and brave wolf pup"}', 'images/pets/wolf_pup.png'),
+('wolf_pup', '{"ms": "Anak Serigala", "zh": "小狼", "en": "Wolf Pup"}', 'neutral', 'rare', '{"ms": "Seekor anak serigala yang setia dan berani", "zh": "一只忠诚勇敢的小狼", "en": "A loyal and brave wolf pup"}', '/pets/wolf_pup.png'),
 -- Unit 7: Kitten
-('kitten', '{"ms": "Anak Kucing", "zh": "小猫", "en": "Kitten"}', 'passive', 'rare', '{"ms": "Seekor anak kucing yang manja dan suka bermain", "zh": "一只可爱的小猫，喜欢玩耍", "en": "A cuddly kitten that loves to play"}', 'images/pets/kitten.png'),
+('kitten', '{"ms": "Anak Kucing", "zh": "小猫", "en": "Kitten"}', 'passive', 'rare', '{"ms": "Seekor anak kucing yang manja dan suka bermain", "zh": "一只可爱的小猫，喜欢玩耍", "en": "A cuddly kitten that loves to play"}', '/pets/kitten.png'),
 -- Unit 8: Fox Kit
-('fox_kit', '{"ms": "Anak Musang", "zh": "小狐狸", "en": "Fox Kit"}', 'passive', 'rare', '{"ms": "Seekor anak musang yang bijak dan pantas", "zh": "一只聪明敏捷的小狐狸", "en": "A clever and quick fox kit"}', 'images/pets/fox_kit.png'),
+('fox_kit', '{"ms": "Anak Musang", "zh": "小狐狸", "en": "Fox Kit"}', 'passive', 'rare', '{"ms": "Seekor anak musang yang bijak dan pantas", "zh": "一只聪明敏捷的小狐狸", "en": "A clever and quick fox kit"}', '/pets/fox_kit.png'),
 -- Unit 9: Parrot Chick
-('parrot_chick', '{"ms": "Anak Burung Kakak Tua", "zh": "小鹦鹉", "en": "Parrot Chick"}', 'passive', 'rare', '{"ms": "Seekor anak burung kakak tua yang pandai meniru bunyi", "zh": "一只会模仿声音的小鹦鹉", "en": "A parrot chick that can mimic sounds"}', 'images/pets/parrot_chick.png')
+('parrot_chick', '{"ms": "Anak Burung Kakak Tua", "zh": "小鹦鹉", "en": "Parrot Chick"}', 'passive', 'rare', '{"ms": "Seekor anak burung kakak tua yang pandai meniru bunyi", "zh": "一只会模仿声音的小鹦鹉", "en": "A parrot chick that can mimic sounds"}', '/pets/parrot_chick.png')
 ON CONFLICT (id) DO NOTHING;
 
 

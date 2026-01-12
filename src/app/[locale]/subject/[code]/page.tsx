@@ -275,7 +275,7 @@ export default async function SubjectPage({
 
                         {/* Rewards Section */}
                         {(theme.pet || equipment.length > 0) && (
-                          <div className="mt-3 flex items-center gap-3 flex-wrap">
+                          <div className="mt-3 flex items-center gap-2 flex-wrap">
                             <span className="text-xs text-gray-500 font-medium">
                               {locale === 'ms' ? 'Ganjaran:' : locale === 'zh' ? '奖励:' : 'Rewards:'}
                             </span>
@@ -288,22 +288,18 @@ export default async function SubjectPage({
                                   ? `${supabaseUrl}/storage/v1/object/public/images${theme.pet.image_url}`
                                   : null;
                               return (
-                                <div className="flex items-center gap-1.5 bg-purple-100 px-2 py-1 rounded-full" title={getPetName(theme.pet, locale as Locale)}>
+                                <div className="bg-purple-100 p-1.5 rounded-lg" title={getPetName(theme.pet, locale as Locale)}>
                                   {petImageUrl ? (
-                                    <img src={petImageUrl} alt={getPetName(theme.pet, locale as Locale)} className="w-5 h-5 object-contain" />
+                                    <img src={petImageUrl} alt={getPetName(theme.pet, locale as Locale)} className="w-8 h-8 object-contain" />
                                   ) : (
-                                    <span className="text-sm">🐾</span>
+                                    <span className="text-lg">🐾</span>
                                   )}
-                                  <span className="text-xs text-purple-700 font-medium">
-                                    {getPetName(theme.pet, locale as Locale)}
-                                  </span>
                                 </div>
                               );
                             })()}
-                            {/* Equipment Rewards */}
-                            {equipment.slice(0, 3).map((equip) => {
+                            {/* Equipment Rewards - Show all */}
+                            {equipment.map((equip) => {
                               const equipName = locale === 'ms' ? equip.name_ms || equip.name : locale === 'zh' ? equip.name_zh || equip.name : equip.name_en || equip.name;
-                              // Convert relative path to Supabase storage URL
                               const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://glwxvgxgquwfgwbwqbiz.supabase.co';
                               const imageUrl = equip.image_url?.startsWith('http')
                                 ? equip.image_url
@@ -311,19 +307,13 @@ export default async function SubjectPage({
                               return (
                                 <div
                                   key={equip.id}
-                                  className="flex items-center gap-1.5 bg-yellow-100 px-2 py-1 rounded-full"
+                                  className="bg-yellow-100 p-1.5 rounded-lg"
                                   title={equipName}
                                 >
-                                  <img src={imageUrl} alt={equip.name} className="w-5 h-5 object-contain" />
-                                  <span className="text-xs text-yellow-700 font-medium hidden sm:inline">
-                                    {equipName}
-                                  </span>
+                                  <img src={imageUrl} alt={equip.name} className="w-8 h-8 object-contain" />
                                 </div>
                               );
                             })}
-                            {equipment.length > 3 && (
-                              <span className="text-xs text-gray-400">+{equipment.length - 3}</span>
-                            )}
                           </div>
                         )}
                       </div>

@@ -407,6 +407,19 @@ image_url = '/pets/chicken.png'
 -- App constructs: {SUPABASE_URL}/storage/v1/object/public/images/pets/chicken.png
 ```
 
+> **CRITICAL: image_url Format**
+>
+> The app prepends `{SUPABASE_URL}/storage/v1/object/public/images` to the `image_url` value.
+>
+> ```
+> ✅ CORRECT: '/equipment/leather_boots.png' → images/equipment/leather_boots.png
+> ✅ CORRECT: '/pets/chicken.png'            → images/pets/chicken.png
+> ❌ WRONG:   'images/equipment/...'         → images/images/equipment/... (BROKEN!)
+> ❌ WRONG:   'images/pets/...'              → images/images/pets/... (BROKEN!)
+> ```
+>
+> Always use **leading slash, no 'images' prefix** in database.
+
 **Environment Variable:**
 `process.env.NEXT_PUBLIC_SUPABASE_URL` = `https://glwxvgxgquwfgwbwqbiz.supabase.co`
 

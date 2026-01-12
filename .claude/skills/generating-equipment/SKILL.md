@@ -28,8 +28,8 @@ VALUES (
 -- 2. Generate image via API (or manually upload)
 -- POST /api/generate-equipment with the equipment details
 
--- 3. Update with image URL
-UPDATE equipment SET image_url = 'images/equipment/ruby_helmet.png' WHERE name = 'ruby_helmet';
+-- 3. Update with image URL (IMPORTANT: use leading slash, no 'images' prefix)
+UPDATE equipment SET image_url = '/equipment/ruby_helmet.png' WHERE name = 'ruby_helmet';
 ```
 
 ### Quick Reference: Tier → Rarity → Level
@@ -40,6 +40,16 @@ UPDATE equipment SET image_url = 'images/equipment/ruby_helmet.png' WHERE name =
 | iron | rare | 11-15 | Silver |
 | gold | epic | 16-20 | Gold |
 | diamond | legendary | 21+ | Cyan |
+
+### CRITICAL: Database image_url Format
+
+```
+✅ CORRECT: '/equipment/leather_helmet.png'
+❌ WRONG:   'images/equipment/leather_helmet.png'
+```
+
+The app constructs the full URL by prepending `{SUPABASE_URL}/storage/v1/object/public/images`.
+If you store `images/equipment/...`, it becomes `images/images/equipment/...` (broken).
 
 ---
 
@@ -168,10 +178,15 @@ images/equipment/{equipment_id}.png
 ### Step 4: Updates Equipment Record
 
 ```sql
+-- CRITICAL: Use leading slash, NO 'images' prefix
 UPDATE equipment
-SET image_url = 'images/equipment/{equipment_id}.png'
+SET image_url = '/equipment/{equipment_id}.png'
 WHERE id = '{equipment_id}';
 ```
+
+> **WARNING**: Do NOT use `images/equipment/...` format. The app code prepends `images` automatically.
+> - ✅ Correct: `/equipment/leather_helmet.png`
+> - ❌ Wrong: `images/equipment/leather_helmet.png`
 
 ## Custom Equipment Ideas
 
