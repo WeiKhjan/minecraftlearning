@@ -128,13 +128,16 @@ export default async function SubjectPage({
   ]);
 
   // Group equipment rewards by theme
-  const themeEquipment = new Map<string, Array<{ id: string; name: string; name_ms: string | null; name_zh: string | null; name_en: string | null; image_url: string; rarity: string }>>();
+  type EquipmentReward = { id: string; name: string; name_ms: string | null; name_zh: string | null; name_en: string | null; image_url: string; rarity: string };
+  const themeEquipment = new Map<string, EquipmentReward[]>();
   allActivities?.forEach(activity => {
-    if (activity.equipment) {
+    // Supabase returns equipment as object or null from the join
+    const equip = activity.equipment as EquipmentReward | null;
+    if (equip && equip.id) {
       const current = themeEquipment.get(activity.theme_id) || [];
       // Avoid duplicates
-      if (!current.find(e => e.id === activity.equipment.id)) {
-        current.push(activity.equipment);
+      if (!current.find(e => e.id === equip.id)) {
+        current.push(equip);
       }
       themeEquipment.set(activity.theme_id, current);
     }
