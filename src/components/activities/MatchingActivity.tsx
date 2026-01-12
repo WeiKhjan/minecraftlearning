@@ -17,6 +17,7 @@ interface NormalizedPair {
   key: string; // letter or syllable - used for matching
   image?: string;
   word: string; // The word to display
+  audioUrl?: string; // Pre-generated audio URL
 }
 
 export default function MatchingActivity({ content, locale, onComplete }: MatchingActivityProps) {
@@ -27,7 +28,7 @@ export default function MatchingActivity({ content, locale, onComplete }: Matchi
   const pairs: NormalizedPair[] = rawPairs.map(p => {
     const key = p.letter || p.syllable || p.word || '';
     const word = getLocalizedWord(p, locale);
-    return { key, image: p.image, word };
+    return { key, image: p.image, word, audioUrl: p.audio_url };
   });
 
   const [selectedKey, setSelectedKey] = useState<string | null>(null);
@@ -206,6 +207,7 @@ export default function MatchingActivity({ content, locale, onComplete }: Matchi
             locale={locale}
             size="sm"
             contentType="syllable"
+            audioUrl={pairs.find(p => p.key === selectedKey)?.audioUrl}
           />
         </div>
       )}

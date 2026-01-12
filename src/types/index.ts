@@ -120,6 +120,7 @@ export interface MatchingContent {
     meaning_en?: string;
     // Common
     image?: string;
+    audio_url?: string; // Pre-generated audio URL
   }[];
 }
 
