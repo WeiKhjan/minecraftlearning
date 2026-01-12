@@ -24,11 +24,12 @@ import {
  */
 
 // Rate limiting configuration
+// Paid Tier 1: Higher limits than free tier
 const RATE_CONFIG = {
-  requestsPerMinute: 7,
-  delayBetweenRequests: 9000, // 9 seconds (60/7 rounded up)
-  maxRetries: 3,
-  retryDelay: 15000, // 15 seconds on rate limit error
+  requestsPerMinute: 60,       // Paid tier allows much higher RPM
+  delayBetweenRequests: 1500,  // 1.5 seconds between requests
+  maxRetries: 5,               // More retries for reliability
+  retryDelay: 5000,            // 5 seconds on rate limit error
 };
 
 // Voice configuration per locale
