@@ -1,39 +1,42 @@
 ---
 name: generating-voice-tutorials
-description: Generates voice-guided tutorials and TTS audio content for the MYLearnt learning platform. Creates audio clips for activities, AI tutor voice guidance, and text-to-speech for educational content. Supports Malay (ms), Chinese (zh), and English (en) languages. Handles both direct TTS and AI-generated tutoring explanations.
+description: Generates voice-guided tutorials and TTS audio content for the MYLearnt learning platform. Creates pre-generated audio clips for activities, AI tutor voice guidance, and text-to-speech for educational content. Supports Malay (ms), Chinese (zh), and English (en) languages. Uses Gemini 2.5 Flash TTS API with rate limiting (7 RPM).
 ---
 
 # Generating Voice Tutorials
 
-Creates voice-guided content and audio files for the MYLearnt educational platform.
+Creates voice-guided content and pre-generated audio files for the MYLearnt educational platform.
 
 ## Quick Start
 
-### Most Common Task: Generate Audio for an Activity
+### Most Common Task: Generate Audio Batch via Vercel API
 
-```typescript
-// Option 1: Use batch API for multiple activities
-POST /api/generate-audio
-{ "startIndex": 0, "count": 5 }
+```bash
+# Check registry stats
+curl https://minecraftlearning.vercel.app/api/generate-audio-batch
 
-// Option 2: Generate single TTS audio
-POST /api/tts
-{ "text": "Selamat pagi", "locale": "ms" }
+# Generate batch (uses Vercel credentials)
+curl -X POST https://minecraftlearning.vercel.app/api/generate-audio-batch \
+  -H "Content-Type: application/json" \
+  -d '{"category":"syllable_pronunciation","locale":"ms","startIndex":0,"count":5}'
 
-// Option 3: Generate AI tutoring + TTS
-POST /api/voice-tutor
-{ "content": "ba", "contentType": "syllable", "locale": "ms" }
+# Dry run (test without generating)
+curl -X POST https://minecraftlearning.vercel.app/api/generate-audio-batch \
+  -H "Content-Type: application/json" \
+  -d '{"category":"all","locale":"all","startIndex":0,"count":5,"dryRun":true}'
 ```
 
-### Quick Reference: Content Types
-| Type | AI Processing | Use For |
-|------|---------------|---------|
-| `letter` | Yes | Alphabet learning with examples |
-| `syllable` | Yes | Suku kata breakdown and practice |
-| `word` | Yes | Vocabulary with meaning |
-| `sentence` | Yes | Speaking practice phrases |
-| `instruction` | No (direct TTS) | Activity directions |
-| `feedback` | No (direct TTS) | Encouragement messages |
+### Quick Reference: Audio Categories
+| Category | Count (per locale) | Use For |
+|----------|-------------------|---------|
+| `syllable_pronunciation` | 90 | Just the syllable sound ("ba") |
+| `syllable_guide` | 90 | Educational explanation + practice |
+| `vocabulary` | 79 | Word pronunciation |
+| `phrase` | 36 | Speaking activity sentences |
+| `dictation` | 17 | Dictation word audio |
+| `matching` | 5 | Matching activity sounds |
+
+**Total**: ~951 files across all 3 locales
 
 ---
 
@@ -47,324 +50,401 @@ POST /api/voice-tutor
 | **Audio Organization** | 🟡 Medium | Follows storage structure but can suggest improvements. |
 | **Language Selection** | 🟡 Medium | Matches audio to subject language (not UI). Can suggest appropriate locale. |
 | **API Structure** | 🔴 Low | Uses existing endpoints without modification. |
-| **Voice System Architecture** | 🔴 Low | Does not change two-layer (AI + TTS) system. |
+| **Storage Paths** | 🔴 Low | Follows established path conventions. |
 
 ---
 
-## Voice System Architecture
+## Pre-Generated Audio System
 
-The platform has a two-layer voice system:
+### Storage Structure
 
-### Layer 1: AI Tutor (Optional)
-- Generates educational explanations based on content type
-- Uses Gemini 3 Flash for text generation
-- Creates contextual tutoring dialogue
+```
+Supabase Storage: audio/
+├── syllable/
+│   ├── ms/
+│   │   ├── guide/           # Educational explanations (90 files)
+│   │   │   ├── a.wav
+│   │   │   ├── ba.wav
+│   │   │   └── ...
+│   │   └── pronunciation/   # Just syllable sounds (90 files)
+│   │       ├── a.wav
+│   │       ├── ba.wav
+│   │       └── ...
+│   ├── zh/
+│   │   ├── guide/
+│   │   └── pronunciation/
+│   └── en/
+│       ├── guide/
+│       └── pronunciation/
+├── vocabulary/
+│   ├── ms/word/             # Word pronunciations (~79 files)
+│   │   ├── ayam.wav
+│   │   ├── baju.wav
+│   │   └── ...
+│   ├── zh/word/
+│   └── en/word/
+├── phrase/
+│   ├── ms/sentence/         # Speaking phrases (~36 files)
+│   ├── zh/sentence/
+│   └── en/sentence/
+├── dictation/
+│   ├── ms/word/             # Dictation words (~17 files)
+│   ├── zh/word/
+│   └── en/word/
+└── matching/
+    ├── ms/syllable/         # Matching sounds (~5 files)
+    ├── zh/syllable/
+    └── en/syllable/
+```
 
-### Layer 2: Text-to-Speech
-- Converts text to natural speech
-- Uses Gemini 2.5 Flash TTS
-- Supports multiple voices per language
+### Full URL Format
+
+**Supabase Storage Base URL:**
+```
+https://glwxvgxgquwfgwbwqbiz.supabase.co/storage/v1/object/public/
+```
+
+**Full URL Patterns:**
+| Type | Full URL Pattern |
+|------|-----------------|
+| Syllable Guide | `https://glwxvgxgquwfgwbwqbiz.supabase.co/storage/v1/object/public/audio/syllable/{locale}/guide/{syllable}.wav` |
+| Syllable Pronunciation | `https://glwxvgxgquwfgwbwqbiz.supabase.co/storage/v1/object/public/audio/syllable/{locale}/pronunciation/{syllable}.wav` |
+| Vocabulary | `https://glwxvgxgquwfgwbwqbiz.supabase.co/storage/v1/object/public/audio/vocabulary/{locale}/word/{word}.wav` |
+| Phrase | `https://glwxvgxgquwfgwbwqbiz.supabase.co/storage/v1/object/public/audio/phrase/{locale}/sentence/{phrase_slug}.wav` |
+| Dictation | `https://glwxvgxgquwfgwbwqbiz.supabase.co/storage/v1/object/public/audio/dictation/{locale}/word/{word}.wav` |
+| Matching | `https://glwxvgxgquwfgwbwqbiz.supabase.co/storage/v1/object/public/audio/matching/{locale}/syllable/{syllable}.wav` |
+
+**Database Storage:**
+Store relative paths in database. The app constructs full URLs:
+```sql
+-- Store relative path
+audio_url = '/audio/syllable/ms/pronunciation/ba.wav'
+-- App constructs: {SUPABASE_URL}/storage/v1/object/public/audio/syllable/ms/pronunciation/ba.wav
+```
+
+> **CRITICAL: audio_url Format**
+>
+> The app prepends `{SUPABASE_URL}/storage/v1/object/public` to the `audio_url` value.
+>
+> ```
+> ✅ CORRECT: '/audio/syllable/ms/pronunciation/ba.wav'
+> ❌ WRONG:   'audio/syllable/...' (missing leading slash)
+> ❌ WRONG:   'https://...' (full URL - redundant)
+> ```
+
+---
+
+## API Configuration
+
+### Gemini Models Used
+- **Gemini 2.5 Flash Preview TTS** - Audio generation
+- **Endpoint**: `generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-tts:generateContent`
+
+### Environment Variables
+```
+GEMINI_API_KEY=your_api_key
+NEXT_PUBLIC_SUPABASE_URL=https://glwxvgxgquwfgwbwqbiz.supabase.co
+SUPABASE_SERVICE_ROLE_KEY=your_service_key
+```
+
+**Note**: Credentials are stored in Vercel. Use the Vercel-deployed API for generation.
+
+### Rate Limiting
+```typescript
+const RATE_CONFIG = {
+  requestsPerMinute: 7,        // API limit
+  delayBetweenRequests: 9000,  // 9 seconds between items
+  maxRetries: 3,
+  retryDelay: 15000,           // 15 seconds on rate limit
+};
+```
+
+**Estimated Generation Time**: ~2-3 hours for all 951 files
+
+---
+
+## Batch Generation API
+
+### Endpoint
+**File**: `src/app/api/generate-audio-batch/route.ts`
+
+### GET - Registry Stats
+```bash
+curl https://minecraftlearning.vercel.app/api/generate-audio-batch
+```
+
+Response:
+```json
+{
+  "status": "ready",
+  "registry": {
+    "total": 951,
+    "byType": {
+      "syllable_guide": 270,
+      "syllable_pronunciation": 270,
+      "vocabulary": 237,
+      "phrase": 108,
+      "dictation": 51,
+      "matching": 15
+    },
+    "byLocale": { "ms": 317, "zh": 317, "en": 317 }
+  }
+}
+```
+
+### POST - Generate Audio Batch
+```bash
+curl -X POST https://minecraftlearning.vercel.app/api/generate-audio-batch \
+  -H "Content-Type: application/json" \
+  -d '{
+    "category": "syllable_pronunciation",
+    "locale": "ms",
+    "startIndex": 0,
+    "count": 5,
+    "dryRun": false
+  }'
+```
+
+**Parameters:**
+| Parameter | Type | Default | Description |
+|-----------|------|---------|-------------|
+| `category` | string | `"all"` | Category to generate |
+| `locale` | string | `"all"` | Locale (ms/zh/en) |
+| `startIndex` | number | `0` | Starting index in registry |
+| `count` | number | `5` | Number of items to generate |
+| `dryRun` | boolean | `false` | Test without generating |
+
+**Response:**
+```json
+{
+  "success": true,
+  "category": "syllable_pronunciation",
+  "locale": "ms",
+  "processed": 5,
+  "successCount": 5,
+  "errorCount": 0,
+  "total": 90,
+  "nextIndex": 5,
+  "estimatedTimeRemaining": "128 minutes",
+  "results": [
+    {
+      "id": "syllable_pronunciation_ms_ba",
+      "success": true,
+      "url": "https://glwxvgxgquwfgwbwqbiz.supabase.co/storage/v1/object/public/audio/syllable/ms/pronunciation/ba.wav",
+      "relativePath": "/syllable/ms/pronunciation/ba.wav"
+    }
+  ]
+}
+```
+
+---
+
+## Audio Registry
+
+**File**: `src/lib/audio/registry.ts`
+
+Contains all audio items to pre-generate:
+
+```typescript
+// Syllables (35 base)
+const BASE_SYLLABLES = [
+  'a', 'e', 'i', 'o', 'u',           // Vowels
+  'ba', 'ca', 'ga', 'ka', 'ma', 'sa', // + A
+  'be', 'ce', 'ge', 'ke', 'me', 'se', // + E
+  // ... etc
+];
+
+// Additional syllables from activities
+const ADDITIONAL_SYLLABLES = [
+  'bu', 'da', 'di', 'ja', 'ju', 'la', 'lu',
+  'na', 'ni', 'nu', 'pa', 'pi', 'ra', 'ri',
+  'ru', 'su', 'ta', 'ti', 'tu', 'wa', 'ya', 'yu'
+];
+
+// Vocabulary words (~79)
+const VOCABULARY_WORDS = [
+  { word: 'ayam', ms: 'ayam', zh: '鸡', en: 'chicken' },
+  { word: 'baju', ms: 'baju', zh: '衣服', en: 'clothes' },
+  // ... etc
+];
+```
+
+### Builder Functions
+```typescript
+buildSyllableGuideRegistry()        // Educational explanations
+buildSyllablePronunciationRegistry() // Just syllable sounds
+buildVocabularyRegistry()           // Word pronunciations
+buildPhraseRegistry()               // Speaking sentences
+buildDictationRegistry()            // Dictation words
+buildMatchingRegistry()             // Matching sounds
+buildFullRegistry()                 // All items combined
+getRegistryStats()                  // Summary statistics
+```
+
+---
+
+## Admin UI
+
+**File**: `src/app/[locale]/admin/audio-generation/page.tsx`
+**URL**: `https://minecraftlearning.vercel.app/en/admin/audio-generation`
+
+Features:
+- Category and locale selection
+- Batch size control (1-20)
+- Start index selection
+- Dry-run toggle
+- Progress display with stats
+- Real-time log output
+- Error tracking
+
+---
 
 ## Voice Configuration
 
 ### Language-Voice Mapping
-| Locale | Primary Voice | Fallback Voices | Use Case |
-|--------|--------------|-----------------|----------|
-| ms (Malay) | Kore | Aoede, Zephyr | BM subjects, suku kata |
-| zh (Chinese) | Puck | Zephyr, Charon | BC subjects, hanzi |
-| en (English) | Kore | Zephyr, Charon | EN subjects |
+| Locale | Voice | Best For |
+|--------|-------|----------|
+| ms (Malay) | Kore | Clear pronunciation |
+| zh (Chinese) | Puck | Mandarin tones |
+| en (English) | Kore | Clear English |
 
-### Available Voices
-- `Kore` - Clear, friendly (default for ms/en)
-- `Puck` - Warm, expressive (default for zh)
-- `Aoede` - Soft, gentle
-- `Zephyr` - Neutral, professional
-- `Charon` - Deep, authoritative
-- `Leda` - Bright, youthful
-- `Orus` - Calm, measured
-- `Fenrir` - Strong, confident
+### Voice Guide Templates
 
-## Content Types
-
-The AI tutor generates different content based on type:
-
-### 1. letter
-For alphabet learning.
+**Malay (ms):**
 ```
-Input: "A"
-Output (ms): "Huruf A. Terus terangkan: sebut nama huruf, bunyinya,
-dan satu contoh perkataan yang bermula dengan A seperti Ayam."
+Vowel: "Ini huruf vokal A. Bunyi ah. Cuba sebut bersama saya: a, a, a."
+Syllable: "Suku kata BA. Gabungkan bunyi buh dan ah menjadi ba. Cuba sebut bersama saya: ba, ba, ba."
 ```
 
-### 2. syllable
-For suku kata (Malay syllables).
+**Chinese (zh):**
 ```
-Input: "ba"
-Output (ms): "Suku kata 'ba'. Terdiri daripada konsonan 'b' dan vokal 'a'.
-Cuba sebut bersama saya: ba... ba... ba"
+Vowel: "这是元音 A。跟我一起说：a，a，a。"
+Syllable: "音节 BA。将辅音 B 和元音 A 结合成 ba。跟我一起说：ba，ba，ba。"
 ```
 
-### 3. word
-For vocabulary learning.
+**English (en):**
 ```
-Input: "baju"
-Output (ms): "Perkataan 'baju'. Baju bermaksud pakaian yang kita pakai.
-Mari sebut: ba-ju, baju."
+Vowel: "This is the vowel A. Say it with me: a, a, a."
+Syllable: "Syllable BA. Combine the consonant B with vowel A to make ba. Say it with me: ba, ba, ba."
 ```
 
-### 4. sentence
-For speaking practice.
-```
-Input: "Selamat pagi"
-Output (ms): "Ayat ini ialah 'Selamat pagi'. Kita guna untuk memberi salam
-pada waktu pagi. Sebut dengan saya: Selamat pagi."
-```
+---
 
-### 5. instruction
-For activity directions.
-```
-Input: "Padankan huruf dengan gambar"
-Output: Direct TTS without AI processing
-```
+## SQL Migration
 
-### 6. feedback
-For encouragement and correction.
-```
-Input: "Betul! Bagus!"
-Output: Direct TTS with enthusiastic tone
-```
+**File**: `supabase/migrations/20250112_add_audio_urls.sql`
 
-## API Endpoints
-
-### Direct TTS
-**File**: `src/app/api/tts/route.ts`
-
-```typescript
-// Request
-POST /api/tts
-{
-  text: "Selamat pagi",
-  locale: "ms"  // ms | zh | en
-}
-
-// Response
-{
-  audio: "base64_encoded_audio_data",
-  mimeType: "audio/mp3"
-}
-```
-
-### AI Voice Tutor
-**File**: `src/app/api/voice-tutor/route.ts`
-
-```typescript
-// Request
-POST /api/voice-tutor
-{
-  content: "ba",
-  contentType: "syllable",  // letter | syllable | word | sentence | instruction | feedback
-  context: "Suku Kata Unit 2",  // Optional activity context
-  locale: "ms",  // ms | zh | en
-  directTTS: false  // Skip AI, use content directly
-}
-
-// Response
-{
-  audio: "base64_encoded_audio_data",
-  mimeType: "audio/mp3",
-  text: "Generated tutoring text that was spoken"
-}
-```
-
-### Batch Audio Generation
-**File**: `src/app/api/generate-audio/route.ts`
-
-```typescript
-// Request
-POST /api/generate-audio
-{
-  startIndex: 0,
-  count: 5  // Generate 5 audio clips
-}
-
-// Response
-{
-  success: boolean,
-  generated: number,
-  results: [
-    { activityId: string, index: number, audioUrl: string, success: boolean }
-  ],
-  nextIndex: number
-}
-```
-
-## Generating Audio for Activities
-
-### Step 1: Identifies Content Needing Audio
-
-Activities with these types need audio:
-- `speaking` - `phrases[].text`
-- `syllable` - `syllables[]` and `words[].word`
-- `dictation` - `words[].word`
-
-### Step 2: Generates Audio Clips
-
-**Option A: Uses Batch API**
-```bash
-# Generates first 10 audio clips
-curl -X POST /api/generate-audio -d '{"startIndex": 0, "count": 10}'
-```
-
-**Option B: Manual Generation**
-```typescript
-// For each item needing audio
-const response = await fetch('/api/tts', {
-  method: 'POST',
-  body: JSON.stringify({
-    text: 'baju',
-    locale: 'ms'
-  })
-});
-const { audio, mimeType } = await response.json();
-// Uploads to storage...
-```
-
-### Step 3: Uploads to Supabase Storage
-
-```typescript
-// Upload pattern
-const path = `audio/${activityType}/${activityId}/${index}.mp3`;
-await supabase.storage.from('audio').upload(path, audioBuffer);
-```
-
-### Step 4: Updates Activity Content
+After generating all audio, run this migration to update activity content:
 
 ```sql
--- Updates syllable activity with audio URLs
+-- Updates syllable activities with audio URLs
 UPDATE activities
 SET content = jsonb_set(
   content,
   '{data,audio_urls}',
-  '["audio/syllable/abc123/0.mp3", "audio/syllable/abc123/1.mp3"]'
+  (SELECT jsonb_agg(build_audio_url('syllable', 'ms', 'pronunciation', s.value::text))
+   FROM jsonb_array_elements_text(content->'data'->'syllables') AS s)
 )
-WHERE id = '{activity_id}';
+WHERE type = 'syllable';
+
+-- Updates speaking activities
+UPDATE activities
+SET content = jsonb_set(
+  content,
+  '{data,phrases}',
+  (SELECT jsonb_agg(phrase || jsonb_build_object('audio_url', ...))
+   FROM jsonb_array_elements(content->'data'->'phrases') AS phrase)
+)
+WHERE type = 'speaking';
 ```
 
-## Storage Structure
-
-```
-supabase-storage/
-└── audio/
-    ├── speaking/
-    │   └── {activity_id}/
-    │       ├── 0.mp3
-    │       ├── 1.mp3
-    │       └── ...
-    ├── syllable/
-    │   └── {activity_id}/
-    │       ├── 0.mp3  (syllable audio)
-    │       └── ...
-    └── dictation/
-        └── {activity_id}/
-            └── ...
-```
+---
 
 ## Client-Side Usage
 
 ### VoiceTutorButton Component
 ```tsx
+// With pre-generated audio (preferred)
 <VoiceTutorButton
   text="ba"
   locale="ms"
   size="md"
   contentType="syllable"
-  audioUrl={preGeneratedUrl}  // Optional: skip API call
+  audioUrl="/audio/syllable/ms/pronunciation/ba.wav"  // Pre-generated
+/>
+
+// Fallback to API (if audioUrl not provided)
+<VoiceTutorButton
+  text="ba"
+  locale="ms"
+  size="md"
+  contentType="syllable"
 />
 ```
 
-### useVoiceTutor Hook
-```typescript
-const { speak, speakDirect, isLoading, isSpeaking } = useVoiceTutor({
-  locale: 'ms'
-});
+### Audio Priority
+1. **Pre-generated audio** (`audioUrl` prop) - Fastest, no API call
+2. **API fallback** - Used when `audioUrl` is missing
 
-// AI-generated tutoring
-await speak('ba', { contentType: 'syllable' });
+---
 
-// Direct TTS
-await speakDirect('Selamat pagi');
+## Generation Workflow
+
+### Step 1: Check Registry Stats
+```bash
+curl https://minecraftlearning.vercel.app/api/generate-audio-batch
 ```
 
-## AI Tutor Prompt Templates (🟢 High Freedom for Content)
-
-### Malay (ms)
-```javascript
-const prompts = {
-  letter: `Huruf ${content}. Terus terangkan: sebut nama huruf, bunyinya,
-    dan satu contoh perkataan yang bermula dengan huruf ini.`,
-  syllable: `Suku kata '${content}'. Terus terangkan: pecahkan kepada
-    konsonan dan vokal, dan akhiri dengan "Cuba sebut bersama saya:
-    ${content}... ${content}... ${content}"`,
-  word: `Perkataan '${content}'. Terus terangkan: sebut perkataan dan
-    maksudnya dalam 1-2 ayat yang mudah difahami kanak-kanak.`
-};
+### Step 2: Generate by Category (Parallel)
+Run multiple curl commands for different categories:
+```bash
+# Parallel generation
+curl -X POST .../api/generate-audio-batch -d '{"category":"syllable_pronunciation","locale":"ms","startIndex":0,"count":10}' &
+curl -X POST .../api/generate-audio-batch -d '{"category":"syllable_guide","locale":"ms","startIndex":0,"count":10}' &
+curl -X POST .../api/generate-audio-batch -d '{"category":"vocabulary","locale":"ms","startIndex":0,"count":10}' &
+wait
 ```
 
-### Chinese (zh)
-```javascript
-const prompts = {
-  letter: `字母 ${content}。直接解释：发音和一个以这个字母开头的例子词。`,
-  word: `词语'${content}'。直接解释：发音和简单的意思，用1-2句话。`,
-  sentence: `句子'${content}'。直接解释：意思和在什么情况下使用。`
-};
+### Step 3: Continue Until Complete
+Use `nextIndex` from response to continue:
+```bash
+# First batch
+{"nextIndex": 10} # Use this for next call
+
+# Next batch
+curl ... -d '{"startIndex":10,"count":10}'
 ```
 
-### English (en)
-```javascript
-const prompts = {
-  letter: `The letter ${content}. Explain: say the letter name, its sound,
-    and give one example word starting with this letter.`,
-  word: `The word '${content}'. Explain: pronunciation and meaning in
-    1-2 simple sentences suitable for children.`
-};
+### Step 4: Run SQL Migration
+After all audio generated, run:
+```bash
+psql -f supabase/migrations/20250112_add_audio_urls.sql
 ```
 
-## Best Practices
-
-1. **Pre-generate Audio**: Pre-generates all audio for production to avoid API latency
-2. **Rate Limiting**: Adds 2-second delays between batch API calls
-3. **Fallback Handling**: Always has TTS fallback if AI generation fails
-4. **Cache Audio**: Client-side caching prevents repeated API calls
-5. **Language Consistency**: Matches audio language to subject content, not UI locale
-
-## Workflow: Adding Voice to New Activity
-
-```mermaid
-graph TD
-    A[Create Activity] --> B[Define content with text items]
-    B --> C{Has audio_url?}
-    C -->|No| D[Generate TTS audio]
-    D --> E[Upload to Supabase storage]
-    E --> F[Update activity content with URLs]
-    C -->|Yes| G[Ready for use]
-    F --> G
-```
+---
 
 ## Troubleshooting
 
-### No Audio Generated
-- Checks API key configuration for Gemini
-- Verifies locale is valid (ms, zh, en)
-- Checks Supabase storage permissions
+### Generation Fails
+- Check Gemini API key in Vercel environment
+- Verify rate limits not exceeded (7 RPM)
+- Check Supabase storage bucket exists (`audio`)
+
+### No Audio in Response
+- Some short texts (single vowels) may fail
+- Retry failed items individually
+- Check API logs in Vercel dashboard
+
+### Storage Upload Fails
+- Verify Supabase service role key
+- Check bucket is public
+- Ensure file paths are valid
 
 ### Wrong Language Voice
-- Ensures `locale` parameter matches content language
+- Ensure `locale` parameter matches content
 - Subject content uses subject language, not UI locale
 
-### Audio Quality Issues
-- Uses PCM format for best quality
-- 24kHz sample rate recommended
-- Converts to MP3 for storage/delivery
+---
 
 ## Related Skills
 
