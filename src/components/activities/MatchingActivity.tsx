@@ -183,11 +183,10 @@ export default function MatchingActivity({ content, locale, onComplete }: Matchi
                 `}
               >
                 {pair.image ? (
-                  <img src={getImageUrl(pair.image)} alt={pair.word} className="w-10 h-10 object-contain" />
+                  <img src={getImageUrl(pair.image)} alt="" className="w-12 h-12 object-contain" />
                 ) : (
-                  <span className="text-2xl">📷</span>
+                  <span className="text-3xl">📷</span>
                 )}
-                <span className="font-medium">{pair.word}</span>
               </button>
             );
           })}

@@ -312,6 +312,38 @@ Tests listening and writing skills.
    - primary_3-4: Add writing, speaking, basic math
    - primary_5-6: Include dictation, complex math
 
+---
+
+## CRITICAL: Matching Activity Rules
+
+### Do NOT Reveal Answers in Image Column
+
+When displaying matching activities, the image/picture column should ONLY show the image - **NEVER show the word text next to the image** as this reveals the answer.
+
+```
+✅ CORRECT: Image column shows only the image icon
+❌ WRONG:   Image column shows image + word text (reveals the answer!)
+```
+
+**Example of WRONG implementation:**
+```jsx
+// BAD - This reveals the answer!
+<button>
+  <img src={pair.image} alt={pair.word} />
+  <span>{pair.word}</span>  {/* ← WRONG: Reveals the answer */}
+</button>
+```
+
+**Example of CORRECT implementation:**
+```jsx
+// GOOD - Only show the image
+<button>
+  <img src={pair.image} alt="" />  {/* Empty alt to not reveal answer */}
+</button>
+```
+
+The matching activity component (`src/components/activities/MatchingActivity.tsx`) handles this correctly - do NOT modify it to show word text alongside images.
+
 ## Example: Creating BM Unit 3
 
 ```sql
