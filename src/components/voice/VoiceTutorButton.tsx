@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { useVoiceTutor } from '@/hooks/useVoiceTutor';
+import { getAudioUrl } from '@/lib/audio/url-builder';
 import type { Locale } from '@/types';
 
 type ContentType = 'letter' | 'word' | 'syllable' | 'sentence' | 'instruction' | 'feedback';
@@ -66,37 +67,51 @@ export default function VoiceTutorButton({
       return;
     }
 
-    // Use pre-generated audio if available
-    if (audioUrl) {
-      const audio = new Audio(audioUrl);
-      setPregenAudio(audio);
-      setIsPlayingPregen(true);
-      audio.onended = () => {
-        setIsPlayingPregen(false);
-        setPregenAudio(null);
+    // Try to use pre-generated audio
+    // If audioUrl provided, use it; otherwise auto-construct based on contentType
+    const pregenAudioUrl = audioUrl || (() => {
+      // Map contentType to audio URL builder type
+      const typeMap: Record<ContentType, 'syllable' | 'word' | 'phrase' | 'syllable_guide'> = {
+        letter: 'syllable',
+        syllable: 'syllable',
+        word: 'word',
+        sentence: 'phrase',
+        instruction: 'syllable_guide',
+        feedback: 'syllable_guide',
       };
-      audio.onerror = () => {
-        // Fallback to TTS if pre-generated audio fails
-        setIsPlayingPregen(false);
-        setPregenAudio(null);
-        if (directTTS) {
-          speakDirect(text);
-        } else {
-          speak(text, { contentType, context });
-        }
-      };
-      audio.play();
-      return;
-    }
+      const audioType = typeMap[contentType] || 'syllable';
+      return getAudioUrl(text, audioType, locale);
+    })();
 
-    // Fallback to TTS API
-    if (directTTS) {
-      // Direct TTS - just speak the text as-is
-      speakDirect(text);
-    } else {
-      // AI tutoring - generate educational content then speak
-      speak(text, { contentType, context });
-    }
+    // Try pre-generated audio first
+    const audio = new Audio(pregenAudioUrl);
+    setPregenAudio(audio);
+    setIsPlayingPregen(true);
+    audio.onended = () => {
+      setIsPlayingPregen(false);
+      setPregenAudio(null);
+    };
+    audio.onerror = () => {
+      // Fallback to TTS if pre-generated audio fails (file doesn't exist)
+      console.log(`[VoiceTutor] Pre-generated audio not found: ${pregenAudioUrl}, falling back to TTS`);
+      setIsPlayingPregen(false);
+      setPregenAudio(null);
+      if (directTTS) {
+        speakDirect(text);
+      } else {
+        speak(text, { contentType, context });
+      }
+    };
+    audio.play().catch(() => {
+      // Handle play() rejection (e.g., user hasn't interacted with page)
+      setIsPlayingPregen(false);
+      setPregenAudio(null);
+      if (directTTS) {
+        speakDirect(text);
+      } else {
+        speak(text, { contentType, context });
+      }
+    });
   };
 
   // Don't render if TTS is unavailable

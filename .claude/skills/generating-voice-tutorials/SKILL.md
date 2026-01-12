@@ -364,27 +364,44 @@ WHERE type = 'speaking';
 
 ### VoiceTutorButton Component
 ```tsx
-// With pre-generated audio (preferred)
+// Component automatically tries pre-generated audio first
+// Falls back to TTS API if file doesn't exist
 <VoiceTutorButton
   text="ba"
   locale="ms"
   size="md"
-  contentType="syllable"
-  audioUrl="/audio/syllable/ms/pronunciation/ba.wav"  // Pre-generated
+  contentType="syllable"  // Used to construct audio URL
 />
 
-// Fallback to API (if audioUrl not provided)
+// Or with explicit audioUrl override
 <VoiceTutorButton
   text="ba"
   locale="ms"
   size="md"
   contentType="syllable"
+  audioUrl="/audio/syllable/ms/pronunciation/ba.wav"
 />
 ```
 
-### Audio Priority
-1. **Pre-generated audio** (`audioUrl` prop) - Fastest, no API call
-2. **API fallback** - Used when `audioUrl` is missing
+### Audio Priority (Automatic Fallback)
+1. **Pre-generated audio** - Auto-constructed URL based on contentType + text + locale
+2. **TTS API fallback** - Automatically used if pre-generated file doesn't exist (404)
+
+### URL Builder Utility
+**File**: `src/lib/audio/url-builder.ts`
+
+```typescript
+import { getAudioUrl, getSyllablePronunciationUrl, getVocabularyUrl } from '@/lib/audio/url-builder';
+
+// Generic builder
+getAudioUrl('ba', 'syllable', 'ms')  // -> .../audio/syllable/ms/pronunciation/ba.wav
+
+// Specific builders
+getSyllablePronunciationUrl('ba', 'ms')
+getSyllableGuideUrl('ba', 'ms')
+getVocabularyUrl('ayam', 'ms')
+getPhraseUrl('Ini adalah...', 'ms')
+```
 
 ---
 
