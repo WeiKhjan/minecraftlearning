@@ -311,6 +311,36 @@ supabase-storage/
         └── ...
 ```
 
+### Image URL Format
+
+**Supabase Storage Base URL:**
+```
+https://glwxvgxgquwfgwbwqbiz.supabase.co/storage/v1/object/public/images
+```
+
+**Full Equipment Image URL Pattern:**
+```
+https://glwxvgxgquwfgwbwqbiz.supabase.co/storage/v1/object/public/images/equipment/{equipment_name}.png
+```
+
+**Examples:**
+- Leather Boots: `https://glwxvgxgquwfgwbwqbiz.supabase.co/storage/v1/object/public/images/equipment/leather_boots.png`
+- Iron Helmet: `https://glwxvgxgquwfgwbwqbiz.supabase.co/storage/v1/object/public/images/equipment/iron_helmet.png`
+- Diamond Sword: `https://glwxvgxgquwfgwbwqbiz.supabase.co/storage/v1/object/public/images/equipment/diamond_sword.png`
+
+**Database `image_url` Column:**
+Store the relative path in the database (the app constructs the full URL):
+```sql
+-- Store relative path
+UPDATE equipment SET image_url = '/equipment/leather_boots.png' WHERE name = 'leather_boots';
+
+-- The app automatically constructs:
+-- {SUPABASE_URL}/storage/v1/object/public/images/equipment/leather_boots.png
+```
+
+**Environment Variable:**
+The Supabase URL is available via `process.env.NEXT_PUBLIC_SUPABASE_URL`
+
 ## Related Skills
 
 - **managing-course-syllabi**: Links equipment as activity rewards

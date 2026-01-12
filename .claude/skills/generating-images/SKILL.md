@@ -380,6 +380,36 @@ supabase-storage/
     └── ...
 ```
 
+### Full URL Format
+
+**Supabase Storage Base URL:**
+```
+https://glwxvgxgquwfgwbwqbiz.supabase.co/storage/v1/object/public/
+```
+
+**Full URL Patterns:**
+| Type | Full URL Pattern |
+|------|-----------------|
+| Vocabulary | `https://glwxvgxgquwfgwbwqbiz.supabase.co/storage/v1/object/public/images/vocab/{word}_{timestamp}.png` |
+| Equipment | `https://glwxvgxgquwfgwbwqbiz.supabase.co/storage/v1/object/public/images/equipment/{equipment_name}.png` |
+| Pet | `https://glwxvgxgquwfgwbwqbiz.supabase.co/storage/v1/object/public/images/pets/{pet_id}.png` |
+| Avatar | `https://glwxvgxgquwfgwbwqbiz.supabase.co/storage/v1/object/public/avatars/{kid_id}_{timestamp}.png` |
+
+**Database Storage:**
+Store relative paths in database. The app constructs full URLs:
+```sql
+-- Equipment: store relative path
+image_url = '/equipment/leather_boots.png'
+-- App constructs: {SUPABASE_URL}/storage/v1/object/public/images/equipment/leather_boots.png
+
+-- Pets: store relative path
+image_url = '/pets/chicken.png'
+-- App constructs: {SUPABASE_URL}/storage/v1/object/public/images/pets/chicken.png
+```
+
+**Environment Variable:**
+`process.env.NEXT_PUBLIC_SUPABASE_URL` = `https://glwxvgxgquwfgwbwqbiz.supabase.co`
+
 ## Admin UI for Image Generation
 
 **File**: `src/app/[locale]/admin/generate-images/page.tsx`
