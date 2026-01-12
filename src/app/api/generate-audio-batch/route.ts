@@ -85,12 +85,15 @@ async function generateTTSAudio(
 
     // Handle rate limiting
     if (response.status === 429) {
+      const errorBody = await response.text();
+      console.log(`[TTS] Rate limit response: ${errorBody}`);
       if (retryCount < RATE_CONFIG.maxRetries) {
-        console.log(`[TTS] Rate limited, waiting ${RATE_CONFIG.retryDelay}ms before retry ${retryCount + 1}`);
-        await sleep(RATE_CONFIG.retryDelay);
+        const waitTime = RATE_CONFIG.retryDelay * (retryCount + 1); // Exponential backoff
+        console.log(`[TTS] Rate limited, waiting ${waitTime}ms before retry ${retryCount + 1}`);
+        await sleep(waitTime);
         return generateTTSAudio(text, locale, apiKey, retryCount + 1);
       }
-      return { error: 'Rate limit exceeded after retries' };
+      return { error: `Rate limit exceeded: ${errorBody.substring(0, 200)}` };
     }
 
     if (!response.ok) {
