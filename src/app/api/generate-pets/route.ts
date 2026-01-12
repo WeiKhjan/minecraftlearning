@@ -10,6 +10,14 @@ const PET_LIST = [
   { id: 'sheep', name: 'Sheep', mobType: 'passive', rarity: 'common', description: 'A fluffy white sheep' },
   { id: 'rabbit', name: 'Rabbit', mobType: 'passive', rarity: 'common', description: 'A hopping bunny' },
 
+  // Baby Pets for Units 4-9 (Common/Rare)
+  { id: 'baby_cow', name: 'Baby Cow', mobType: 'passive', rarity: 'common', description: 'A cute baby cow with big eyes' },
+  { id: 'baby_rabbit', name: 'Baby Rabbit', mobType: 'passive', rarity: 'common', description: 'A tiny hopping baby bunny' },
+  { id: 'wolf_pup', name: 'Wolf Pup', mobType: 'neutral', rarity: 'rare', description: 'A loyal baby wolf with a collar' },
+  { id: 'kitten', name: 'Kitten', mobType: 'passive', rarity: 'rare', description: 'A playful fluffy kitten' },
+  { id: 'fox_kit', name: 'Fox Kit', mobType: 'passive', rarity: 'rare', description: 'A clever baby orange fox' },
+  { id: 'parrot_chick', name: 'Parrot Chick', mobType: 'passive', rarity: 'rare', description: 'A colorful baby parrot' },
+
   // Passive Mobs (Uncommon)
   { id: 'cat', name: 'Cat', mobType: 'passive', rarity: 'uncommon', description: 'A cute sitting cat' },
   { id: 'wolf', name: 'Wolf', mobType: 'neutral', rarity: 'uncommon', description: 'A loyal tamed wolf with red collar' },

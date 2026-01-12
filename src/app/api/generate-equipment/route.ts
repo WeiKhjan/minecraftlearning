@@ -1,14 +1,49 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 
-// All equipment pieces: 5 tiers × 5 pieces = 25 items
+// All equipment pieces: 5 tiers × 5 pieces + leather variants = 50 items
 const EQUIPMENT_LIST = [
-  // Leather Tier
+  // Leather Tier (Base)
   { id: 'leather_helmet', tier: 'leather', piece: 'helmet', color: 'brown leather' },
   { id: 'leather_chestplate', tier: 'leather', piece: 'chestplate', color: 'brown leather' },
   { id: 'leather_leggings', tier: 'leather', piece: 'leggings', color: 'brown leather' },
   { id: 'leather_boots', tier: 'leather', piece: 'boots', color: 'brown leather' },
   { id: 'wooden_sword', tier: 'leather', piece: 'sword', color: 'wooden' },
+
+  // Leather Tier Variants (Unit 4)
+  { id: 'leather_helmet_2', tier: 'leather', piece: 'helmet', color: 'tan leather with stitching' },
+  { id: 'leather_chestplate_2', tier: 'leather', piece: 'chestplate', color: 'tan leather with stitching' },
+  { id: 'leather_leggings_2', tier: 'leather', piece: 'leggings', color: 'tan leather with stitching' },
+  { id: 'leather_boots_2', tier: 'leather', piece: 'boots', color: 'tan leather with stitching' },
+  { id: 'wooden_axe', tier: 'leather', piece: 'axe', color: 'wooden' },
+
+  // Leather Tier Variants (Unit 5)
+  { id: 'leather_cap', tier: 'leather', piece: 'helmet', color: 'dark brown leather cap' },
+  { id: 'leather_vest', tier: 'leather', piece: 'chestplate', color: 'dark brown leather vest' },
+  { id: 'leather_pants', tier: 'leather', piece: 'leggings', color: 'dark brown leather pants' },
+  { id: 'leather_shoes', tier: 'leather', piece: 'boots', color: 'dark brown leather shoes' },
+  { id: 'wooden_pickaxe', tier: 'leather', piece: 'pickaxe', color: 'wooden' },
+
+  // Leather Tier Variants (Unit 6)
+  { id: 'leather_hood', tier: 'leather', piece: 'helmet', color: 'hooded brown leather' },
+  { id: 'leather_tunic', tier: 'leather', piece: 'chestplate', color: 'brown leather tunic' },
+  { id: 'leather_trousers', tier: 'leather', piece: 'leggings', color: 'brown leather trousers' },
+  { id: 'leather_sandals', tier: 'leather', piece: 'boots', color: 'brown leather sandals' },
+  { id: 'wooden_shovel', tier: 'leather', piece: 'shovel', color: 'wooden' },
+
+  // Leather Tier Variants (Unit 7)
+  { id: 'leather_bandana', tier: 'leather', piece: 'helmet', color: 'red leather bandana' },
+  { id: 'leather_jerkin', tier: 'leather', piece: 'chestplate', color: 'orange leather jerkin' },
+  { id: 'leather_shorts', tier: 'leather', piece: 'leggings', color: 'brown leather shorts' },
+  { id: 'leather_slippers', tier: 'leather', piece: 'boots', color: 'brown leather slippers' },
+  { id: 'wooden_hoe', tier: 'leather', piece: 'hoe', color: 'wooden' },
+
+  // Leather Tier Variants (Unit 8)
+  { id: 'leather_headband', tier: 'leather', piece: 'helmet', color: 'green leather headband' },
+  { id: 'leather_armor', tier: 'leather', piece: 'chestplate', color: 'reinforced brown leather armor' },
+  { id: 'leather_kilt', tier: 'leather', piece: 'leggings', color: 'brown leather kilt' },
+  { id: 'leather_moccasins', tier: 'leather', piece: 'boots', color: 'brown leather moccasins' },
+  { id: 'wooden_club', tier: 'leather', piece: 'club', color: 'wooden' },
 
   // Chain Tier
   { id: 'chain_helmet', tier: 'chain', piece: 'helmet', color: 'silver chainmail' },

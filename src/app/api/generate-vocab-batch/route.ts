@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 
-// All vocabulary words for Unit 2 and Unit 3
+// All vocabulary words for Units 2-9
 const VOCABULARY_LIST = [
   // Unit 2: Mari Sayang
   // BA:6 - Mari Ajuk dan Sebut
@@ -75,6 +75,102 @@ const VOCABULARY_LIST = [
   { word: 'rak', meaning_en: 'shelf', category: 'object' },
   { word: 'datuk', meaning_en: 'grandfather', category: 'person' },
   { word: 'rambut', meaning_en: 'hair', category: 'body' },
+
+  // =====================
+  // Unit 4: Kenali Jiran
+  // =====================
+  { word: 'pasu', meaning_en: 'vase', category: 'object' },
+  { word: 'bantal', meaning_en: 'pillow', category: 'object' },
+  { word: 'jam', meaning_en: 'clock', category: 'object' },
+  { word: 'jiran', meaning_en: 'neighbor', category: 'person' },
+  { word: 'pensel', meaning_en: 'pencil', category: 'object' },
+  { word: 'obor', meaning_en: 'torch', category: 'object' },
+  { word: 'duduk', meaning_en: 'sit', category: 'action' },
+  { word: 'butang', meaning_en: 'button', category: 'object' },
+  { word: 'tudung', meaning_en: 'headscarf', category: 'clothing' },
+  { word: 'dinding', meaning_en: 'wall', category: 'object' },
+  { word: 'tangga', meaning_en: 'stairs', category: 'object' },
+  { word: 'tong', meaning_en: 'barrel', category: 'object' },
+  { word: 'orang', meaning_en: 'person', category: 'person' },
+  { word: 'selipar', meaning_en: 'slipper', category: 'clothing' },
+
+  // =====================
+  // Unit 5: Kawan-kawan Wei Han
+  // =====================
+  { word: 'jadual', meaning_en: 'timetable', category: 'object' },
+  { word: 'ketua kelas', meaning_en: 'class monitor', category: 'person' },
+  { word: 'radio', meaning_en: 'radio', category: 'object' },
+  { word: 'pokok bunga', meaning_en: 'flower plant', category: 'nature' },
+  { word: 'tong sampah', meaning_en: 'trash bin', category: 'object' },
+  { word: 'baju ungu', meaning_en: 'purple shirt', category: 'clothing' },
+  { word: 'buah pisang', meaning_en: 'banana', category: 'food' },
+  { word: 'piring kuih', meaning_en: 'cake plate', category: 'object' },
+  { word: 'bangku kayu', meaning_en: 'wooden bench', category: 'object' },
+  { word: 'bilik muzik', meaning_en: 'music room', category: 'place' },
+  { word: 'piano', meaning_en: 'piano', category: 'object' },
+  { word: 'bernyanyi', meaning_en: 'singing', category: 'action' },
+  { word: 'bertepuk tangan', meaning_en: 'clapping', category: 'action' },
+  { word: 'buku tulis', meaning_en: 'exercise book', category: 'object' },
+  { word: 'lukisan', meaning_en: 'drawing', category: 'object' },
+
+  // =====================
+  // Unit 6: Taman Permainan
+  // =====================
+  { word: 'buah limau', meaning_en: 'lime', category: 'food' },
+  { word: 'botol air', meaning_en: 'water bottle', category: 'object' },
+  { word: 'rantai basikal', meaning_en: 'bicycle chain', category: 'object' },
+  { word: 'memakai', meaning_en: 'wearing', category: 'action' },
+  { word: 'bermain', meaning_en: 'playing', category: 'action' },
+  { word: 'belon', meaning_en: 'balloon', category: 'object' },
+  { word: 'buaian', meaning_en: 'swing', category: 'object' },
+  { word: 'jongkang-jongkit', meaning_en: 'seesaw', category: 'object' },
+  { word: 'layang-layang', meaning_en: 'kite', category: 'object' },
+  { word: 'dewan', meaning_en: 'hall', category: 'place' },
+  { word: 'papan gelongsor', meaning_en: 'slide', category: 'object' },
+  { word: 'pagar', meaning_en: 'fence', category: 'object' },
+  { word: 'penjaja', meaning_en: 'vendor', category: 'person' },
+
+  // =====================
+  // Unit 7: Sihat dan Gembira
+  // =====================
+  { word: 'stoking', meaning_en: 'socks', category: 'clothing' },
+  { word: 'kasut sukan', meaning_en: 'sports shoes', category: 'clothing' },
+  { word: 'bersenam', meaning_en: 'exercising', category: 'action' },
+  { word: 'berjoging', meaning_en: 'jogging', category: 'action' },
+  { word: 'segar', meaning_en: 'fresh', category: 'object' },
+  { word: 'bola', meaning_en: 'ball', category: 'object' },
+
+  // =====================
+  // Unit 8: Sedap dan Sihat
+  // =====================
+  { word: 'sandwic', meaning_en: 'sandwich', category: 'food' },
+  { word: 'telur', meaning_en: 'egg', category: 'food' },
+  { word: 'pisang', meaning_en: 'banana', category: 'food' },
+  { word: 'tembikai', meaning_en: 'watermelon', category: 'food' },
+  { word: 'nasi lemak', meaning_en: 'coconut rice', category: 'food' },
+  { word: 'susu segar', meaning_en: 'fresh milk', category: 'food' },
+  { word: 'buah jambu', meaning_en: 'guava', category: 'food' },
+  { word: 'roti telur', meaning_en: 'egg bread', category: 'food' },
+  { word: 'membuka', meaning_en: 'opening', category: 'action' },
+  { word: 'membeli', meaning_en: 'buying', category: 'action' },
+  { word: 'minum', meaning_en: 'drinking', category: 'action' },
+  { word: 'makan', meaning_en: 'eating', category: 'action' },
+
+  // =====================
+  // Unit 9: Kebersihan dan Kesihatan
+  // =====================
+  { word: 'berus gigi', meaning_en: 'toothbrush', category: 'object' },
+  { word: 'ubat gigi', meaning_en: 'toothpaste', category: 'object' },
+  { word: 'mencuci', meaning_en: 'washing', category: 'action' },
+  { word: 'menjaga', meaning_en: 'taking care', category: 'action' },
+  { word: 'menggosok gigi', meaning_en: 'brushing teeth', category: 'action' },
+  { word: 'mencuci muka', meaning_en: 'washing face', category: 'action' },
+  { word: 'mandi', meaning_en: 'bathing', category: 'action' },
+  { word: 'sabun', meaning_en: 'soap', category: 'object' },
+  { word: 'syampu', meaning_en: 'shampoo', category: 'object' },
+  { word: 'merawat', meaning_en: 'treating', category: 'action' },
+  { word: 'membantu', meaning_en: 'helping', category: 'action' },
+  { word: 'membasuh', meaning_en: 'rinsing', category: 'action' },
 ];
 
 // Create Supabase client with service role

@@ -1,0 +1,130 @@
+{
+  "description": "Vocabulary list for Units 4-9 image generation using /api/generate-vocab-image",
+  "total_words": 84,
+  "units": {
+    "unit_4": {
+      "theme": "Kenali Jiran (Know Your Neighbors)",
+      "words": [
+        {"word": "pasu", "meaning_en": "vase", "category": "object"},
+        {"word": "bantal", "meaning_en": "pillow", "category": "object"},
+        {"word": "jam", "meaning_en": "clock", "category": "object"},
+        {"word": "jiran", "meaning_en": "neighbor", "category": "person"},
+        {"word": "pensel", "meaning_en": "pencil", "category": "object"},
+        {"word": "obor", "meaning_en": "torch", "category": "object"},
+        {"word": "ikan", "meaning_en": "fish", "category": "animal"},
+        {"word": "duduk", "meaning_en": "sit", "category": "action"},
+        {"word": "butang", "meaning_en": "button", "category": "object"},
+        {"word": "tudung", "meaning_en": "headscarf", "category": "clothing"},
+        {"word": "dinding", "meaning_en": "wall", "category": "object"},
+        {"word": "tangga", "meaning_en": "stairs", "category": "object"},
+        {"word": "tong", "meaning_en": "barrel", "category": "object"},
+        {"word": "orang", "meaning_en": "person", "category": "person"},
+        {"word": "kolam", "meaning_en": "pond", "category": "nature"},
+        {"word": "selipar", "meaning_en": "slipper", "category": "clothing"}
+      ]
+    },
+    "unit_5": {
+      "theme": "Kawan-kawan Wei Han (Wei Han's Friends)",
+      "words": [
+        {"word": "jadual", "meaning_en": "timetable", "category": "object"},
+        {"word": "ketua_kelas", "meaning_en": "class monitor", "category": "person"},
+        {"word": "radio", "meaning_en": "radio", "category": "object"},
+        {"word": "pokok_bunga", "meaning_en": "flower plant", "category": "nature"},
+        {"word": "tong_sampah", "meaning_en": "trash bin", "category": "object"},
+        {"word": "baju_ungu", "meaning_en": "purple shirt", "category": "clothing"},
+        {"word": "buah_pisang", "meaning_en": "banana", "category": "food"},
+        {"word": "piring_kuih", "meaning_en": "cake plate", "category": "object"},
+        {"word": "bangku_kayu", "meaning_en": "wooden bench", "category": "object"},
+        {"word": "bilik_muzik", "meaning_en": "music room", "category": "place"},
+        {"word": "piano", "meaning_en": "piano", "category": "object"},
+        {"word": "bernyanyi", "meaning_en": "singing", "category": "action"},
+        {"word": "bertepuk_tangan", "meaning_en": "clapping", "category": "action"},
+        {"word": "buku_tulis", "meaning_en": "exercise book", "category": "object"},
+        {"word": "lukisan", "meaning_en": "drawing", "category": "object"}
+      ]
+    },
+    "unit_6": {
+      "theme": "Taman Permainan (Playground)",
+      "words": [
+        {"word": "buah_limau", "meaning_en": "lime", "category": "food"},
+        {"word": "botol_air", "meaning_en": "water bottle", "category": "object"},
+        {"word": "rantai_basikal", "meaning_en": "bicycle chain", "category": "object"},
+        {"word": "memakai", "meaning_en": "wearing", "category": "action"},
+        {"word": "hijau", "meaning_en": "green", "category": "object"},
+        {"word": "bermain", "meaning_en": "playing", "category": "action"},
+        {"word": "belon", "meaning_en": "balloon", "category": "object"},
+        {"word": "buaian", "meaning_en": "swing", "category": "object"},
+        {"word": "jongkang_jongkit", "meaning_en": "seesaw", "category": "object"},
+        {"word": "layang_layang", "meaning_en": "kite", "category": "object"},
+        {"word": "dewan", "meaning_en": "hall", "category": "place"},
+        {"word": "papan_gelongsor", "meaning_en": "slide", "category": "object"},
+        {"word": "pagar", "meaning_en": "fence", "category": "object"},
+        {"word": "penjaja", "meaning_en": "vendor", "category": "person"}
+      ]
+    },
+    "unit_7": {
+      "theme": "Sihat dan Gembira (Healthy and Happy)",
+      "words": [
+        {"word": "stoking", "meaning_en": "socks", "category": "clothing"},
+        {"word": "kasut_sukan", "meaning_en": "sports shoes", "category": "clothing"},
+        {"word": "bersenam", "meaning_en": "exercising", "category": "action"},
+        {"word": "berjoging", "meaning_en": "jogging", "category": "action"},
+        {"word": "segar", "meaning_en": "fresh", "category": "object"},
+        {"word": "bola", "meaning_en": "ball", "category": "object"},
+        {"word": "buku", "meaning_en": "book", "category": "object"},
+        {"word": "baju", "meaning_en": "shirt", "category": "clothing"}
+      ]
+    },
+    "unit_8": {
+      "theme": "Sedap dan Sihat (Delicious and Healthy)",
+      "words": [
+        {"word": "sandwic", "meaning_en": "sandwich", "category": "food"},
+        {"word": "telur", "meaning_en": "egg", "category": "food"},
+        {"word": "susu", "meaning_en": "milk", "category": "food"},
+        {"word": "pisang", "meaning_en": "banana", "category": "food"},
+        {"word": "betik", "meaning_en": "papaya", "category": "food"},
+        {"word": "tembikai", "meaning_en": "watermelon", "category": "food"},
+        {"word": "nasi_lemak", "meaning_en": "coconut rice", "category": "food"},
+        {"word": "susu_segar", "meaning_en": "fresh milk", "category": "food"},
+        {"word": "buah_jambu", "meaning_en": "guava", "category": "food"},
+        {"word": "roti_telur", "meaning_en": "egg bread", "category": "food"},
+        {"word": "membuka", "meaning_en": "opening", "category": "action"},
+        {"word": "membeli", "meaning_en": "buying", "category": "action"},
+        {"word": "minum", "meaning_en": "drinking", "category": "action"},
+        {"word": "makan", "meaning_en": "eating", "category": "action"}
+      ]
+    },
+    "unit_9": {
+      "theme": "Kebersihan dan Kesihatan (Cleanliness and Health)",
+      "words": [
+        {"word": "berus_gigi", "meaning_en": "toothbrush", "category": "object"},
+        {"word": "ubat_gigi", "meaning_en": "toothpaste", "category": "object"},
+        {"word": "mencuci", "meaning_en": "washing", "category": "action"},
+        {"word": "menjaga", "meaning_en": "taking care", "category": "action"},
+        {"word": "menggosok_gigi", "meaning_en": "brushing teeth", "category": "action"},
+        {"word": "mencuci_muka", "meaning_en": "washing face", "category": "action"},
+        {"word": "mandi", "meaning_en": "bathing", "category": "action"},
+        {"word": "sabun", "meaning_en": "soap", "category": "object"},
+        {"word": "syampu", "meaning_en": "shampoo", "category": "object"},
+        {"word": "merawat", "meaning_en": "treating", "category": "action"},
+        {"word": "membantu", "meaning_en": "helping", "category": "action"},
+        {"word": "membasuh", "meaning_en": "rinsing", "category": "action"}
+      ]
+    }
+  },
+  "pets": [
+    {"id": "baby_cow", "rarity": "common"},
+    {"id": "baby_rabbit", "rarity": "common"},
+    {"id": "wolf_pup", "rarity": "rare"},
+    {"id": "kitten", "rarity": "rare"},
+    {"id": "fox_kit", "rarity": "rare"},
+    {"id": "parrot_chick", "rarity": "rare"}
+  ],
+  "equipment": [
+    "leather_helmet_2", "leather_chestplate_2", "leather_leggings_2", "leather_boots_2", "wooden_axe",
+    "leather_cap", "leather_vest", "leather_pants", "leather_shoes", "wooden_pickaxe",
+    "leather_hood", "leather_tunic", "leather_trousers", "leather_sandals", "wooden_shovel",
+    "leather_bandana", "leather_jerkin", "leather_shorts", "leather_slippers", "wooden_hoe",
+    "leather_headband", "leather_armor", "leather_kilt", "leather_moccasins", "wooden_club"
+  ]
+}
