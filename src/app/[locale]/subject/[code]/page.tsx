@@ -131,8 +131,9 @@ export default async function SubjectPage({
   type EquipmentReward = { id: string; name: string; name_ms: string | null; name_zh: string | null; name_en: string | null; image_url: string; rarity: string };
   const themeEquipment = new Map<string, EquipmentReward[]>();
   allActivities?.forEach(activity => {
-    // Supabase returns equipment as object or null from the join
-    const equip = activity.equipment as EquipmentReward | null;
+    // Supabase may return equipment as array or object depending on the relationship
+    const equipData = activity.equipment as unknown;
+    const equip: EquipmentReward | null = Array.isArray(equipData) ? equipData[0] : equipData as EquipmentReward | null;
     if (equip && equip.id) {
       const current = themeEquipment.get(activity.theme_id) || [];
       // Avoid duplicates
