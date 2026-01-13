@@ -85,14 +85,11 @@ export default function VoiceTutorButton({
 
     // Try pre-generated audio first
     const audio = new Audio(pregenAudioUrl);
-    setPregenAudio(audio);
-    setIsPlayingPregen(true);
-    audio.onended = () => {
-      setIsPlayingPregen(false);
-      setPregenAudio(null);
-    };
-    audio.onerror = () => {
-      // Fallback to TTS if pre-generated audio fails (file doesn't exist)
+    let hasFallenBack = false; // Prevent double fallback
+
+    const fallbackToTTS = () => {
+      if (hasFallenBack) return; // Only fallback once
+      hasFallenBack = true;
       console.log(`[VoiceTutor] Pre-generated audio not found: ${pregenAudioUrl}, falling back to TTS`);
       setIsPlayingPregen(false);
       setPregenAudio(null);
@@ -102,16 +99,15 @@ export default function VoiceTutorButton({
         speak(text, { contentType, context });
       }
     };
-    audio.play().catch(() => {
-      // Handle play() rejection (e.g., user hasn't interacted with page)
+
+    setPregenAudio(audio);
+    setIsPlayingPregen(true);
+    audio.onended = () => {
       setIsPlayingPregen(false);
       setPregenAudio(null);
-      if (directTTS) {
-        speakDirect(text);
-      } else {
-        speak(text, { contentType, context });
-      }
-    });
+    };
+    audio.onerror = fallbackToTTS;
+    audio.play().catch(fallbackToTTS);
   };
 
   // Don't render if TTS is unavailable
