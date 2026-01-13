@@ -41,6 +41,36 @@ export async function POST(request: NextRequest) {
       return NextResponse.json(createSimpleResponse(isCorrect, expected, spoken));
     }
 
+    // Build content-type specific instructions
+    const isSentence = contentType === 'sentence' || expected.split(' ').length > 2;
+
+    const systemPrompt = isSentence
+      ? `You assess children's MALAY (Bahasa Malaysia) pronunciation for Malaysian primary school.
+This is a SPEAKING exercise - the child is reading Malay sentences/phrases aloud.
+BE VERY LENIENT - this is for young children (ages 6-12) learning to speak.
+
+ACCEPT AS CORRECT if:
+- The spoken text contains most of the key words from expected (even if order differs slightly)
+- Proper nouns (names like "Puan Chan", "Cikgu Ali") are pronounced reasonably close
+- Minor word variations or speech recognition errors (e.g., "ini" vs "nie", "puan" vs "pwa")
+- Missing articles or small words like "ini", "itu", "dan"
+- 70% or more of the expected words are present
+
+ONLY mark as INCORRECT if:
+- The child said something completely different
+- Less than 50% of key words match
+- The meaning is totally wrong
+
+Be encouraging! Children are learning and trying their best.
+feedbackMs must be in MALAY, feedbackZh in SIMPLIFIED CHINESE, feedbackEn in ENGLISH.
+Return ONLY JSON: {"isCorrect":true/false,"confidence":0.8,"feedbackMs":"text","feedbackZh":"text","feedbackEn":"text","correctionMs":"text","correctionZh":"text","correctionEn":"text"}`
+      : `You assess children's MALAY (Bahasa Malaysia) pronunciation for Malaysian primary school.
+This is a MALAY SUKU KATA (syllable) lesson - the child is learning to pronounce Malay syllables/words.
+Compare the spoken text to the expected Malay text phonetically. Accept if it sounds similar.
+Be LENIENT and encouraging for children learning.
+IMPORTANT: feedbackMs must be in MALAY, feedbackZh in SIMPLIFIED CHINESE, feedbackEn in ENGLISH.
+Return ONLY JSON: {"isCorrect":true/false,"confidence":0.8,"feedbackMs":"text","feedbackZh":"text","feedbackEn":"text","correctionMs":"text","correctionZh":"text","correctionEn":"text"}`;
+
     // Use Gemini for intelligent pronunciation analysis
     const response = await fetch(
       `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`,
@@ -51,23 +81,14 @@ export async function POST(request: NextRequest) {
           contents: [{
             parts: [{
               text: `MALAY ${contentType.toUpperCase()} PRONUNCIATION TEST
-Expected Malay ${contentType}: "${expected}"
+Expected: "${expected}"
 Child said: "${spoken}"
-Is pronunciation correct or close enough? Be lenient for children learning Malay.`
+Is this correct or close enough? Remember to be LENIENT for children.`
             }]
           }],
           systemInstruction: {
             parts: [{
-              text: `You assess children's MALAY (Bahasa Malaysia) pronunciation for Malaysian primary school.
-This is a MALAY SUKU KATA (syllable) lesson - the child is learning to pronounce Malay syllables like "ba", "ca", "ge", etc.
-Compare the spoken text to the expected Malay syllable phonetically. Accept if it sounds similar in Malay pronunciation.
-Be encouraging for children.
-IMPORTANT: feedbackMs must be in MALAY, feedbackZh in SIMPLIFIED CHINESE, feedbackEn in ENGLISH.
-Example feedbackMs: "Bagus!" or "Cuba lagi sebut '${expected}'!"
-Example feedbackZh: "很好!" or "再试一次说'${expected}'!"
-Example feedbackEn: "Good job!" or "Try again saying '${expected}'!"
-Return ONLY this JSON:
-{"isCorrect":true/false,"confidence":0.8,"feedbackMs":"Malay text","feedbackZh":"Chinese text","feedbackEn":"English text","correctionMs":"Malay correction","correctionZh":"Chinese correction","correctionEn":"English correction"}`
+              text: systemPrompt
             }]
           },
           generationConfig: {
