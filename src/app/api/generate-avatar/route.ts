@@ -11,6 +11,7 @@ interface GenerateAvatarRequest {
     boots?: { name: string; tier: string } | null;
     weapon?: { name: string; tier: string } | null;
   };
+  pet?: { name: string; mobType: string; rarity: string } | null;
 }
 
 // Map emoji faces to descriptive expressions
@@ -67,9 +68,50 @@ const weaponVisuals: Record<string, string> = {
   diamond: 'legendary diamond sword glowing with magical energy',
 };
 
+// Pet/companion descriptions by mob type
+const petDescriptions: Record<string, string> = {
+  // Passive mobs
+  chicken: 'a cute white chicken with red comb, standing loyally nearby',
+  cow: 'a friendly brown and white spotted cow companion',
+  pig: 'an adorable pink pig with a happy snout',
+  sheep: 'a fluffy white sheep with soft wool',
+  rabbit: 'a small cute bunny hopping beside the character',
+  // Baby versions
+  baby_cow: 'an adorable baby calf following loyally',
+  baby_rabbit: 'a tiny baby bunny, extremely cute and fluffy',
+  wolf_pup: 'a playful wolf puppy with big eyes',
+  kitten: 'a cute little kitten with whiskers',
+  fox_kit: 'a baby fox kit with big ears and fluffy tail',
+  parrot_chick: 'a colorful baby parrot perched on shoulder',
+  // Uncommon
+  cat: 'a sleek cat companion with bright eyes',
+  wolf: 'a loyal tamed wolf with red collar',
+  fox: 'a cute orange fox with fluffy tail',
+  parrot: 'a colorful parrot perched on character\'s shoulder',
+  turtle: 'a friendly sea turtle companion',
+  // Rare
+  bee: 'a fuzzy yellow and black bee hovering nearby',
+  panda: 'a cute black and white panda sitting beside',
+  axolotl: 'a pink axolotl with adorable smile and feathery gills',
+  ocelot: 'a spotted jungle ocelot',
+  llama: 'a fluffy llama with colorful decorations',
+  // Epic (monsters)
+  skeleton: 'a friendly skeleton companion with bow',
+  zombie: 'a tamed zombie friend in worn clothes',
+  creeper: 'a friendly creeper that won\'t explode',
+  spider: 'a tamed spider with multiple eyes',
+  slime: 'a bouncy green slime companion',
+  // Legendary
+  iron_golem: 'a protective iron golem standing guard',
+  snow_golem: 'a cheerful snow golem with pumpkin head',
+  allay: 'a glowing blue allay floating and dancing',
+  ender_dragon: 'a baby ender dragon perched protectively',
+  wither: 'a miniature friendly wither companion',
+};
+
 export async function POST(request: NextRequest) {
   try {
-    const { kidId, avatarFace, equipment }: GenerateAvatarRequest = await request.json();
+    const { kidId, avatarFace, equipment, pet }: GenerateAvatarRequest = await request.json();
 
     if (!kidId) {
       return NextResponse.json({ error: 'Kid ID is required' }, { status: 400 });
@@ -163,6 +205,11 @@ export async function POST(request: NextRequest) {
       diamond: 'magical floating islands with aurora borealis, mystical particles',
     };
 
+    // Build pet description
+    const petDescription = pet
+      ? petDescriptions[pet.mobType] || `a cute ${pet.name} companion`
+      : null;
+
     // Build the dynamic prompt
     const prompt = `Generate a stunning 3D Minecraft-style character avatar!
 
@@ -174,6 +221,9 @@ The face should clearly show this expression - it's very important for the chara
 ${hasEquipment ? equipmentParts.join('\n') : 'No armor equipped - wearing simple villager clothes (brown shirt, blue pants)'}
 
 ${hasEquipment ? `Overall appearance: ${themeVisual.quality} with ${themeVisual.glow}` : 'Simple but cheerful village kid look'}
+
+===== PET COMPANION =====
+${petDescription ? `IMPORTANT: Include ${petDescription} - the pet should be clearly visible next to or near the character, looking cute and friendly!` : 'No pet companion'}
 
 ===== UNEQUIPPED BODY PARTS =====
 ${!equipment.helmet ? '- HEAD: Show the character\'s face and hair clearly (no helmet)' : ''}

@@ -410,6 +410,14 @@ export default function CharacterClient({
         weapon: equipped?.weapon ? { name: equipped.weapon.name, tier: equipped.weapon.tier } : null,
       };
 
+      // Include equipped pet in avatar generation
+      const equippedPet = getEquippedPet();
+      const petData = equippedPet ? {
+        name: getPetName(equippedPet, locale),
+        mobType: equippedPet.mob_type,
+        rarity: equippedPet.rarity,
+      } : null;
+
       const response = await fetch('/api/generate-avatar', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -417,6 +425,7 @@ export default function CharacterClient({
           kidId: kid.id,
           avatarFace: kid.avatar_seed || 'happy smiling child',
           equipment: equipmentData,
+          pet: petData,
         }),
       });
 
