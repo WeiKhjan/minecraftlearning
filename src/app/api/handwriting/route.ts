@@ -222,12 +222,14 @@ If blank or unreadable, use recognizedLetter: "?" and isCorrect: false.`;
       const recognizedText = (parsed.recognizedLetter || '?').toLowerCase().trim();
       const expectedLower = expectedLetter.toLowerCase().trim();
 
-      // Double-check: if AI recognized the word correctly, ensure isCorrect is true
-      // This handles cases where AI might incorrectly mark a correct answer as wrong
+      // Validate by comparing recognized text with expected text
+      // Only mark as correct if the recognized text actually matches what was expected
+      // This prevents the AI from incorrectly marking wrong answers as correct
       const isMatch = recognizedText === expectedLower ||
         recognizedText.replace(/\s/g, '') === expectedLower.replace(/\s/g, '');
 
-      const isCorrect = parsed.isCorrect === true || isMatch;
+      // Use text matching as the source of truth, not the AI's isCorrect flag
+      const isCorrect = isMatch;
 
       console.log(`[Handwriting] Expected: "${expectedLower}", Recognized: "${recognizedText}", AI said: ${parsed.isCorrect}, Final: ${isCorrect}`);
 
