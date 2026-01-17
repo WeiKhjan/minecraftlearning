@@ -81,7 +81,7 @@ CREATE TABLE IF NOT EXISTS themes (
 );
 
 -- =====================
--- EQUIPMENT (Minecraft items)
+-- EQUIPMENT (8-bit warrior RPG items)
 -- =====================
 CREATE TABLE IF NOT EXISTS equipment (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),

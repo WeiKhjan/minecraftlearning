@@ -66,7 +66,7 @@ export default function KidCard({ kid, locale }: KidCardProps) {
       <Link
         href={`/dashboard?kid=${kid.id}`}
         prefetch={true}
-        className="minecraft-card hover:scale-105 transition-transform cursor-pointer text-center block"
+        className="pixel-card hover:scale-105 transition-transform cursor-pointer text-center block"
       >
         {/* Avatar */}
         <div className="w-20 h-20 mx-auto mb-3 bg-[#5D8731] rounded-lg flex items-center justify-center overflow-hidden">
@@ -116,7 +116,7 @@ export default function KidCard({ kid, locale }: KidCardProps) {
       {/* Delete Confirmation Modal */}
       {showDeleteConfirm && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <div className="minecraft-card max-w-sm mx-4">
+          <div className="pixel-card max-w-sm mx-4">
             <h3 className="text-lg font-bold text-gray-800 mb-2">
               {t('kids.confirmDelete')}
             </h3>

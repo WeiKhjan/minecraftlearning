@@ -13,10 +13,10 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://minecraftlearning.vercel.app'),
+  metadataBase: new URL('https://mylearnt.vercel.app'),
   title: 'MYLearnt',
   description: 'A gamified learning platform for Malaysian primary school kids',
-  keywords: ['education', 'learning', 'kids', 'minecraft', 'malaysia', 'primary school'],
+  keywords: ['education', 'learning', 'kids', '8-bit', 'pixel art', 'rpg', 'malaysia', 'primary school'],
   authors: [{ name: 'MYLearnt' }],
   openGraph: {
     title: 'MYLearnt',

@@ -122,7 +122,7 @@ export default function SingingActivity({ content, locale, onComplete }: Singing
         {!isPlaying ? (
           <button
             onClick={handlePlay}
-            className="minecraft-button text-lg px-8 py-3 flex items-center gap-2"
+            className="pixel-button text-lg px-8 py-3 flex items-center gap-2"
           >
             ▶️ {locale === 'ms' ? 'Mula Menyanyi' : locale === 'zh' ? '开始唱歌' : 'Start Singing'}
           </button>

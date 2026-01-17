@@ -10,13 +10,13 @@ export type EquipmentSlot = 'helmet' | 'chestplate' | 'leggings' | 'boots' | 'we
 
 export type EquipmentTier =
   // Classic Tiers (Units 1-6)
-  | 'wood' | 'leather' | 'stone' | 'chain' | 'iron' | 'gold' | 'diamond' | 'netherite'
+  | 'wood' | 'leather' | 'stone' | 'chain' | 'iron' | 'gold' | 'diamond' | 'darksteel'
   // Enchanted Tiers (Units 7-12)
-  | 'enchanted_iron' | 'enchanted_gold' | 'enchanted_diamond' | 'enchanted_netherite' | 'prismarine' | 'amethyst'
+  | 'enchanted_iron' | 'enchanted_gold' | 'enchanted_diamond' | 'enchanted_darksteel' | 'seafoam' | 'amethyst'
   // Elemental Tiers (Units 13-20)
-  | 'blaze' | 'frost' | 'storm' | 'emerald' | 'obsidian' | 'redstone' | 'lapis' | 'glowstone'
+  | 'blaze' | 'frost' | 'storm' | 'emerald' | 'obsidian' | 'crimsonite' | 'lapis' | 'luminite'
   // Mythic Tiers (Units 21-30)
-  | 'ender' | 'dragon' | 'wither' | 'phoenix' | 'titan' | 'shadow' | 'radiant' | 'ancient' | 'celestial' | 'void'
+  | 'voidstone' | 'dragonscale' | 'darkbone' | 'phoenix' | 'titan' | 'shadow' | 'radiant' | 'ancient' | 'celestial' | 'void'
   // Ultimate Tiers (Units 31-40)
   | 'heroic' | 'mythical' | 'immortal' | 'divine' | 'cosmic' | 'eternal' | 'ascended' | 'supreme' | 'omega' | 'infinity';
 
@@ -346,13 +346,13 @@ export const TIER_COLORS: Record<EquipmentTier, { primary: string; secondary: st
   iron: { primary: '#D3D3D3', secondary: '#A9A9A9' },
   gold: { primary: '#FFD700', secondary: '#FFA500' },
   diamond: { primary: '#00CED1', secondary: '#40E0D0' },
-  netherite: { primary: '#4A4A4A', secondary: '#8B0000' },
+  darksteel: { primary: '#4A4A4A', secondary: '#8B0000' },
   // Enchanted Tiers
   enchanted_iron: { primary: '#D3D3D3', secondary: '#9370DB' },
   enchanted_gold: { primary: '#FFD700', secondary: '#9370DB' },
   enchanted_diamond: { primary: '#00CED1', secondary: '#9370DB' },
-  enchanted_netherite: { primary: '#4A4A4A', secondary: '#9370DB' },
-  prismarine: { primary: '#5F9EA0', secondary: '#20B2AA' },
+  enchanted_darksteel: { primary: '#4A4A4A', secondary: '#9370DB' },
+  seafoam: { primary: '#5F9EA0', secondary: '#20B2AA' },
   amethyst: { primary: '#9966CC', secondary: '#E6E6FA' },
   // Elemental Tiers
   blaze: { primary: '#FF4500', secondary: '#FF8C00' },
@@ -360,13 +360,13 @@ export const TIER_COLORS: Record<EquipmentTier, { primary: string; secondary: st
   storm: { primary: '#FFD700', secondary: '#4B0082' },
   emerald: { primary: '#50C878', secondary: '#00FF00' },
   obsidian: { primary: '#1C1C1C', secondary: '#4B0082' },
-  redstone: { primary: '#FF0000', secondary: '#8B0000' },
+  crimsonite: { primary: '#FF0000', secondary: '#8B0000' },
   lapis: { primary: '#1E90FF', secondary: '#00008B' },
-  glowstone: { primary: '#FFFF00', secondary: '#FFD700' },
+  luminite: { primary: '#FFFF00', secondary: '#FFD700' },
   // Mythic Tiers
-  ender: { primary: '#301934', secondary: '#9400D3' },
-  dragon: { primary: '#800080', secondary: '#228B22' },
-  wither: { primary: '#1C1C1C', secondary: '#696969' },
+  voidstone: { primary: '#301934', secondary: '#9400D3' },
+  dragonscale: { primary: '#800080', secondary: '#228B22' },
+  darkbone: { primary: '#1C1C1C', secondary: '#696969' },
   phoenix: { primary: '#FF4500', secondary: '#FFD700' },
   titan: { primary: '#B8860B', secondary: '#8B4513' },
   shadow: { primary: '#2F2F2F', secondary: '#4B0082' },

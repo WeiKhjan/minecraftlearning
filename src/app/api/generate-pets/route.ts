@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 
-// All Minecraft mob pets
+// All 8-bit warrior RPG creature companions
 const PET_LIST = [
   // Passive Mobs (Common)
   { id: 'chicken', name: 'Chicken', mobType: 'passive', rarity: 'common', description: 'A clucking farm bird' },
@@ -32,19 +32,19 @@ const PET_LIST = [
   { id: 'ocelot', name: 'Ocelot', mobType: 'passive', rarity: 'rare', description: 'A spotted jungle ocelot' },
   { id: 'llama', name: 'Llama', mobType: 'neutral', rarity: 'rare', description: 'A fluffy llama with colorful carpet' },
 
-  // Hostile Mobs (Epic)
-  { id: 'skeleton', name: 'Skeleton', mobType: 'hostile', rarity: 'epic', description: 'A skeleton archer with bow' },
-  { id: 'zombie', name: 'Zombie', mobType: 'hostile', rarity: 'epic', description: 'A green zombie in torn clothes' },
-  { id: 'creeper', name: 'Creeper', mobType: 'hostile', rarity: 'epic', description: 'A green creeper (friendly version)' },
+  // Fantasy Creatures (Epic)
+  { id: 'bone_warrior', name: 'Bone Warrior', mobType: 'neutral', rarity: 'epic', description: 'A loyal skeletal warrior companion' },
+  { id: 'moss_knight', name: 'Moss Knight', mobType: 'neutral', rarity: 'epic', description: 'An ancient knight covered in moss' },
+  { id: 'forest_spirit', name: 'Forest Spirit', mobType: 'neutral', rarity: 'epic', description: 'A mystical green forest spirit' },
   { id: 'spider', name: 'Spider', mobType: 'hostile', rarity: 'epic', description: 'A large cave spider' },
-  { id: 'slime', name: 'Slime', mobType: 'hostile', rarity: 'epic', description: 'A bouncy green slime cube' },
+  { id: 'jelly_blob', name: 'Jelly Blob', mobType: 'neutral', rarity: 'epic', description: 'A cute bouncy jelly creature' },
 
-  // Legendary Mobs
-  { id: 'iron_golem', name: 'Iron Golem', mobType: 'utility', rarity: 'legendary', description: 'A mighty iron golem holding a flower' },
-  { id: 'snow_golem', name: 'Snow Golem', mobType: 'utility', rarity: 'legendary', description: 'A snowman with pumpkin head' },
-  { id: 'allay', name: 'Allay', mobType: 'passive', rarity: 'legendary', description: 'A cute blue fairy-like allay' },
-  { id: 'ender_dragon', name: 'Ender Dragon', mobType: 'hostile', rarity: 'legendary', description: 'The mighty black ender dragon' },
-  { id: 'wither', name: 'Wither', mobType: 'hostile', rarity: 'legendary', description: 'The three-headed wither boss' },
+  // Legendary Creatures
+  { id: 'stone_guardian', name: 'Stone Guardian', mobType: 'utility', rarity: 'legendary', description: 'A mighty stone guardian holding a flower' },
+  { id: 'frost_sprite', name: 'Frost Sprite', mobType: 'utility', rarity: 'legendary', description: 'A cheerful icy sprite with a frosty aura' },
+  { id: 'pixie', name: 'Pixie', mobType: 'passive', rarity: 'legendary', description: 'A cute magical fairy companion' },
+  { id: 'shadow_drake', name: 'Shadow Drake', mobType: 'neutral', rarity: 'legendary', description: 'A powerful dragon from the shadow realm' },
+  { id: 'doom_wraith', name: 'Doom Wraith', mobType: 'neutral', rarity: 'legendary', description: 'A fearsome but loyal dark spirit' },
 ];
 
 function getSupabaseAdmin() {
@@ -67,25 +67,24 @@ async function generatePetImage(
 
   const glow = rarityGlow[pet.rarity] || 'simple clean';
 
-  const prompt = `Create a Minecraft game inventory-style pixel art icon of a ${pet.name}.
+  const prompt = `Create an 8-bit warrior RPG inventory-style pixel art icon of a ${pet.name}.
 
-CRITICAL STYLE - MUST be authentic Minecraft pixel art:
-- BLOCKY 16x16 or 32x32 pixel art style like actual Minecraft mobs
-- Square/rectangular shapes only - NO smooth curves
-- Visible individual pixels with hard edges
-- Minecraft color palette (limited, blocky colors)
-- Look exactly like a mob from the Minecraft game
+CRITICAL STYLE - MUST be authentic 8-bit RPG pixel art:
+- Classic 16x16 or 32x32 pixel art style like retro RPG companions
+- Clean blocky pixels with hard edges
+- Vibrant fantasy color palette
+- Look like a companion creature from a classic 8-bit fantasy RPG
 
 Subject: ${pet.name} - ${pet.description}
 
 Visual Details:
 - ${glow} effect around the pet
-- Cute but BLOCKY appearance (Minecraft aesthetic)
+- Cute but pixelated appearance (classic RPG aesthetic)
 - Dark or transparent background
 - Centered, facing forward or slight angle
 - Friendly expression
 
-DO NOT make it look realistic or smooth - it MUST look like genuine Minecraft pixel art with visible square pixels!`;
+DO NOT make it look realistic or smooth - it MUST look like genuine 8-bit RPG pixel art with visible square pixels!`;
 
   try {
     const response = await fetch(

@@ -31,12 +31,12 @@ Creates voice-guided content and audio files for the MYLearnt educational platfo
 
 ```bash
 # Generate syllable pronunciation for new syllables
-curl -X POST https://minecraftlearning.vercel.app/api/generate-audio-batch \
+curl -X POST https://mylearnt.vercel.app/api/generate-audio-batch \
   -H "Content-Type: application/json" \
   -d '{"category":"syllable_pronunciation","locale":"ms","startIndex":0,"count":5}'
 
 # Generate syllable guides (educational explanations)
-curl -X POST https://minecraftlearning.vercel.app/api/generate-audio-batch \
+curl -X POST https://mylearnt.vercel.app/api/generate-audio-batch \
   -H "Content-Type: application/json" \
   -d '{"category":"syllable_guide","locale":"ms","startIndex":0,"count":5}'
 ```
@@ -45,7 +45,7 @@ curl -X POST https://minecraftlearning.vercel.app/api/generate-audio-batch \
 
 ```bash
 # Generate dictation word audio
-curl -X POST https://minecraftlearning.vercel.app/api/generate-audio-batch \
+curl -X POST https://mylearnt.vercel.app/api/generate-audio-batch \
   -H "Content-Type: application/json" \
   -d '{"category":"dictation","locale":"ms","startIndex":0,"count":5}'
 ```
@@ -55,7 +55,7 @@ No pre-generation required. The system automatically uses on-the-fly TTS.
 
 ### Check Registry Stats
 ```bash
-curl https://minecraftlearning.vercel.app/api/generate-audio-batch
+curl https://mylearnt.vercel.app/api/generate-audio-batch
 ```
 
 ### Quick Reference: Audio Categories
@@ -202,7 +202,7 @@ const RATE_CONFIG = {
 
 ### GET - Registry Stats
 ```bash
-curl https://minecraftlearning.vercel.app/api/generate-audio-batch
+curl https://mylearnt.vercel.app/api/generate-audio-batch
 ```
 
 Response:
@@ -226,7 +226,7 @@ Response:
 
 ### POST - Generate Audio Batch
 ```bash
-curl -X POST https://minecraftlearning.vercel.app/api/generate-audio-batch \
+curl -X POST https://mylearnt.vercel.app/api/generate-audio-batch \
   -H "Content-Type: application/json" \
   -d '{
     "category": "syllable_pronunciation",
@@ -318,7 +318,7 @@ getRegistryStats()                  // Summary statistics
 ## Admin UI
 
 **File**: `src/app/[locale]/admin/audio-generation/page.tsx`
-**URL**: `https://minecraftlearning.vercel.app/en/admin/audio-generation`
+**URL**: `https://mylearnt.vercel.app/en/admin/audio-generation`
 
 Features:
 - Category and locale selection
@@ -441,7 +441,7 @@ getPhraseUrl('Ini adalah...', 'ms')
 
 ### Step 1: Check Registry Stats
 ```bash
-curl https://minecraftlearning.vercel.app/api/generate-audio-batch
+curl https://mylearnt.vercel.app/api/generate-audio-batch
 ```
 
 ### Step 2: Generate by Category (Parallel)

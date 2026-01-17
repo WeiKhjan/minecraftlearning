@@ -191,7 +191,7 @@ export default async function DashboardPage({
       <header className="w-full p-4 flex justify-between items-center">
         <Link href={`/${locale}/kids`} className="flex items-center gap-3">
           <img src="/logo.jpeg" alt="MYLearnt" className="h-12 w-auto rounded-lg" />
-          <span className="text-white font-bold text-xl drop-shadow-lg minecraft-font">MYLearnt</span>
+          <span className="text-white font-bold text-xl drop-shadow-lg pixel-font">MYLearnt</span>
         </Link>
         <div className="flex items-center gap-4">
           {/* Avatar Link to Character Page */}
@@ -232,7 +232,7 @@ export default async function DashboardPage({
       <div className="flex-1 px-4 py-6">
         <div className="max-w-6xl mx-auto">
           {/* Kid Profile Card */}
-          <div className="minecraft-card mb-6">
+          <div className="pixel-card mb-6">
             <div className="flex items-center gap-4">
               {/* Avatar */}
               <div className="w-16 h-16 bg-[#5D8731] rounded-lg flex items-center justify-center overflow-hidden">
@@ -303,7 +303,7 @@ export default async function DashboardPage({
                   key={subject.id}
                   href={`/${locale}/subject/${subject.code}?kid=${kidId}`}
                   prefetch={true}
-                  className="minecraft-card hover:scale-105 transition-transform cursor-pointer"
+                  className="pixel-card hover:scale-105 transition-transform cursor-pointer"
                 >
                   {/* Icon */}
                   <div
@@ -342,7 +342,7 @@ export default async function DashboardPage({
               {t('dashboard.myCharacter')}
             </h2>
 
-            <div className="minecraft-card">
+            <div className="pixel-card">
               <div className="flex items-center justify-center gap-8">
                 {/* Character placeholder */}
                 <div className="text-center">
@@ -440,7 +440,7 @@ export default async function DashboardPage({
                 <Link
                   href={`/${locale}/character?kid=${kidId}`}
                   prefetch={true}
-                  className="minecraft-button"
+                  className="pixel-button"
                 >
                   {t('dashboard.viewAll')}
                 </Link>

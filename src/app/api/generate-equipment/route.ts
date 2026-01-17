@@ -11,13 +11,13 @@ const TIER_CONFIGS: Record<string, { color: string; effects: string }> = {
   iron: { color: 'shiny silver iron', effects: 'polished metal with rivets' },
   gold: { color: 'shiny golden', effects: 'ornate golden engravings' },
   diamond: { color: 'glowing cyan diamond', effects: 'crystalline facets with shimmer' },
-  netherite: { color: 'dark grey-black netherite', effects: 'dark metal with red accents' },
+  darksteel: { color: 'dark grey-black darksteel', effects: 'dark metal with red accents' },
   // Enchanted Tiers
   enchanted_iron: { color: 'silver iron with purple glow', effects: 'magical purple shimmer particles' },
   enchanted_gold: { color: 'golden with purple glow', effects: 'magical purple shimmer particles' },
   enchanted_diamond: { color: 'cyan diamond with purple glow', effects: 'magical sparkles and enchantment glow' },
-  enchanted_netherite: { color: 'dark netherite with purple flames', effects: 'dark magical flames and glow' },
-  prismarine: { color: 'teal-green prismarine', effects: 'ocean-themed with aquatic shimmer' },
+  enchanted_darksteel: { color: 'dark darksteel with purple flames', effects: 'dark magical flames and glow' },
+  seafoam: { color: 'teal-green seafoam', effects: 'ocean-themed with aquatic shimmer' },
   amethyst: { color: 'purple amethyst crystal', effects: 'crystalline purple glow' },
   // Elemental Tiers
   blaze: { color: 'orange-red blazing fire', effects: 'fire particles and flames' },
@@ -25,13 +25,13 @@ const TIER_CONFIGS: Record<string, { color: string; effects: string }> = {
   storm: { color: 'yellow-purple storm', effects: 'lightning bolts and electric sparks' },
   emerald: { color: 'bright green emerald', effects: 'rich green gem facets' },
   obsidian: { color: 'black obsidian', effects: 'dark volcanic glass with purple portal energy' },
-  redstone: { color: 'glowing red redstone', effects: 'glowing red circuit patterns' },
+  crimsonite: { color: 'glowing red crimsonite', effects: 'glowing red circuit patterns' },
   lapis: { color: 'deep blue lapis lazuli', effects: 'magical blue enchantment energy' },
-  glowstone: { color: 'bright yellow glowstone', effects: 'luminous glowing particles' },
+  luminite: { color: 'bright yellow luminite', effects: 'luminous glowing particles' },
   // Mythic Tiers
-  ender: { color: 'dark purple ender', effects: 'teleportation particles and void energy' },
-  dragon: { color: 'purple-green dragon scale', effects: 'dragon scale texture with wings motif' },
-  wither: { color: 'black-grey wither', effects: 'dark smoke and decay particles' },
+  voidstone: { color: 'dark purple voidstone', effects: 'teleportation particles and void energy' },
+  dragonscale: { color: 'purple-green dragon scale', effects: 'dragon scale texture with wings motif' },
+  darkbone: { color: 'black-grey darkbone', effects: 'dark smoke and decay particles' },
   phoenix: { color: 'orange-gold phoenix flame', effects: 'rebirth flames and feather patterns' },
   titan: { color: 'bronze-brown titan', effects: 'giant runes and ancient power' },
   shadow: { color: 'dark black shadow', effects: 'shadow wisps and void energy' },
@@ -92,25 +92,25 @@ async function generateEquipmentImage(
     colorDesc = `${equipment.color_primary} and ${equipment.color_secondary || equipment.color_primary} colored`;
   }
 
-  const prompt = `Generate a Minecraft-style pixel art equipment icon.
+  const prompt = `Generate an 8-bit warrior RPG style pixel art equipment icon.
 
 Subject: ${equipment.name}
 Type: ${colorDesc} ${equipment.slot}
 Description: ${pieceDesc}
 
 Style Requirements:
-- Authentic Minecraft 8-bit/16-bit pixel art style
+- Authentic 8-bit/16-bit pixel art style (classic RPG aesthetic)
 - Clean blocky pixels, no anti-aliasing
 - ${tierConfig.color} color palette
 - ${tierConfig.effects}
-- Item shown as inventory icon (like in Minecraft inventory)
+- Item shown as inventory icon (like in classic fantasy RPG games)
 - Transparent or solid dark background
 - Single item centered, filling 80% of frame
 - NO text, NO labels
 - Sharp pixel edges
-- Recognizable Minecraft aesthetic
+- Classic 8-bit fantasy warrior RPG aesthetic
 
-Make it look exactly like a Minecraft game inventory icon!`;
+Make it look like a classic 8-bit fantasy warrior RPG inventory icon!`;
 
   try {
     const response = await fetch(

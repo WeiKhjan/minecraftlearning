@@ -154,7 +154,7 @@ function getPetName(pet: Pet | null | undefined, locale: Locale): string {
   return pet.name[locale] || pet.name.en;
 }
 
-// Minecraft-style slot component
+// 8-bit RPG style slot component
 function EquipmentSlotBox({
   item,
   slot,
@@ -456,7 +456,7 @@ export default function CharacterClient({
   return (
     <div className="space-y-3">
       {/* ===== TOP SECTION: Player Header Bar ===== */}
-      <div className="minecraft-card p-4">
+      <div className="pixel-card p-4">
         <div className="flex flex-col lg:flex-row lg:items-center gap-4">
           {/* Left: Name + Level + Title */}
           <div className="flex items-center gap-4 flex-1">
@@ -468,7 +468,7 @@ export default function CharacterClient({
               <div className="absolute -top-1 -right-1 text-yellow-300 text-[10px] animate-pulse">✦</div>
             </div>
             <div>
-              <h2 className="text-lg sm:text-xl font-bold text-gray-800 minecraft-font">{kid.name}</h2>
+              <h2 className="text-lg sm:text-xl font-bold text-gray-800 pixel-font">{kid.name}</h2>
               <span
                 className="text-xs font-bold px-2 py-0.5 rounded-full inline-block"
                 style={{
@@ -544,7 +544,7 @@ export default function CharacterClient({
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-3">
 
         {/* Column 1: Character Display */}
-        <div className="minecraft-card p-4">
+        <div className="pixel-card p-4">
           <div className="flex flex-col items-center gap-3">
             {/* Avatar + Pet Row */}
             <div className="flex items-end gap-3">
@@ -636,7 +636,7 @@ export default function CharacterClient({
         </div>
 
         {/* Column 2: AI Avatar Generator */}
-        <div className="minecraft-card p-4">
+        <div className="pixel-card p-4">
           <h3 className="text-sm font-bold text-gray-800 mb-3 flex items-center gap-2">
             <span>✨</span> {aiAvatarTitle}
           </h3>
@@ -693,7 +693,7 @@ export default function CharacterClient({
         </div>
 
         {/* Column 3: Inventory & Equipment */}
-        <div className="minecraft-card p-4">
+        <div className="pixel-card p-4">
           {/* Tabs */}
           <div className="flex gap-1 mb-3">
             <button onClick={() => setActiveTab('equipped')}

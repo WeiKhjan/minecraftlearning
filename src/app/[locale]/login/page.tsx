@@ -49,7 +49,7 @@ export default function LoginPage() {
 
       {/* Main Content */}
       <div className="flex-1 flex items-center justify-center px-4 relative z-20">
-        <div className="minecraft-card max-w-md w-full">
+        <div className="pixel-card max-w-md w-full">
           <div className="text-center mb-6">
             <h1 className="text-3xl font-bold text-gray-800 mb-2">
               {t('common.welcome')}
@@ -69,7 +69,7 @@ export default function LoginPage() {
           {/* Google Login Button */}
           <button
             onClick={handleGoogleLogin}
-            className="w-full minecraft-button flex items-center justify-center gap-3 text-lg py-3"
+            className="w-full pixel-button flex items-center justify-center gap-3 text-lg py-3"
           >
             <svg className="w-6 h-6" viewBox="0 0 24 24">
               <path

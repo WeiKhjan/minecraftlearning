@@ -76,7 +76,7 @@ export function useSoundEffects() {
         break;
 
       case 'coin':
-        // Minecraft-style coin/pickup sound
+        // 8-bit RPG style coin/pickup sound
         playTone(987.77, 0.1, 'square', 0.15); // B5
         setTimeout(() => playTone(1318.51, 0.15, 'square', 0.15), 100); // E6
         break;

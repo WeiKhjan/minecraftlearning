@@ -83,7 +83,7 @@ export default function NewKidPage() {
 
       {/* Main Content */}
       <div className="flex-1 flex items-center justify-center px-4 py-8">
-        <div className="minecraft-card max-w-lg w-full">
+        <div className="pixel-card max-w-lg w-full">
           <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">
             {t('kids.addNewKid')}
           </h2>
@@ -182,7 +182,7 @@ export default function NewKidPage() {
               <button
                 type="submit"
                 disabled={loading || !name.trim() || !school.trim()}
-                className="flex-1 minecraft-button disabled:opacity-50 disabled:cursor-not-allowed"
+                className="flex-1 pixel-button disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {loading ? t('common.loading') : t('kids.createKid')}
               </button>

@@ -1,11 +1,11 @@
 ---
 name: generating-equipment
-description: Generates Minecraft-style equipment items for the MYLearnt gamification system. Creates new armor pieces, weapons, tools, and accessories for player characters. Handles 40 unique equipment tiers (wood to infinity), 8 slots (helmet, chestplate, leggings, boots, weapon, tool, ranged, shield), rarity levels, and AI image generation. Equipment serves as rewards for completing learning activities across 40 units.
+description: Generates 8-bit warrior RPG-style equipment items for the MYLearnt gamification system. Creates new armor pieces, weapons, tools, and accessories for player characters. Handles 40 unique equipment tiers (wood to infinity), 8 slots (helmet, chestplate, leggings, boots, weapon, tool, ranged, shield), rarity levels, and AI image generation. Equipment serves as rewards for completing learning activities across 40 units.
 ---
 
 # Generating Equipment
 
-Creates Minecraft-themed equipment items for the MYLearnt reward system with 40 unique tiers.
+Creates 8-bit warrior RPG-themed equipment items for the MYLearnt reward system with 40 unique tiers.
 
 ## Quick Start
 
@@ -39,11 +39,11 @@ UPDATE equipment SET image_url = '/equipment/phoenix_helmet.png' WHERE name = 'P
 
 | Phase | Units | Tiers | Rarity |
 |-------|-------|-------|--------|
-| Classic | 1-6 | wood/leather, stone, iron, gold, diamond, netherite | common → epic |
-| Enchanted | 7-10 | enchanted_iron, enchanted_gold, enchanted_diamond, enchanted_netherite | rare → epic |
-| Advanced | 11-12 | prismarine, amethyst | epic |
-| Elemental | 13-20 | blaze, frost, storm, emerald, obsidian, redstone, lapis, glowstone | epic → legendary |
-| Mythic | 21-30 | ender, dragon, wither, phoenix, titan, shadow, radiant, ancient, celestial, void | legendary |
+| Classic | 1-6 | wood/leather, stone, iron, gold, diamond, darksteel | common → epic |
+| Enchanted | 7-10 | enchanted_iron, enchanted_gold, enchanted_diamond, enchanted_darksteel | rare → epic |
+| Advanced | 11-12 | seafoam, amethyst | epic |
+| Elemental | 13-20 | blaze, frost, storm, emerald, obsidian, crimsonite, lapis, luminite | epic → legendary |
+| Mythic | 21-30 | voidstone, dragonscale, darkbone, phoenix, titan, shadow, radiant, ancient, celestial, void | legendary |
 | Ultimate | 31-40 | heroic, mythical, immortal, divine, cosmic, eternal, ascended, supreme, omega, infinity | legendary |
 
 ### CRITICAL: Database image_url Format
@@ -75,7 +75,7 @@ If you store `images/equipment/...`, it becomes `images/images/equipment/...` (b
 
 ## Complete Tier System (40 Tiers)
 
-### Phase 1: Classic Minecraft Tiers (Units 1-6)
+### Phase 1: Classic 8-bit warrior RPG Tiers (Units 1-6)
 
 | Unit | Tier | Rarity | Color Primary | Color Secondary | Theme |
 |------|------|--------|---------------|-----------------|-------|
@@ -84,7 +84,7 @@ If you store `images/equipment/...`, it becomes `images/images/equipment/...` (b
 | 3 | iron | rare | #D3D3D3 | #A9A9A9 | First metal tier |
 | 4 | gold | rare | #FFD700 | #FFA500 | Royal golden set |
 | 5 | diamond | epic | #00CED1 | #40E0D0 | Precious gems |
-| 6 | netherite | epic | #4A4A4A | #8B0000 | Nether-forged |
+| 6 | darksteel | epic | #4A4A4A | #8B0000 | Nether-forged |
 
 ### Phase 2: Enchanted Tiers (Units 7-12)
 
@@ -93,8 +93,8 @@ If you store `images/equipment/...`, it becomes `images/images/equipment/...` (b
 | 7 | enchanted_iron | rare | #D3D3D3 | #9370DB | Glowing iron with magic |
 | 8 | enchanted_gold | epic | #FFD700 | #9370DB | Shimmering golden magic |
 | 9 | enchanted_diamond | epic | #00CED1 | #9370DB | Sparkling enchantments |
-| 10 | enchanted_netherite | epic | #4A4A4A | #9370DB | Dark magical flames |
-| 11 | prismarine | epic | #5F9EA0 | #20B2AA | Ocean monument gear |
+| 10 | enchanted_darksteel | epic | #4A4A4A | #9370DB | Dark magical flames |
+| 11 | seafoam | epic | #5F9EA0 | #20B2AA | Ocean monument gear |
 | 12 | amethyst | epic | #9966CC | #E6E6FA | Crystal purple gear |
 
 ### Phase 3: Elemental Tiers (Units 13-20)
@@ -106,17 +106,17 @@ If you store `images/equipment/...`, it becomes `images/images/equipment/...` (b
 | 15 | storm | epic | #FFD700 | #4B0082 | Lightning/thunder |
 | 16 | emerald | legendary | #50C878 | #00FF00 | Rich green gems |
 | 17 | obsidian | legendary | #1C1C1C | #4B0082 | Dark volcanic glass |
-| 18 | redstone | legendary | #FF0000 | #8B0000 | Glowing red circuits |
+| 18 | crimsonite | legendary | #FF0000 | #8B0000 | Glowing red circuits |
 | 19 | lapis | legendary | #1E90FF | #00008B | Deep blue magic |
-| 20 | glowstone | legendary | #FFFF00 | #FFD700 | Bright luminous |
+| 20 | luminite | legendary | #FFFF00 | #FFD700 | Bright luminous |
 
 ### Phase 4: Mythic Tiers (Units 21-30)
 
 | Unit | Tier | Rarity | Color Primary | Color Secondary | Theme |
 |------|------|--------|---------------|-----------------|-------|
-| 21 | ender | legendary | #301934 | #9400D3 | End dimension purple |
-| 22 | dragon | legendary | #800080 | #228B22 | Dragon scales/wings |
-| 23 | wither | legendary | #1C1C1C | #696969 | Dark skeleton boss |
+| 21 | voidstone | legendary | #301934 | #9400D3 | End dimension purple |
+| 22 | dragonscale | legendary | #800080 | #228B22 | Dragon scales/wings |
+| 23 | darkbone | legendary | #1C1C1C | #696969 | Dark skeleton boss |
 | 24 | phoenix | legendary | #FF4500 | #FFD700 | Rebirth flames |
 | 25 | titan | legendary | #B8860B | #8B4513 | Giant's armor |
 | 26 | shadow | legendary | #2F2F2F | #4B0082 | Dark void energy |
@@ -147,7 +147,7 @@ If you store `images/equipment/...`, it becomes `images/images/equipment/...` (b
 | Area | Freedom Level | Guidelines |
 |------|---------------|------------|
 | **New Equipment Concepts** | 🟢 High | Creates themed equipment sets (holidays, subjects, achievements). Can propose creative new items. |
-| **Visual Styling** | 🟢 High | Designs unique appearances within Minecraft pixel art style. Uses tier colors. |
+| **Visual Styling** | 🟢 High | Designs unique appearances within 8-bit warrior RPG pixel art style. Uses tier colors. |
 | **Naming Creativity** | 🟢 High | Invents creative names in all 3 languages. Should be kid-friendly and thematic. |
 | **Tier Assignment** | 🟡 Medium | Follows tier progression guidelines. Must use valid tier from 40-tier system. |
 | **Rarity Mapping** | 🟡 Medium | Generally follows tier→rarity mapping. Can elevate for special items. |
@@ -184,13 +184,13 @@ CREATE TABLE equipment (
 ```sql
 ALTER TABLE equipment ADD CONSTRAINT equipment_tier_check CHECK (tier IN (
   -- Classic Tiers (Units 1-6)
-  'wood', 'leather', 'stone', 'chain', 'iron', 'gold', 'diamond', 'netherite',
+  'wood', 'leather', 'stone', 'chain', 'iron', 'gold', 'diamond', 'darksteel',
   -- Enchanted Tiers (Units 7-12)
-  'enchanted_iron', 'enchanted_gold', 'enchanted_diamond', 'enchanted_netherite', 'prismarine', 'amethyst',
+  'enchanted_iron', 'enchanted_gold', 'enchanted_diamond', 'enchanted_darksteel', 'seafoam', 'amethyst',
   -- Elemental Tiers (Units 13-20)
-  'blaze', 'frost', 'storm', 'emerald', 'obsidian', 'redstone', 'lapis', 'glowstone',
+  'blaze', 'frost', 'storm', 'emerald', 'obsidian', 'crimsonite', 'lapis', 'luminite',
   -- Mythic Tiers (Units 21-30)
-  'ender', 'dragon', 'wither', 'phoenix', 'titan', 'shadow', 'radiant', 'ancient', 'celestial', 'void',
+  'voidstone', 'dragonscale', 'darkbone', 'phoenix', 'titan', 'shadow', 'radiant', 'ancient', 'celestial', 'void',
   -- Ultimate Tiers (Units 31-40)
   'heroic', 'mythical', 'immortal', 'divine', 'cosmic', 'eternal', 'ascended', 'supreme', 'omega', 'infinity'
 ));
@@ -231,15 +231,15 @@ Each unit rewards a complete themed set:
 ### Standard Prompt Structure
 
 ```
-Generate a Minecraft-style pixel art equipment icon.
+Generate a 8-bit warrior RPG-style pixel art equipment icon.
 Subject: {tier} {slot_description}
 Style Requirements:
-- Authentic Minecraft 8-bit/16-bit pixel art style
+- Authentic 8-bit warrior RPG 8-bit/16-bit pixel art style
 - Clean blocky pixels, no anti-aliasing
 - Primary color: {color_primary}
 - Secondary color: {color_secondary}
 - {tier_specific_effects}
-- Item shown as inventory icon (like in Minecraft inventory)
+- Item shown as inventory icon (like in 8-bit warrior RPG inventory)
 - Transparent or solid dark background
 - Single item centered, filling 80% of frame
 - NO text, NO labels
@@ -344,13 +344,13 @@ export type EquipmentSlot = 'helmet' | 'chestplate' | 'leggings' | 'boots' | 'we
 
 export type EquipmentTier =
   // Classic Tiers (Units 1-6)
-  | 'wood' | 'leather' | 'stone' | 'chain' | 'iron' | 'gold' | 'diamond' | 'netherite'
+  | 'wood' | 'leather' | 'stone' | 'chain' | 'iron' | 'gold' | 'diamond' | 'darksteel'
   // Enchanted Tiers (Units 7-12)
-  | 'enchanted_iron' | 'enchanted_gold' | 'enchanted_diamond' | 'enchanted_netherite' | 'prismarine' | 'amethyst'
+  | 'enchanted_iron' | 'enchanted_gold' | 'enchanted_diamond' | 'enchanted_darksteel' | 'seafoam' | 'amethyst'
   // Elemental Tiers (Units 13-20)
-  | 'blaze' | 'frost' | 'storm' | 'emerald' | 'obsidian' | 'redstone' | 'lapis' | 'glowstone'
+  | 'blaze' | 'frost' | 'storm' | 'emerald' | 'obsidian' | 'crimsonite' | 'lapis' | 'luminite'
   // Mythic Tiers (Units 21-30)
-  | 'ender' | 'dragon' | 'wither' | 'phoenix' | 'titan' | 'shadow' | 'radiant' | 'ancient' | 'celestial' | 'void'
+  | 'voidstone' | 'dragonscale' | 'darkbone' | 'phoenix' | 'titan' | 'shadow' | 'radiant' | 'ancient' | 'celestial' | 'void'
   // Ultimate Tiers (Units 31-40)
   | 'heroic' | 'mythical' | 'immortal' | 'divine' | 'cosmic' | 'eternal' | 'ascended' | 'supreme' | 'omega' | 'infinity';
 

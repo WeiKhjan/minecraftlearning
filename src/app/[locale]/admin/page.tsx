@@ -148,13 +148,13 @@ export default async function AdminPage({
 
           {/* Summary Cards */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-            <div className="minecraft-card text-center">
+            <div className="pixel-card text-center">
               <p className="text-3xl font-bold text-[#5D8731]">{kidsWithProgress.length}</p>
               <p className="text-sm text-gray-600">
                 {locale === 'ms' ? 'Jumlah Anak' : locale === 'zh' ? '孩子总数' : 'Total Kids'}
               </p>
             </div>
-            <div className="minecraft-card text-center">
+            <div className="pixel-card text-center">
               <p className="text-3xl font-bold text-[#5DADE2]">
                 {kidsWithProgress.reduce((sum, k) => sum + k.completedActivities, 0)}
               </p>
@@ -162,7 +162,7 @@ export default async function AdminPage({
                 {locale === 'ms' ? 'Aktiviti Selesai' : locale === 'zh' ? '已完成活动' : 'Completed Activities'}
               </p>
             </div>
-            <div className="minecraft-card text-center">
+            <div className="pixel-card text-center">
               <p className="text-3xl font-bold text-yellow-500">
                 {kidsWithProgress.reduce((sum, k) => sum + k.total_xp, 0)}
               </p>
@@ -170,7 +170,7 @@ export default async function AdminPage({
                 {locale === 'ms' ? 'Jumlah XP' : locale === 'zh' ? '总经验值' : 'Total XP'}
               </p>
             </div>
-            <div className="minecraft-card text-center">
+            <div className="pixel-card text-center">
               <p className="text-3xl font-bold text-purple-500">{subjects?.length || 0}</p>
               <p className="text-sm text-gray-600">
                 {locale === 'ms' ? 'Subjek' : locale === 'zh' ? '科目' : 'Subjects'}
@@ -179,7 +179,7 @@ export default async function AdminPage({
           </div>
 
           {/* Kids Progress Table */}
-          <div className="minecraft-card">
+          <div className="pixel-card">
             <h2 className="text-xl font-bold text-gray-800 mb-4">
               {locale === 'ms' ? 'Kemajuan Anak' : locale === 'zh' ? '孩子进度' : 'Kids Progress'}
             </h2>
@@ -291,7 +291,7 @@ export default async function AdminPage({
           </div>
 
           {/* Subjects Overview */}
-          <div className="minecraft-card mt-6">
+          <div className="pixel-card mt-6">
             <h2 className="text-xl font-bold text-gray-800 mb-4">
               {locale === 'ms' ? 'Subjek Tersedia' : locale === 'zh' ? '可用科目' : 'Available Subjects'}
             </h2>

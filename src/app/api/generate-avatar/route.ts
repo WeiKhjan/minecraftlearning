@@ -43,13 +43,13 @@ const tierVisuals: Record<string, { material: string; glow: string; quality: str
   iron: { material: 'polished steel plates with rivets and shine', glow: 'bright metallic silver gleam', quality: 'strong warrior' },
   gold: { material: 'luxurious golden metal with ornate engravings', glow: 'radiant golden aura and sparkles', quality: 'royal champion' },
   diamond: { material: 'crystalline blue diamond with magical shimmer', glow: 'magical cyan/blue particles and ethereal glow', quality: 'legendary hero' },
-  netherite: { material: 'dark ancient netherite with volcanic cracks', glow: 'smoldering dark red ember glow', quality: 'nether conqueror' },
+  darksteel: { material: 'dark ancient darksteel with volcanic cracks', glow: 'smoldering dark red ember glow', quality: 'darksteel conqueror' },
   // Enchanted tiers (Units 7-12)
   enchanted_iron: { material: 'enchanted iron glowing with purple runes', glow: 'mystical purple enchantment sparkles', quality: 'enchanted warrior' },
   enchanted_gold: { material: 'magically enhanced gold with swirling auras', glow: 'golden magical particles and light beams', quality: 'arcane knight' },
   enchanted_diamond: { material: 'diamond infused with powerful magic', glow: 'brilliant blue-purple magical aura', quality: 'spell-forged champion' },
-  enchanted_netherite: { material: 'netherite with dark magical flames', glow: 'dark fire and purple rune glow', quality: 'shadow mage warrior' },
-  prismarine: { material: 'ocean prismarine with sea crystal patterns', glow: 'teal ocean shimmer and water reflections', quality: 'guardian of the depths' },
+  enchanted_darksteel: { material: 'darksteel with dark magical flames', glow: 'dark fire and purple rune glow', quality: 'shadow mage warrior' },
+  seafoam: { material: 'ocean seafoam with sea crystal patterns', glow: 'teal ocean shimmer and water reflections', quality: 'guardian of the depths' },
   amethyst: { material: 'purple crystal amethyst with geode texture', glow: 'violet crystal resonance and sparkles', quality: 'crystal sage' },
   // Elemental tiers (Units 13-20)
   blaze: { material: 'blazing fire armor with living flames', glow: 'intense orange-red fire particles', quality: 'flame wielder' },
@@ -57,13 +57,13 @@ const tierVisuals: Record<string, { material: string; glow: string; quality: str
   storm: { material: 'storm-charged armor with lightning crackling', glow: 'electric yellow-purple lightning bolts', quality: 'thunder lord' },
   emerald: { material: 'rich green emerald with village engravings', glow: 'brilliant green gem sparkle', quality: 'emerald merchant king' },
   obsidian: { material: 'volcanic obsidian glass with purple veins', glow: 'deep purple void reflections', quality: 'obsidian sentinel' },
-  redstone: { material: 'glowing red redstone circuits and wires', glow: 'pulsing red energy circuits', quality: 'redstone engineer' },
+  crimsonite: { material: 'glowing red crimsonite circuits and wires', glow: 'pulsing red energy circuits', quality: 'crimsonite engineer' },
   lapis: { material: 'deep blue lapis lazuli with golden trim', glow: 'mystical blue enchanting glow', quality: 'lapis enchanter' },
-  glowstone: { material: 'luminous glowstone with bright particles', glow: 'bright yellow-orange light emission', quality: 'light bringer' },
+  luminite: { material: 'luminous luminite with bright particles', glow: 'bright yellow-orange light emission', quality: 'light bringer' },
   // Mythic tiers (Units 21-30)
-  ender: { material: 'end dimension purple with teleportation effects', glow: 'purple enderman particles and void energy', quality: 'ender walker' },
-  dragon: { material: 'dragon scale armor with wing motifs', glow: 'purple-black dragon fire aura', quality: 'dragon rider' },
-  wither: { material: 'wither skull armor with dark bones', glow: 'dark smoky wither effect and skulls', quality: 'wither slayer' },
+  voidstone: { material: 'void dimension purple with teleportation effects', glow: 'purple void particles and dimensional energy', quality: 'void walker' },
+  dragonscale: { material: 'dragon scale armor with wing motifs', glow: 'purple-black dragon fire aura', quality: 'dragon rider' },
+  darkbone: { material: 'darkbone skull armor with dark bones', glow: 'dark smoky decay effect and skulls', quality: 'darkbone slayer' },
   phoenix: { material: 'phoenix feather armor with rebirth flames', glow: 'golden-orange phoenix fire and feathers', quality: 'reborn phoenix knight' },
   titan: { material: 'massive titan plates with ancient power', glow: 'earth-shaking brown-gold energy', quality: 'titan champion' },
   shadow: { material: 'void shadow armor absorbing light', glow: 'dark void tendrils and shadow mist', quality: 'shadow assassin' },
@@ -93,13 +93,13 @@ const weaponVisuals: Record<string, string> = {
   iron: 'gleaming iron sword with cross-guard',
   gold: 'ornate golden sword with jeweled hilt',
   diamond: 'legendary diamond sword glowing with magical energy',
-  netherite: 'dark netherite sword with volcanic edge',
+  darksteel: 'dark darksteel sword with volcanic edge',
   // Enchanted
   enchanted_iron: 'enchanted iron sword with purple runes',
   enchanted_gold: 'magically glowing golden sword',
   enchanted_diamond: 'brilliant enchanted diamond sword',
-  enchanted_netherite: 'dark magic netherite blade with flames',
-  prismarine: 'ocean prismarine trident-sword hybrid',
+  enchanted_darksteel: 'dark magic darksteel blade with flames',
+  seafoam: 'ocean seafoam trident-sword hybrid',
   amethyst: 'purple crystal amethyst blade',
   // Elemental
   blaze: 'flaming blaze sword wreathed in fire',
@@ -107,13 +107,13 @@ const weaponVisuals: Record<string, string> = {
   storm: 'lightning-charged storm blade crackling',
   emerald: 'emerald sword with villager engravings',
   obsidian: 'obsidian glass blade sharp as void',
-  redstone: 'redstone-powered glowing sword',
+  crimsonite: 'crimsonite-powered glowing sword',
   lapis: 'lapis lazuli enchanted blade',
-  glowstone: 'luminous glowstone light blade',
+  luminite: 'luminous luminite light blade',
   // Mythic
-  ender: 'ender sword with teleportation trails',
-  dragon: 'dragon-scale sword with purple flames',
-  wither: 'wither bone sword with dark aura',
+  voidstone: 'voidstone sword with teleportation trails',
+  dragonscale: 'dragon-scale sword with purple flames',
+  darkbone: 'darkbone sword with dark aura',
   phoenix: 'phoenix feather blade of rebirth',
   titan: 'massive titan greatsword',
   shadow: 'void shadow blade absorbing light',
@@ -143,24 +143,24 @@ const toolVisuals: Record<string, string> = {
   iron: 'iron pickaxe secured to belt',
   gold: 'ornate golden pickaxe on decorative belt',
   diamond: 'diamond pickaxe glowing on belt',
-  netherite: 'dark netherite pickaxe strapped to back',
+  darksteel: 'dark darksteel pickaxe strapped to back',
   enchanted_iron: 'enchanted iron pickaxe with runes on belt',
   enchanted_gold: 'magical golden pickaxe glowing at hip',
   enchanted_diamond: 'brilliant diamond pickaxe on belt',
-  enchanted_netherite: 'dark magic pickaxe strapped to back',
-  prismarine: 'prismarine pickaxe at belt',
+  enchanted_darksteel: 'dark magic pickaxe strapped to back',
+  seafoam: 'seafoam pickaxe at belt',
   amethyst: 'crystal amethyst pickaxe on hip',
   blaze: 'flaming pickaxe at belt',
   frost: 'ice pickaxe at hip',
   storm: 'lightning pickaxe on belt',
   emerald: 'emerald pickaxe at belt',
   obsidian: 'obsidian pickaxe strapped to back',
-  redstone: 'redstone pickaxe glowing at hip',
+  crimsonite: 'crimsonite pickaxe glowing at hip',
   lapis: 'lapis pickaxe at belt',
-  glowstone: 'glowing pickaxe at hip',
-  ender: 'ender pickaxe at belt',
-  dragon: 'dragon pickaxe on back',
-  wither: 'wither pickaxe at hip',
+  luminite: 'luminite pickaxe at hip',
+  voidstone: 'voidstone pickaxe at belt',
+  dragonscale: 'dragonscale pickaxe on back',
+  darkbone: 'darkbone pickaxe at hip',
   phoenix: 'phoenix pickaxe at belt',
   titan: 'massive titan pickaxe on back',
   shadow: 'shadow pickaxe at hip',
@@ -189,24 +189,24 @@ const rangedVisuals: Record<string, string> = {
   iron: 'iron crossbow strapped to back',
   gold: 'ornate golden bow with quiver on back',
   diamond: 'diamond-tipped bow glowing on back',
-  netherite: 'dark netherite crossbow on back',
+  darksteel: 'dark darksteel crossbow on back',
   enchanted_iron: 'enchanted iron bow with magic arrows on back',
   enchanted_gold: 'magical golden bow glowing on back',
   enchanted_diamond: 'brilliant enchanted bow on back',
-  enchanted_netherite: 'dark magic crossbow on back',
-  prismarine: 'prismarine bow with water arrows on back',
+  enchanted_darksteel: 'dark magic crossbow on back',
+  seafoam: 'seafoam bow with water arrows on back',
   amethyst: 'crystal bow shooting amethyst shards on back',
   blaze: 'fire bow with flame arrows on back',
   frost: 'ice bow with frost arrows on back',
   storm: 'lightning bow crackling on back',
   emerald: 'emerald bow on back',
   obsidian: 'obsidian crossbow on back',
-  redstone: 'redstone-powered crossbow on back',
+  crimsonite: 'crimsonite-powered crossbow on back',
   lapis: 'lapis enchanted bow on back',
-  glowstone: 'luminous bow on back',
-  ender: 'ender bow with teleport arrows on back',
-  dragon: 'dragon bow shooting purple flames on back',
-  wither: 'wither skull crossbow on back',
+  luminite: 'luminous bow on back',
+  voidstone: 'voidstone bow with teleport arrows on back',
+  dragonscale: 'dragonscale bow shooting purple flames on back',
+  darkbone: 'darkbone skull crossbow on back',
   phoenix: 'phoenix feather bow on back',
   titan: 'massive titan greatbow on back',
   shadow: 'shadow bow on back',
@@ -235,24 +235,24 @@ const shieldVisuals: Record<string, string> = {
   iron: 'sturdy iron shield with crest on left arm',
   gold: 'ornate golden shield with royal emblem on left arm',
   diamond: 'crystalline diamond shield glowing on left arm',
-  netherite: 'dark netherite tower shield on left arm',
+  darksteel: 'dark darksteel tower shield on left arm',
   enchanted_iron: 'enchanted iron shield with barrier magic on left arm',
   enchanted_gold: 'magical golden shield shimmering on left arm',
   enchanted_diamond: 'brilliant enchanted shield on left arm',
-  enchanted_netherite: 'dark magic shield with flames on left arm',
-  prismarine: 'ocean prismarine shield on left arm',
+  enchanted_darksteel: 'dark magic shield with flames on left arm',
+  seafoam: 'ocean seafoam shield on left arm',
   amethyst: 'crystal amethyst shield on left arm',
   blaze: 'flaming shield wreathed in fire on left arm',
   frost: 'frozen ice shield on left arm',
   storm: 'lightning-charged shield on left arm',
   emerald: 'emerald shield on left arm',
   obsidian: 'obsidian mirror shield on left arm',
-  redstone: 'redstone energy shield on left arm',
+  crimsonite: 'crimsonite energy shield on left arm',
   lapis: 'lapis barrier shield on left arm',
-  glowstone: 'luminous shield on left arm',
-  ender: 'ender shield with void protection on left arm',
-  dragon: 'dragon scale shield on left arm',
-  wither: 'wither bone shield on left arm',
+  luminite: 'luminous shield on left arm',
+  voidstone: 'voidstone shield with void protection on left arm',
+  dragonscale: 'dragon scale shield on left arm',
+  darkbone: 'darkbone shield on left arm',
   phoenix: 'phoenix feather shield on left arm',
   titan: 'massive titan tower shield on left arm',
   shadow: 'shadow shield absorbing attacks on left arm',
@@ -299,18 +299,18 @@ const petDescriptions: Record<string, string> = {
   axolotl: 'a pink axolotl with adorable smile and feathery gills',
   ocelot: 'a spotted jungle ocelot',
   llama: 'a fluffy llama with colorful decorations',
-  // Epic (monsters)
-  skeleton: 'a friendly skeleton companion with bow',
-  zombie: 'a tamed zombie friend in worn clothes',
-  creeper: 'a friendly creeper that won\'t explode',
+  // Epic (fantasy creatures)
+  bone_warrior: 'a loyal bone warrior companion with bow',
+  moss_knight: 'an ancient moss knight friend in weathered armor',
+  forest_spirit: 'a mystical green forest spirit',
   spider: 'a tamed spider with multiple eyes',
-  slime: 'a bouncy green slime companion',
+  jelly_blob: 'a bouncy cute jelly blob companion',
   // Legendary
-  iron_golem: 'a protective iron golem standing guard',
-  snow_golem: 'a cheerful snow golem with pumpkin head',
-  allay: 'a glowing blue allay floating and dancing',
-  ender_dragon: 'a baby ender dragon perched protectively',
-  wither: 'a miniature friendly wither companion',
+  stone_guardian: 'a protective stone guardian standing guard',
+  frost_sprite: 'a cheerful frost sprite with icy aura',
+  pixie: 'a glowing magical pixie floating and dancing',
+  shadow_drake: 'a baby shadow drake perched protectively',
+  doom_wraith: 'a miniature friendly doom wraith companion',
 };
 
 export async function POST(request: NextRequest) {
@@ -418,10 +418,10 @@ export async function POST(request: NextRequest) {
 
     // Determine highest tier for overall theme (expanded for 40 tiers)
     const tierRank = [
-      'wood', 'leather', 'stone', 'chain', 'iron', 'gold', 'diamond', 'netherite',
-      'enchanted_iron', 'enchanted_gold', 'enchanted_diamond', 'enchanted_netherite', 'prismarine', 'amethyst',
-      'blaze', 'frost', 'storm', 'emerald', 'obsidian', 'redstone', 'lapis', 'glowstone',
-      'ender', 'dragon', 'wither', 'phoenix', 'titan', 'shadow', 'radiant', 'ancient', 'celestial', 'void',
+      'wood', 'leather', 'stone', 'chain', 'iron', 'gold', 'diamond', 'darksteel',
+      'enchanted_iron', 'enchanted_gold', 'enchanted_diamond', 'enchanted_darksteel', 'seafoam', 'amethyst',
+      'blaze', 'frost', 'storm', 'emerald', 'obsidian', 'crimsonite', 'lapis', 'luminite',
+      'voidstone', 'dragonscale', 'darkbone', 'phoenix', 'titan', 'shadow', 'radiant', 'ancient', 'celestial', 'void',
       'heroic', 'mythical', 'immortal', 'divine', 'cosmic', 'eternal', 'ascended', 'supreme', 'omega', 'infinity'
     ];
     const highestTier = tiers.length > 0
@@ -463,7 +463,7 @@ export async function POST(request: NextRequest) {
     const totalItems = (hasWeapon ? 1 : 0) + (hasShield ? 1 : 0) + (hasRanged ? 1 : 0) + (hasTool ? 1 : 0);
 
     // Build the dynamic prompt with professional game design for full loadout
-    const prompt = `Generate a stunning 3D Minecraft-style character avatar!
+    const prompt = `Generate a stunning 8-bit warrior RPG style character avatar!
 
 ===== CHARACTER FACE =====
 ${faceDesc}
@@ -475,7 +475,7 @@ ${hasEquipment ? equipmentParts.join('\n') : 'No armor equipped - wearing simple
 ${hasEquipment ? `Overall appearance: ${themeVisual.quality} with ${themeVisual.glow}` : 'Simple but cheerful village kid look'}
 
 ===== EQUIPMENT PLACEMENT GUIDE (IMPORTANT FOR VISUAL CLARITY) =====
-Like professional RPG games (Minecraft Dungeons, Zelda, etc.), show ALL equipped items clearly:
+Like professional RPG games (Final Fantasy, Dragon Quest, Zelda, etc.), show ALL equipped items clearly:
 ${hasWeapon ? '- SWORD: Held prominently in RIGHT HAND, blade pointing slightly upward in heroic pose' : ''}
 ${hasShield ? '- SHIELD: Strapped to LEFT ARM, angled to show the front design clearly' : ''}
 ${hasRanged ? '- BOW/CROSSBOW: Slung diagonally across the BACK (upper area), visible over shoulder' : ''}
@@ -498,7 +498,7 @@ ${!hasWeapon ? '- RIGHT HAND: Empty or in fist' : ''}
 ${!hasShield ? '- LEFT ARM: No shield, arm relaxed' : ''}
 
 ===== 3D ART STYLE (CRITICAL) =====
-- Authentic Minecraft blocky/cubic body: square head, rectangular torso, blocky limbs
+- Classic 8-bit RPG character proportions with pixel-perfect details: expressive face, heroic pose, fantasy warrior aesthetic
 - HIGH QUALITY 3D RENDER with ray-traced lighting
 - Smooth surfaces with realistic reflections on armor/equipment
 - Vibrant saturated colors

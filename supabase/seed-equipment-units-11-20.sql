@@ -3,19 +3,19 @@
 -- Phase 2 (continued): Enchanted Tiers + Phase 3: Elemental Tiers
 
 -- =====================================================
--- UNIT 11: Prismarine Tier (Epic)
--- Theme: Ocean monument gear with aquatic powers
+-- UNIT 11: Seafoam Tier (Epic)
+-- Theme: Ocean gear with aquatic powers
 -- =====================================================
 
 INSERT INTO equipment (id, name, name_en, name_ms, name_zh, slot, tier, rarity, image_url, required_level, unit_number, color_primary, color_secondary) VALUES
 -- Unit 11 Equipment
-('e1010001-0001-0001-0011-000000000001', 'Prismarine Helmet', 'Prismarine Helmet', 'Topi Prismarin', '海晶石头盔', 'helmet', 'prismarine', 'epic', '/equipment/prismarine_helmet.png', 11, 11, '#5F9EA0', '#20B2AA'),
-('e1010001-0001-0001-0011-000000000002', 'Prismarine Chestplate', 'Prismarine Chestplate', 'Baju Prismarin', '海晶石胸甲', 'chestplate', 'prismarine', 'epic', '/equipment/prismarine_chestplate.png', 11, 11, '#5F9EA0', '#20B2AA'),
-('e1010001-0001-0001-0011-000000000003', 'Prismarine Leggings', 'Prismarine Leggings', 'Seluar Prismarin', '海晶石护腿', 'leggings', 'prismarine', 'epic', '/equipment/prismarine_leggings.png', 11, 11, '#5F9EA0', '#20B2AA'),
-('e1010001-0001-0001-0011-000000000004', 'Prismarine Boots', 'Prismarine Boots', 'Kasut Prismarin', '海晶石靴', 'boots', 'prismarine', 'epic', '/equipment/prismarine_boots.png', 11, 11, '#5F9EA0', '#20B2AA'),
-('e1010001-0001-0001-0011-000000000005', 'Prismarine Trident', 'Prismarine Trident', 'Trisula Prismarin', '海晶石三叉戟', 'weapon', 'prismarine', 'epic', '/equipment/prismarine_trident.png', 11, 11, '#5F9EA0', '#20B2AA'),
-('e1010001-0001-0001-0011-000000000006', 'Prismarine Pickaxe', 'Prismarine Pickaxe', 'Beliung Prismarin', '海晶石镐', 'tool', 'prismarine', 'epic', '/equipment/prismarine_pickaxe.png', 11, 11, '#5F9EA0', '#20B2AA'),
-('e1010001-0001-0001-0011-000000000007', 'Prismarine Crossbow', 'Prismarine Crossbow', 'Busur Silang Prismarin', '海晶石弩', 'ranged', 'prismarine', 'epic', '/equipment/prismarine_crossbow.png', 11, 11, '#5F9EA0', '#20B2AA'),
+('e1010001-0001-0001-0011-000000000001', 'Seafoam Helmet', 'Seafoam Helmet', 'Topi Buih Laut', '海沫头盔', 'helmet', 'seafoam', 'epic', '/equipment/seafoam_helmet.png', 11, 11, '#5F9EA0', '#20B2AA'),
+('e1010001-0001-0001-0011-000000000002', 'Seafoam Chestplate', 'Seafoam Chestplate', 'Baju Buih Laut', '海沫胸甲', 'chestplate', 'seafoam', 'epic', '/equipment/seafoam_chestplate.png', 11, 11, '#5F9EA0', '#20B2AA'),
+('e1010001-0001-0001-0011-000000000003', 'Seafoam Leggings', 'Seafoam Leggings', 'Seluar Buih Laut', '海沫护腿', 'leggings', 'seafoam', 'epic', '/equipment/seafoam_leggings.png', 11, 11, '#5F9EA0', '#20B2AA'),
+('e1010001-0001-0001-0011-000000000004', 'Seafoam Boots', 'Seafoam Boots', 'Kasut Buih Laut', '海沫靴', 'boots', 'seafoam', 'epic', '/equipment/seafoam_boots.png', 11, 11, '#5F9EA0', '#20B2AA'),
+('e1010001-0001-0001-0011-000000000005', 'Seafoam Trident', 'Seafoam Trident', 'Trisula Buih Laut', '海沫三叉戟', 'weapon', 'seafoam', 'epic', '/equipment/seafoam_trident.png', 11, 11, '#5F9EA0', '#20B2AA'),
+('e1010001-0001-0001-0011-000000000006', 'Seafoam Pickaxe', 'Seafoam Pickaxe', 'Beliung Buih Laut', '海沫镐', 'tool', 'seafoam', 'epic', '/equipment/seafoam_pickaxe.png', 11, 11, '#5F9EA0', '#20B2AA'),
+('e1010001-0001-0001-0011-000000000007', 'Seafoam Crossbow', 'Seafoam Crossbow', 'Busur Silang Buih Laut', '海沫弩', 'ranged', 'seafoam', 'epic', '/equipment/seafoam_crossbow.png', 11, 11, '#5F9EA0', '#20B2AA'),
 
 -- =====================================================
 -- UNIT 12: Amethyst Tier (Epic)
@@ -96,17 +96,17 @@ INSERT INTO equipment (id, name, name_en, name_ms, name_zh, slot, tier, rarity, 
 ('e1010001-0001-0001-0017-000000000007', 'Obsidian Bow', 'Obsidian Bow', 'Busur Obsidian', '黑曜石弓', 'ranged', 'obsidian', 'legendary', '/equipment/obsidian_bow.png', 17, 17, '#1C1C1C', '#4B0082'),
 
 -- =====================================================
--- UNIT 18: Redstone Tier (Legendary)
--- Theme: Glowing red circuits with mechanical power
+-- UNIT 18: Crimsonite Tier (Legendary)
+-- Theme: Glowing crimson crystals with magical power
 -- =====================================================
 
-('e1010001-0001-0001-0018-000000000001', 'Redstone Helmet', 'Redstone Helmet', 'Topi Batu Merah', '红石头盔', 'helmet', 'redstone', 'legendary', '/equipment/redstone_helmet.png', 18, 18, '#FF0000', '#8B0000'),
-('e1010001-0001-0001-0018-000000000002', 'Redstone Chestplate', 'Redstone Chestplate', 'Baju Batu Merah', '红石胸甲', 'chestplate', 'redstone', 'legendary', '/equipment/redstone_chestplate.png', 18, 18, '#FF0000', '#8B0000'),
-('e1010001-0001-0001-0018-000000000003', 'Redstone Leggings', 'Redstone Leggings', 'Seluar Batu Merah', '红石护腿', 'leggings', 'redstone', 'legendary', '/equipment/redstone_leggings.png', 18, 18, '#FF0000', '#8B0000'),
-('e1010001-0001-0001-0018-000000000004', 'Redstone Boots', 'Redstone Boots', 'Kasut Batu Merah', '红石靴', 'boots', 'redstone', 'legendary', '/equipment/redstone_boots.png', 18, 18, '#FF0000', '#8B0000'),
-('e1010001-0001-0001-0018-000000000005', 'Redstone Sword', 'Redstone Sword', 'Pedang Batu Merah', '红石剑', 'weapon', 'redstone', 'legendary', '/equipment/redstone_sword.png', 18, 18, '#FF0000', '#8B0000'),
-('e1010001-0001-0001-0018-000000000006', 'Redstone Pickaxe', 'Redstone Pickaxe', 'Beliung Batu Merah', '红石镐', 'tool', 'redstone', 'legendary', '/equipment/redstone_pickaxe.png', 18, 18, '#FF0000', '#8B0000'),
-('e1010001-0001-0001-0018-000000000007', 'Redstone Shield', 'Redstone Shield', 'Perisai Batu Merah', '红石盾', 'shield', 'redstone', 'legendary', '/equipment/redstone_shield.png', 18, 18, '#FF0000', '#8B0000'),
+('e1010001-0001-0001-0018-000000000001', 'Crimsonite Helmet', 'Crimsonite Helmet', 'Topi Krimsona', '绯红石头盔', 'helmet', 'crimsonite', 'legendary', '/equipment/crimsonite_helmet.png', 18, 18, '#FF0000', '#8B0000'),
+('e1010001-0001-0001-0018-000000000002', 'Crimsonite Chestplate', 'Crimsonite Chestplate', 'Baju Krimsona', '绯红石胸甲', 'chestplate', 'crimsonite', 'legendary', '/equipment/crimsonite_chestplate.png', 18, 18, '#FF0000', '#8B0000'),
+('e1010001-0001-0001-0018-000000000003', 'Crimsonite Leggings', 'Crimsonite Leggings', 'Seluar Krimsona', '绯红石护腿', 'leggings', 'crimsonite', 'legendary', '/equipment/crimsonite_leggings.png', 18, 18, '#FF0000', '#8B0000'),
+('e1010001-0001-0001-0018-000000000004', 'Crimsonite Boots', 'Crimsonite Boots', 'Kasut Krimsona', '绯红石靴', 'boots', 'crimsonite', 'legendary', '/equipment/crimsonite_boots.png', 18, 18, '#FF0000', '#8B0000'),
+('e1010001-0001-0001-0018-000000000005', 'Crimsonite Sword', 'Crimsonite Sword', 'Pedang Krimsona', '绯红石剑', 'weapon', 'crimsonite', 'legendary', '/equipment/crimsonite_sword.png', 18, 18, '#FF0000', '#8B0000'),
+('e1010001-0001-0001-0018-000000000006', 'Crimsonite Pickaxe', 'Crimsonite Pickaxe', 'Beliung Krimsona', '绯红石镐', 'tool', 'crimsonite', 'legendary', '/equipment/crimsonite_pickaxe.png', 18, 18, '#FF0000', '#8B0000'),
+('e1010001-0001-0001-0018-000000000007', 'Crimsonite Shield', 'Crimsonite Shield', 'Perisai Krimsona', '绯红石盾', 'shield', 'crimsonite', 'legendary', '/equipment/crimsonite_shield.png', 18, 18, '#FF0000', '#8B0000'),
 
 -- =====================================================
 -- UNIT 19: Lapis Tier (Legendary)
@@ -122,17 +122,17 @@ INSERT INTO equipment (id, name, name_en, name_ms, name_zh, slot, tier, rarity, 
 ('e1010001-0001-0001-0019-000000000007', 'Lapis Crossbow', 'Lapis Crossbow', 'Busur Silang Lapis', '青金石弩', 'ranged', 'lapis', 'legendary', '/equipment/lapis_crossbow.png', 19, 19, '#1E90FF', '#00008B'),
 
 -- =====================================================
--- UNIT 20: Glowstone Tier (Legendary)
+-- UNIT 20: Luminite Tier (Legendary)
 -- Theme: Bright luminous gear with light powers
 -- =====================================================
 
-('e1010001-0001-0001-0020-000000000001', 'Glowstone Helmet', 'Glowstone Helmet', 'Topi Batu Cahaya', '荧石头盔', 'helmet', 'glowstone', 'legendary', '/equipment/glowstone_helmet.png', 20, 20, '#FFFF00', '#FFD700'),
-('e1010001-0001-0001-0020-000000000002', 'Glowstone Chestplate', 'Glowstone Chestplate', 'Baju Batu Cahaya', '荧石胸甲', 'chestplate', 'glowstone', 'legendary', '/equipment/glowstone_chestplate.png', 20, 20, '#FFFF00', '#FFD700'),
-('e1010001-0001-0001-0020-000000000003', 'Glowstone Leggings', 'Glowstone Leggings', 'Seluar Batu Cahaya', '荧石护腿', 'leggings', 'glowstone', 'legendary', '/equipment/glowstone_leggings.png', 20, 20, '#FFFF00', '#FFD700'),
-('e1010001-0001-0001-0020-000000000004', 'Glowstone Boots', 'Glowstone Boots', 'Kasut Batu Cahaya', '荧石靴', 'boots', 'glowstone', 'legendary', '/equipment/glowstone_boots.png', 20, 20, '#FFFF00', '#FFD700'),
-('e1010001-0001-0001-0020-000000000005', 'Glowstone Sword', 'Glowstone Sword', 'Pedang Batu Cahaya', '荧石剑', 'weapon', 'glowstone', 'legendary', '/equipment/glowstone_sword.png', 20, 20, '#FFFF00', '#FFD700'),
-('e1010001-0001-0001-0020-000000000006', 'Glowstone Pickaxe', 'Glowstone Pickaxe', 'Beliung Batu Cahaya', '荧石镐', 'tool', 'glowstone', 'legendary', '/equipment/glowstone_pickaxe.png', 20, 20, '#FFFF00', '#FFD700'),
-('e1010001-0001-0001-0020-000000000007', 'Glowstone Shield', 'Glowstone Shield', 'Perisai Batu Cahaya', '荧石盾', 'shield', 'glowstone', 'legendary', '/equipment/glowstone_shield.png', 20, 20, '#FFFF00', '#FFD700')
+('e1010001-0001-0001-0020-000000000001', 'Luminite Helmet', 'Luminite Helmet', 'Topi Lumina', '光明石头盔', 'helmet', 'luminite', 'legendary', '/equipment/luminite_helmet.png', 20, 20, '#FFFF00', '#FFD700'),
+('e1010001-0001-0001-0020-000000000002', 'Luminite Chestplate', 'Luminite Chestplate', 'Baju Lumina', '光明石胸甲', 'chestplate', 'luminite', 'legendary', '/equipment/luminite_chestplate.png', 20, 20, '#FFFF00', '#FFD700'),
+('e1010001-0001-0001-0020-000000000003', 'Luminite Leggings', 'Luminite Leggings', 'Seluar Lumina', '光明石护腿', 'leggings', 'luminite', 'legendary', '/equipment/luminite_leggings.png', 20, 20, '#FFFF00', '#FFD700'),
+('e1010001-0001-0001-0020-000000000004', 'Luminite Boots', 'Luminite Boots', 'Kasut Lumina', '光明石靴', 'boots', 'luminite', 'legendary', '/equipment/luminite_boots.png', 20, 20, '#FFFF00', '#FFD700'),
+('e1010001-0001-0001-0020-000000000005', 'Luminite Sword', 'Luminite Sword', 'Pedang Lumina', '光明石剑', 'weapon', 'luminite', 'legendary', '/equipment/luminite_sword.png', 20, 20, '#FFFF00', '#FFD700'),
+('e1010001-0001-0001-0020-000000000006', 'Luminite Pickaxe', 'Luminite Pickaxe', 'Beliung Lumina', '光明石镐', 'tool', 'luminite', 'legendary', '/equipment/luminite_pickaxe.png', 20, 20, '#FFFF00', '#FFD700'),
+('e1010001-0001-0001-0020-000000000007', 'Luminite Shield', 'Luminite Shield', 'Perisai Lumina', '光明石盾', 'shield', 'luminite', 'legendary', '/equipment/luminite_shield.png', 20, 20, '#FFFF00', '#FFD700')
 
 ON CONFLICT (id) DO UPDATE SET
   name = EXCLUDED.name,

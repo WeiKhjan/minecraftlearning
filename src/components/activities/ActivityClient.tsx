@@ -227,7 +227,7 @@ export default function ActivityClient({
         return (
           <div className="text-center py-8">
             <p className="text-gray-600">Activity type not implemented yet: {activity.type}</p>
-            <button onClick={() => handleComplete(100)} className="minecraft-button mt-4">
+            <button onClick={() => handleComplete(100)} className="pixel-button mt-4">
               Complete (Debug)
             </button>
           </div>
@@ -252,7 +252,7 @@ export default function ActivityClient({
       <header className="w-full p-4 flex justify-between items-center">
         <Link href={backUrl} className="flex items-center gap-3">
           <img src="/logo.jpeg" alt="MYLearnt" className="h-12 w-auto rounded-lg" />
-          <span className="text-white font-bold text-xl drop-shadow-lg minecraft-font">MYLearnt</span>
+          <span className="text-white font-bold text-xl drop-shadow-lg pixel-font">MYLearnt</span>
         </Link>
         <div className="flex items-center gap-4">
           {/* Avatar + Character Link */}
@@ -294,7 +294,7 @@ export default function ActivityClient({
         <div className="max-w-2xl w-full">
           {/* Intro Screen */}
           {gameState === 'intro' && (
-            <div className="minecraft-card text-center">
+            <div className="pixel-card text-center">
               <div
                 className="w-20 h-20 mx-auto mb-4 rounded-lg flex items-center justify-center text-4xl"
                 style={{ backgroundColor: subjectColor }}
@@ -333,7 +333,7 @@ export default function ActivityClient({
 
               <button
                 onClick={handleStart}
-                className="minecraft-button text-lg px-8 py-3"
+                className="pixel-button text-lg px-8 py-3"
               >
                 {translations.startActivity}
               </button>
@@ -342,7 +342,7 @@ export default function ActivityClient({
 
           {/* Playing Screen */}
           {gameState === 'playing' && (
-            <div className="minecraft-card">
+            <div className="pixel-card">
               <h2 className="text-xl font-bold text-gray-800 mb-4 text-center">
                 {title}
               </h2>
@@ -352,7 +352,7 @@ export default function ActivityClient({
 
           {/* Complete Screen */}
           {gameState === 'complete' && (
-            <div className="minecraft-card text-center animate-bounce-in">
+            <div className="pixel-card text-center animate-bounce-in">
               <div className="text-6xl mb-4 animate-float">🎉</div>
 
               <h1 className="text-2xl font-bold text-gray-800 mb-2">
@@ -407,7 +407,7 @@ export default function ActivityClient({
                 </button>
                 <button
                   onClick={handleGoBack}
-                  className="minecraft-button px-6 py-2"
+                  className="pixel-button px-6 py-2"
                 >
                   {translations.complete}
                 </button>

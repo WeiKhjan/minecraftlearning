@@ -1,6 +1,6 @@
 ---
 name: generating-images
-description: Generates images for the MYLearnt educational platform using AI. Creates vocabulary images, character avatars, pet icons, and equipment visuals. Supports multiple image styles including kawaii vocabulary illustrations, Minecraft pixel art equipment, 3D character avatars, and chibi pet companions. Uses Gemini AI image generation APIs.
+description: Generates images for the MYLearnt educational platform using AI. Creates vocabulary images, character avatars, pet icons, and equipment visuals. Supports multiple image styles including kawaii vocabulary illustrations, 8-bit warrior RPG pixel art equipment, 3D character avatars, and chibi pet companions. Uses Gemini AI image generation APIs.
 ---
 
 # Generating Images
@@ -25,8 +25,8 @@ POST /api/generate-vocab-batch
 | Type | API Endpoint | Style |
 |------|-------------|-------|
 | Vocabulary | `/api/generate-vocab-image` | Kawaii/cute illustration |
-| Equipment | `/api/generate-equipment` | Minecraft pixel art |
-| Avatar | `/api/generate-avatar` | 3D Minecraft character |
+| Equipment | `/api/generate-equipment` | 8-bit warrior RPG pixel art |
+| Avatar | `/api/generate-avatar` | 3D 8-bit warrior RPG character |
 | Pet | `/api/generate-pets` | Chibi pixel art |
 
 ---
@@ -52,8 +52,8 @@ POST /api/generate-vocab-batch
 | Type | Style | Use Case | Storage Path |
 |------|-------|----------|--------------|
 | Vocabulary | Kawaii/Cute illustration | Learning words | `images/vocab/` |
-| Equipment | Minecraft pixel art | Character gear | `images/equipment/` |
-| Avatar | 3D Minecraft character | Player profile | `avatars/` |
+| Equipment | 8-bit warrior RPG pixel art | Character gear | `images/equipment/` |
+| Avatar | 3D 8-bit warrior RPG character | Player profile | `avatars/` |
 | Pet | Chibi pixel art | Pet companions | `images/pets/` |
 
 ## API Configuration
@@ -153,7 +153,7 @@ const VOCABULARY_LIST = [
 ## 2. Equipment Image Generation
 
 ### Purpose
-Generates Minecraft-style pixel art icons for character equipment.
+Generates 8-bit warrior RPG-style pixel art icons for character equipment.
 
 ### API Endpoint
 **File**: `src/app/api/generate-equipment/route.ts`
@@ -168,10 +168,10 @@ POST /api/generate-equipment
 
 ### Style Requirements
 ```
-- Authentic Minecraft 8-bit/16-bit pixel art style
+- Authentic 8-bit warrior RPG 8-bit/16-bit pixel art style
 - Clean blocky pixels, no anti-aliasing
 - {tier_color} color palette
-- Item shown as inventory icon (like in Minecraft inventory)
+- Item shown as inventory icon (like in 8-bit warrior RPG inventory)
 - Transparent or solid dark background
 - Single item centered, filling 80% of frame
 - NO text, NO labels
@@ -188,11 +188,11 @@ POST /api/generate-equipment
 
 ### Equipment Prompt Template
 ```
-Generate a Minecraft-style pixel art equipment icon.
+Generate a 8-bit warrior RPG-style pixel art equipment icon.
 Subject: {tier} {material} {slot_description}
 Style: {slot_specific_details}
 Style Requirements:
-- Authentic Minecraft 8-bit/16-bit pixel art style
+- Authentic 8-bit warrior RPG 8-bit/16-bit pixel art style
 - Clean blocky pixels, no anti-aliasing
 - {tier_color} color palette
 - Item shown as inventory icon
@@ -204,7 +204,7 @@ Style Requirements:
 ## 3. Avatar Image Generation
 
 ### Purpose
-Generates full-body Minecraft-style character avatars with equipped gear.
+Generates full-body 8-bit warrior RPG-style character avatars with equipped gear.
 
 ### API Endpoint
 **File**: `src/app/api/generate-avatar/route.ts`
@@ -250,12 +250,12 @@ POST /api/generate-avatar
 
 ### Avatar Prompt Structure
 ```
-Create a 3D rendered Minecraft-style character portrait.
+Create a 3D rendered 8-bit warrior RPG-style character portrait.
 
 CHARACTER:
 - Young adventurer child character
 - Face: {face_description}
-- Skin: Light tan with Minecraft's signature blocky 3D style
+- Skin: Light tan with 8-bit warrior RPG's signature blocky 3D style
 
 EQUIPMENT:
 - Head: {helmet_description}
@@ -273,13 +273,13 @@ COMPOSITION:
 - 3/4 angle view showing character depth
 - {background_description}
 - Dramatic lighting with rim light for depth
-- High quality 3D Minecraft render style
+- High quality 3D 8-bit warrior RPG render style
 ```
 
 ## 4. Pet Image Generation
 
 ### Purpose
-Generates cute Minecraft-style pet companion icons.
+Generates cute 8-bit warrior RPG-style pet companion icons.
 
 ### API Endpoint
 **File**: `src/app/api/generate-pets/route.ts`
@@ -344,11 +344,11 @@ POST /api/generate-pets
 
 ### Pet Prompt Template
 ```
-Generate a Minecraft 8-bit pixel art pet companion icon.
+Generate a 8-bit warrior RPG 8-bit pixel art pet companion icon.
 
 Subject: {pet_description}
 Style Requirements:
-- Authentic Minecraft 8-bit/16-bit pixel art style
+- Authentic 8-bit warrior RPG 8-bit/16-bit pixel art style
 - Cute chibi-like proportions (big head, small body)
 - {rarity_effect}
 - Friendly expression (even hostile mobs should look cute)

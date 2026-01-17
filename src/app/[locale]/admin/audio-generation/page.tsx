@@ -253,23 +253,23 @@ export default function AudioGenerationPage() {
 
           {/* Stats Cards */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-            <div className="minecraft-card text-center">
+            <div className="pixel-card text-center">
               <p className="text-3xl font-bold text-[#5D8731]">{registryInfo?.total || 0}</p>
               <p className="text-sm text-gray-600">Total Items</p>
             </div>
-            <div className="minecraft-card text-center">
+            <div className="pixel-card text-center">
               <p className="text-3xl font-bold text-[#5DADE2]">
                 {Object.keys(registryInfo?.byType || {}).length}
               </p>
               <p className="text-sm text-gray-600">Categories</p>
             </div>
-            <div className="minecraft-card text-center">
+            <div className="pixel-card text-center">
               <p className="text-3xl font-bold text-yellow-500">
                 {Object.keys(registryInfo?.byLocale || {}).length}
               </p>
               <p className="text-sm text-gray-600">Locales</p>
             </div>
-            <div className="minecraft-card text-center">
+            <div className="pixel-card text-center">
               <p className="text-3xl font-bold text-purple-500">
                 ~{Math.round((registryInfo?.total || 0) * 9 / 60)} min
               </p>
@@ -278,7 +278,7 @@ export default function AudioGenerationPage() {
           </div>
 
           {/* Controls */}
-          <div className="minecraft-card mb-6">
+          <div className="pixel-card mb-6">
             <h2 className="text-xl font-bold text-gray-800 mb-4">Generation Controls</h2>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
@@ -394,7 +394,7 @@ export default function AudioGenerationPage() {
 
           {/* Progress */}
           {progress && (
-            <div className="minecraft-card mb-6">
+            <div className="pixel-card mb-6">
               <h2 className="text-xl font-bold text-gray-800 mb-4">Progress</h2>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
                 <div className="text-center">
@@ -428,7 +428,7 @@ export default function AudioGenerationPage() {
           )}
 
           {/* Logs */}
-          <div className="minecraft-card">
+          <div className="pixel-card">
             <h2 className="text-xl font-bold text-gray-800 mb-4">Logs</h2>
             <div className="bg-gray-900 text-green-400 p-4 rounded-lg h-64 overflow-y-auto font-mono text-sm">
               {logs.length === 0 ? (
@@ -442,7 +442,7 @@ export default function AudioGenerationPage() {
           </div>
 
           {/* Category Breakdown */}
-          <div className="minecraft-card mt-6">
+          <div className="pixel-card mt-6">
             <h2 className="text-xl font-bold text-gray-800 mb-4">Category Breakdown</h2>
             <div className="overflow-x-auto">
               <table className="w-full">

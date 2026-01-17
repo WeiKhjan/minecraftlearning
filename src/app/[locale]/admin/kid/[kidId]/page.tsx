@@ -176,7 +176,7 @@ export default async function KidProgressPage({
       <div className="flex-1 px-4 py-6">
         <div className="max-w-6xl mx-auto">
           {/* Kid Header */}
-          <div className="minecraft-card mb-6">
+          <div className="pixel-card mb-6">
             <div className="flex items-center gap-4">
               <div className="relative">
                 <div className="w-20 h-20 bg-[#5D8731] rounded-lg flex items-center justify-center">
@@ -202,7 +202,7 @@ export default async function KidProgressPage({
 
           {/* Overall Progress Summary */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-            <div className="minecraft-card text-center">
+            <div className="pixel-card text-center">
               <p className="text-3xl font-bold text-[#5D8731]">
                 {subjectStats.reduce((sum, s) => sum + s.completedActivities, 0)}
               </p>
@@ -210,7 +210,7 @@ export default async function KidProgressPage({
                 {locale === 'ms' ? 'Aktiviti Selesai' : locale === 'zh' ? '已完成活动' : 'Completed'}
               </p>
             </div>
-            <div className="minecraft-card text-center">
+            <div className="pixel-card text-center">
               <p className="text-3xl font-bold text-[#5DADE2]">
                 {subjectStats.reduce((sum, s) => sum + s.totalActivities, 0)}
               </p>
@@ -218,7 +218,7 @@ export default async function KidProgressPage({
                 {locale === 'ms' ? 'Jumlah Aktiviti' : locale === 'zh' ? '总活动数' : 'Total Activities'}
               </p>
             </div>
-            <div className="minecraft-card text-center">
+            <div className="pixel-card text-center">
               <p className="text-3xl font-bold text-yellow-500">
                 {(() => {
                   const allScores = subjectStats.flatMap(s =>
@@ -237,7 +237,7 @@ export default async function KidProgressPage({
                 {locale === 'ms' ? 'Skor Purata' : locale === 'zh' ? '平均分数' : 'Avg Score'}
               </p>
             </div>
-            <div className="minecraft-card text-center">
+            <div className="pixel-card text-center">
               <p className="text-3xl font-bold text-purple-500">
                 {(() => {
                   const total = subjectStats.reduce((sum, s) => sum + s.totalActivities, 0);
@@ -253,7 +253,7 @@ export default async function KidProgressPage({
 
           {/* Subject Progress Details */}
           {subjectStats.map(({ subject, themes, totalActivities, completedActivities, averageScore }) => (
-            <div key={subject.id} className="minecraft-card mb-6">
+            <div key={subject.id} className="pixel-card mb-6">
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center gap-3">
                   <span className="text-3xl">{subject.icon}</span>

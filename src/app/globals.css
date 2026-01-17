@@ -3,10 +3,10 @@
 
 @custom-variant dark (&:is(.dark *));
 
-/* Minecraft Font */
+/* PixelQuest Font - 8-bit Warrior Quest Style */
 @font-face {
-  font-family: 'Minecraft';
-  src: url('/fonts/Minecraft.ttf') format('truetype');
+  font-family: 'PixelQuest';
+  src: url('/fonts/PixelQuest.ttf') format('truetype');
   font-weight: normal;
   font-style: normal;
 }
@@ -16,38 +16,38 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
-  --font-minecraft: 'Minecraft', monospace;
+  --font-pixel: 'PixelQuest', monospace;
 
-  /* Minecraft Theme Colors - Authentic UI Palette */
-  --color-minecraft-green: #5E7C16;       /* Official cactus green */
-  --color-minecraft-dark-green: #3B5323;
-  --color-minecraft-lime: #80C71F;         /* Official lime */
-  --color-minecraft-brown: #835432;        /* Official brown */
-  --color-minecraft-dark-brown: #5D3A1A;
-  --color-minecraft-sky: #87CEEB;
-  --color-minecraft-diamond: #5DADE2;
-  --color-minecraft-gold: #FFD83D;         /* Official gold */
-  --color-minecraft-iron: #C0C0C0;
-  --color-minecraft-stone: #7F7F7F;
-  --color-minecraft-dirt: #9B7653;
-  --color-minecraft-grass: #7CBA3D;
-  --color-minecraft-red: #B02E26;          /* Official red */
-  --color-minecraft-blue: #3C44AA;         /* Official blue */
+  /* 8-bit Warrior Quest Theme Colors - RPG UI Palette */
+  --color-warrior-green: #5E7C16;       /* Forest green */
+  --color-warrior-dark-green: #3B5323;
+  --color-warrior-lime: #80C71F;         /* Bright lime */
+  --color-warrior-brown: #835432;        /* Leather brown */
+  --color-warrior-dark-brown: #5D3A1A;
+  --color-warrior-sky: #87CEEB;
+  --color-warrior-diamond: #5DADE2;
+  --color-warrior-gold: #FFD83D;         /* Treasure gold */
+  --color-warrior-iron: #C0C0C0;
+  --color-warrior-stone: #7F7F7F;
+  --color-warrior-dirt: #9B7653;
+  --color-warrior-grass: #7CBA3D;
+  --color-warrior-red: #B02E26;          /* Battle red */
+  --color-warrior-blue: #3C44AA;         /* Mystic blue */
 
-  /* Minecraft GUI Colors - From Inventory UI */
-  --color-minecraft-gui-light: #C6C6C6;    /* Light gray */
-  --color-minecraft-gui-mid: #8B8B8B;      /* Mid gray */
-  --color-minecraft-gui-dark: #555555;     /* Dark gray */
-  --color-minecraft-gui-darker: #373737;   /* Darker gray */
-  --color-minecraft-gui-darkest: #1D1D21;  /* Near black */
-  --color-minecraft-gui-white: #FFFFFF;    /* Highlight */
+  /* 8-bit Warrior Quest GUI Colors - From Inventory UI */
+  --color-warrior-gui-light: #C6C6C6;    /* Light gray */
+  --color-warrior-gui-mid: #8B8B8B;      /* Mid gray */
+  --color-warrior-gui-dark: #555555;     /* Dark gray */
+  --color-warrior-gui-darker: #373737;   /* Darker gray */
+  --color-warrior-gui-darkest: #1D1D21;  /* Near black */
+  --color-warrior-gui-white: #FFFFFF;    /* Highlight */
 
-  /* Minecraft Text Colors */
-  --color-minecraft-text-white: #FFFFFF;
-  --color-minecraft-text-yellow: #FFFF55;
-  --color-minecraft-text-gold: #FFAA00;
-  --color-minecraft-text-green: #55FF55;
-  --color-minecraft-text-aqua: #55FFFF;
+  /* 8-bit Warrior Quest Text Colors */
+  --color-warrior-text-white: #FFFFFF;
+  --color-warrior-text-yellow: #FFFF55;
+  --color-warrior-text-gold: #FFAA00;
+  --color-warrior-text-green: #55FF55;
+  --color-warrior-text-aqua: #55FFFF;
 
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
@@ -88,24 +88,24 @@
 }
 
 :root {
-  --radius: 0rem; /* Minecraft uses sharp corners */
-  --background: #87CEEB; /* Minecraft sky blue */
-  --foreground: #1D1D21; /* Minecraft dark text */
-  --card: #C6C6C6; /* Minecraft GUI light gray */
+  --radius: 0rem; /* Pixel art uses sharp corners */
+  --background: #87CEEB; /* Sky blue */
+  --foreground: #1D1D21; /* Dark text */
+  --card: #C6C6C6; /* GUI light gray */
   --card-foreground: #1D1D21;
   --popover: #C6C6C6;
   --popover-foreground: #1D1D21;
-  --primary: #5E7C16; /* Official Minecraft green */
+  --primary: #5E7C16; /* Forest green */
   --primary-foreground: #FFFFFF;
-  --secondary: #835432; /* Official Minecraft brown */
+  --secondary: #835432; /* Leather brown */
   --secondary-foreground: #FFFFFF;
-  --muted: #8B8B8B; /* Minecraft GUI mid gray */
+  --muted: #8B8B8B; /* GUI mid gray */
   --muted-foreground: #555555;
-  --accent: #5DADE2; /* Diamond blue */
+  --accent: #5DADE2; /* Crystal blue */
   --accent-foreground: #1D1D21;
-  --destructive: #B02E26; /* Official Minecraft red */
-  --border: #555555; /* Minecraft GUI dark gray */
-  --input: #373737; /* Minecraft GUI darker */
+  --destructive: #B02E26; /* Battle red */
+  --border: #555555; /* GUI dark gray */
+  --input: #373737; /* GUI darker */
   --ring: #5E7C16;
   --chart-1: #5E7C16; /* Green */
   --chart-2: #3C44AA; /* Blue */
@@ -123,13 +123,13 @@
 }
 
 .dark {
-  --background: #1D1D21; /* Minecraft near black */
+  --background: #1D1D21; /* Near black */
   --foreground: #FFFFFF;
-  --card: #373737; /* Minecraft GUI darker */
+  --card: #373737; /* GUI darker */
   --card-foreground: #FFFFFF;
   --popover: #373737;
   --popover-foreground: #FFFFFF;
-  --primary: #80C71F; /* Minecraft lime for dark mode */
+  --primary: #80C71F; /* Lime for dark mode */
   --primary-foreground: #1D1D21;
   --secondary: #835432;
   --secondary-foreground: #FFFFFF;
@@ -162,32 +162,32 @@
   }
   body {
     @apply bg-background text-foreground;
-    font-family: 'Minecraft', monospace;
+    font-family: 'PixelQuest', monospace;
   }
-  /* Apply Minecraft font to all headings */
+  /* Apply PixelQuest font to all headings */
   h1, h2, h3, h4, h5, h6 {
-    font-family: 'Minecraft', monospace;
+    font-family: 'PixelQuest', monospace;
   }
-  /* Buttons get the Minecraft font */
+  /* Buttons get the PixelQuest font */
   button {
-    font-family: 'Minecraft', monospace;
+    font-family: 'PixelQuest', monospace;
   }
   /* Labels and form elements */
   label, input, select, textarea {
-    font-family: 'Minecraft', monospace;
+    font-family: 'PixelQuest', monospace;
   }
 }
 
-/* Minecraft-style utilities */
+/* 8-bit Warrior Quest style utilities */
 @layer utilities {
-  .minecraft-font {
-    font-family: 'Minecraft', monospace;
+  .pixel-font {
+    font-family: 'PixelQuest', monospace;
   }
 
-  /* Authentic Minecraft stone button style */
-  .minecraft-button {
+  /* 8-bit RPG stone button style */
+  .pixel-button {
     @apply relative px-6 py-3 font-bold transition-all cursor-pointer;
-    font-family: 'Minecraft', monospace;
+    font-family: 'PixelQuest', monospace;
     background-color: #8B8B8B;
     border: 4px solid;
     border-top-color: #FFFFFF;
@@ -199,7 +199,7 @@
     box-shadow: inset -2px -4px 0px 0px #555555, inset 2px 2px 0px 0px #C6C6C6;
   }
 
-  .minecraft-button:hover {
+  .pixel-button:hover {
     background-color: #A0A0A0;
     border-top-color: #FFFFFF;
     border-left-color: #FFFFFF;
@@ -207,7 +207,7 @@
     border-right-color: #6B6B6B;
   }
 
-  .minecraft-button:active {
+  .pixel-button:active {
     background-color: #7B7B7B;
     border-top-color: #555555;
     border-left-color: #555555;
@@ -216,10 +216,10 @@
     box-shadow: inset 2px 4px 0px 0px #555555, inset -2px -2px 0px 0px #C6C6C6;
   }
 
-  /* Green variant button (like grass block) */
-  .minecraft-button-green {
+  /* Green variant button */
+  .pixel-button-green {
     @apply relative px-6 py-3 font-bold transition-all cursor-pointer;
-    font-family: 'Minecraft', monospace;
+    font-family: 'PixelQuest', monospace;
     background-color: #5E7C16;
     border: 4px solid;
     border-top-color: #80C71F;
@@ -231,11 +231,11 @@
     box-shadow: inset -2px -4px 0px 0px #3B5323, inset 2px 2px 0px 0px #80C71F;
   }
 
-  .minecraft-button-green:hover {
+  .pixel-button-green:hover {
     background-color: #6E8C26;
   }
 
-  .minecraft-button-green:active {
+  .pixel-button-green:active {
     background-color: #4E6C06;
     border-top-color: #3B5323;
     border-left-color: #3B5323;
@@ -244,8 +244,8 @@
     box-shadow: inset 2px 4px 0px 0px #3B5323, inset -2px -2px 0px 0px #80C71F;
   }
 
-  /* Authentic Minecraft inventory/GUI card */
-  .minecraft-card {
+  /* 8-bit RPG inventory/GUI card */
+  .pixel-card {
     @apply p-4;
     background-color: #C6C6C6;
     border: 4px solid;
@@ -257,7 +257,7 @@
   }
 
   /* Dark card variant */
-  .minecraft-card-dark {
+  .pixel-card-dark {
     @apply p-4;
     background-color: #373737;
     border: 4px solid;
@@ -268,10 +268,10 @@
     color: #FFFFFF;
   }
 
-  /* Authentic Minecraft text input */
-  .minecraft-input {
+  /* 8-bit RPG text input */
+  .pixel-input {
     @apply px-3 py-2;
-    font-family: 'Minecraft', monospace;
+    font-family: 'PixelQuest', monospace;
     background-color: #000000;
     border: 2px solid;
     border-top-color: #1D1D21;
@@ -282,17 +282,17 @@
     caret-color: #FFFFFF;
   }
 
-  .minecraft-input:focus {
+  .pixel-input:focus {
     outline: none;
     border-color: #80C71F;
   }
 
-  .minecraft-input::placeholder {
+  .pixel-input::placeholder {
     color: #8B8B8B;
   }
 
-  /* Minecraft slot/item frame style */
-  .minecraft-slot {
+  /* 8-bit RPG slot/item frame style */
+  .pixel-slot {
     @apply flex items-center justify-center;
     background-color: #8B8B8B;
     border: 2px solid;
@@ -304,16 +304,16 @@
     height: 48px;
   }
 
-  /* Minecraft title text style */
-  .minecraft-title {
-    font-family: 'Minecraft', monospace;
+  /* 8-bit RPG title text style */
+  .pixel-title {
+    font-family: 'PixelQuest', monospace;
     color: #FFFF55;
     letter-spacing: 2px;
   }
 
-  /* Minecraft subtitle text */
-  .minecraft-subtitle {
-    font-family: 'Minecraft', monospace;
+  /* 8-bit RPG subtitle text */
+  .pixel-subtitle {
+    font-family: 'PixelQuest', monospace;
     color: #AAAAAA;
   }
 

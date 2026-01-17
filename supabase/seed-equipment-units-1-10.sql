@@ -70,17 +70,17 @@ INSERT INTO equipment (id, name, name_en, name_ms, name_zh, slot, tier, rarity, 
 ('e1010001-0001-0001-0005-000000000007', 'Diamond Bow', 'Diamond Bow', 'Busur Berlian', '钻石弓', 'ranged', 'diamond', 'epic', '/equipment/diamond_bow.png', 5, 5, '#00CED1', '#40E0D0'),
 
 -- =====================================================
--- UNIT 6: Netherite Tier (Epic)
--- Theme: Ancient debris forged in the Nether
+-- UNIT 6: Darksteel Tier (Epic)
+-- Theme: Dark metal forged in ancient forges
 -- =====================================================
 
-('e1010001-0001-0001-0006-000000000001', 'Netherite Helmet', 'Netherite Helmet', 'Topi Netherite', '下界合金头盔', 'helmet', 'netherite', 'epic', '/equipment/netherite_helmet.png', 6, 6, '#4A4A4A', '#8B0000'),
-('e1010001-0001-0001-0006-000000000002', 'Netherite Chestplate', 'Netherite Chestplate', 'Baju Netherite', '下界合金胸甲', 'chestplate', 'netherite', 'epic', '/equipment/netherite_chestplate.png', 6, 6, '#4A4A4A', '#8B0000'),
-('e1010001-0001-0001-0006-000000000003', 'Netherite Leggings', 'Netherite Leggings', 'Seluar Netherite', '下界合金护腿', 'leggings', 'netherite', 'epic', '/equipment/netherite_leggings.png', 6, 6, '#4A4A4A', '#8B0000'),
-('e1010001-0001-0001-0006-000000000004', 'Netherite Boots', 'Netherite Boots', 'Kasut Netherite', '下界合金靴', 'boots', 'netherite', 'epic', '/equipment/netherite_boots.png', 6, 6, '#4A4A4A', '#8B0000'),
-('e1010001-0001-0001-0006-000000000005', 'Netherite Sword', 'Netherite Sword', 'Pedang Netherite', '下界合金剑', 'weapon', 'netherite', 'epic', '/equipment/netherite_sword.png', 6, 6, '#4A4A4A', '#8B0000'),
-('e1010001-0001-0001-0006-000000000006', 'Netherite Pickaxe', 'Netherite Pickaxe', 'Beliung Netherite', '下界合金镐', 'tool', 'netherite', 'epic', '/equipment/netherite_pickaxe.png', 6, 6, '#4A4A4A', '#8B0000'),
-('e1010001-0001-0001-0006-000000000007', 'Netherite Shield', 'Netherite Shield', 'Perisai Netherite', '下界合金盾', 'shield', 'netherite', 'epic', '/equipment/netherite_shield.png', 6, 6, '#4A4A4A', '#8B0000'),
+('e1010001-0001-0001-0006-000000000001', 'Darksteel Helmet', 'Darksteel Helmet', 'Topi Keluli Gelap', '暗钢头盔', 'helmet', 'darksteel', 'epic', '/equipment/darksteel_helmet.png', 6, 6, '#4A4A4A', '#8B0000'),
+('e1010001-0001-0001-0006-000000000002', 'Darksteel Chestplate', 'Darksteel Chestplate', 'Baju Keluli Gelap', '暗钢胸甲', 'chestplate', 'darksteel', 'epic', '/equipment/darksteel_chestplate.png', 6, 6, '#4A4A4A', '#8B0000'),
+('e1010001-0001-0001-0006-000000000003', 'Darksteel Leggings', 'Darksteel Leggings', 'Seluar Keluli Gelap', '暗钢护腿', 'leggings', 'darksteel', 'epic', '/equipment/darksteel_leggings.png', 6, 6, '#4A4A4A', '#8B0000'),
+('e1010001-0001-0001-0006-000000000004', 'Darksteel Boots', 'Darksteel Boots', 'Kasut Keluli Gelap', '暗钢靴', 'boots', 'darksteel', 'epic', '/equipment/darksteel_boots.png', 6, 6, '#4A4A4A', '#8B0000'),
+('e1010001-0001-0001-0006-000000000005', 'Darksteel Sword', 'Darksteel Sword', 'Pedang Keluli Gelap', '暗钢剑', 'weapon', 'darksteel', 'epic', '/equipment/darksteel_sword.png', 6, 6, '#4A4A4A', '#8B0000'),
+('e1010001-0001-0001-0006-000000000006', 'Darksteel Pickaxe', 'Darksteel Pickaxe', 'Beliung Keluli Gelap', '暗钢镐', 'tool', 'darksteel', 'epic', '/equipment/darksteel_pickaxe.png', 6, 6, '#4A4A4A', '#8B0000'),
+('e1010001-0001-0001-0006-000000000007', 'Darksteel Shield', 'Darksteel Shield', 'Perisai Keluli Gelap', '暗钢盾', 'shield', 'darksteel', 'epic', '/equipment/darksteel_shield.png', 6, 6, '#4A4A4A', '#8B0000'),
 
 -- =====================================================
 -- UNIT 7: Enchanted Iron Tier (Rare)
@@ -122,17 +122,17 @@ INSERT INTO equipment (id, name, name_en, name_ms, name_zh, slot, tier, rarity, 
 ('e1010001-0001-0001-0009-000000000007', 'Enchanted Diamond Bow', 'Enchanted Diamond Bow', 'Busur Berlian Ajaib', '附魔钻石弓', 'ranged', 'enchanted_diamond', 'epic', '/equipment/enchanted_diamond_bow.png', 9, 9, '#00CED1', '#9370DB'),
 
 -- =====================================================
--- UNIT 10: Enchanted Netherite Tier (Epic)
--- Theme: Dark magical flames from the Nether
+-- UNIT 10: Enchanted Darksteel Tier (Epic)
+-- Theme: Dark metal infused with magical enchantments
 -- =====================================================
 
-('e1010001-0001-0001-0010-000000000001', 'Enchanted Netherite Helmet', 'Enchanted Netherite Helmet', 'Topi Netherite Ajaib', '附魔下界合金头盔', 'helmet', 'enchanted_netherite', 'epic', '/equipment/enchanted_netherite_helmet.png', 10, 10, '#4A4A4A', '#9370DB'),
-('e1010001-0001-0001-0010-000000000002', 'Enchanted Netherite Chestplate', 'Enchanted Netherite Chestplate', 'Baju Netherite Ajaib', '附魔下界合金胸甲', 'chestplate', 'enchanted_netherite', 'epic', '/equipment/enchanted_netherite_chestplate.png', 10, 10, '#4A4A4A', '#9370DB'),
-('e1010001-0001-0001-0010-000000000003', 'Enchanted Netherite Leggings', 'Enchanted Netherite Leggings', 'Seluar Netherite Ajaib', '附魔下界合金护腿', 'leggings', 'enchanted_netherite', 'epic', '/equipment/enchanted_netherite_leggings.png', 10, 10, '#4A4A4A', '#9370DB'),
-('e1010001-0001-0001-0010-000000000004', 'Enchanted Netherite Boots', 'Enchanted Netherite Boots', 'Kasut Netherite Ajaib', '附魔下界合金靴', 'boots', 'enchanted_netherite', 'epic', '/equipment/enchanted_netherite_boots.png', 10, 10, '#4A4A4A', '#9370DB'),
-('e1010001-0001-0001-0010-000000000005', 'Enchanted Netherite Sword', 'Enchanted Netherite Sword', 'Pedang Netherite Ajaib', '附魔下界合金剑', 'weapon', 'enchanted_netherite', 'epic', '/equipment/enchanted_netherite_sword.png', 10, 10, '#4A4A4A', '#9370DB'),
-('e1010001-0001-0001-0010-000000000006', 'Enchanted Netherite Pickaxe', 'Enchanted Netherite Pickaxe', 'Beliung Netherite Ajaib', '附魔下界合金镐', 'tool', 'enchanted_netherite', 'epic', '/equipment/enchanted_netherite_pickaxe.png', 10, 10, '#4A4A4A', '#9370DB'),
-('e1010001-0001-0001-0010-000000000007', 'Enchanted Netherite Shield', 'Enchanted Netherite Shield', 'Perisai Netherite Ajaib', '附魔下界合金盾', 'shield', 'enchanted_netherite', 'epic', '/equipment/enchanted_netherite_shield.png', 10, 10, '#4A4A4A', '#9370DB')
+('e1010001-0001-0001-0010-000000000001', 'Enchanted Darksteel Helmet', 'Enchanted Darksteel Helmet', 'Topi Keluli Gelap Ajaib', '附魔暗钢头盔', 'helmet', 'enchanted_darksteel', 'epic', '/equipment/enchanted_darksteel_helmet.png', 10, 10, '#4A4A4A', '#9370DB'),
+('e1010001-0001-0001-0010-000000000002', 'Enchanted Darksteel Chestplate', 'Enchanted Darksteel Chestplate', 'Baju Keluli Gelap Ajaib', '附魔暗钢胸甲', 'chestplate', 'enchanted_darksteel', 'epic', '/equipment/enchanted_darksteel_chestplate.png', 10, 10, '#4A4A4A', '#9370DB'),
+('e1010001-0001-0001-0010-000000000003', 'Enchanted Darksteel Leggings', 'Enchanted Darksteel Leggings', 'Seluar Keluli Gelap Ajaib', '附魔暗钢护腿', 'leggings', 'enchanted_darksteel', 'epic', '/equipment/enchanted_darksteel_leggings.png', 10, 10, '#4A4A4A', '#9370DB'),
+('e1010001-0001-0001-0010-000000000004', 'Enchanted Darksteel Boots', 'Enchanted Darksteel Boots', 'Kasut Keluli Gelap Ajaib', '附魔暗钢靴', 'boots', 'enchanted_darksteel', 'epic', '/equipment/enchanted_darksteel_boots.png', 10, 10, '#4A4A4A', '#9370DB'),
+('e1010001-0001-0001-0010-000000000005', 'Enchanted Darksteel Sword', 'Enchanted Darksteel Sword', 'Pedang Keluli Gelap Ajaib', '附魔暗钢剑', 'weapon', 'enchanted_darksteel', 'epic', '/equipment/enchanted_darksteel_sword.png', 10, 10, '#4A4A4A', '#9370DB'),
+('e1010001-0001-0001-0010-000000000006', 'Enchanted Darksteel Pickaxe', 'Enchanted Darksteel Pickaxe', 'Beliung Keluli Gelap Ajaib', '附魔暗钢镐', 'tool', 'enchanted_darksteel', 'epic', '/equipment/enchanted_darksteel_pickaxe.png', 10, 10, '#4A4A4A', '#9370DB'),
+('e1010001-0001-0001-0010-000000000007', 'Enchanted Darksteel Shield', 'Enchanted Darksteel Shield', 'Perisai Keluli Gelap Ajaib', '附魔暗钢盾', 'shield', 'enchanted_darksteel', 'epic', '/equipment/enchanted_darksteel_shield.png', 10, 10, '#4A4A4A', '#9370DB')
 
 ON CONFLICT (id) DO UPDATE SET
   name = EXCLUDED.name,

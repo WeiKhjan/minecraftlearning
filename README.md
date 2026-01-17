@@ -1,11 +1,11 @@
 # MYLearnt
 
-A gamified learning platform for Malaysian primary school kids (Primary 1-6) with Minecraft theming.
+A gamified learning platform for Malaysian primary school kids (Primary 1-6) with 8-bit Warrior Quest pixel art RPG theming.
 
 ## Features
 
 - **Multi-Subject Learning**: Bahasa Malaysia, Bahasa Cina, English, Mathematics
-- **Gamification**: Minecraft-themed character with equipment rewards and leveling
+- **Gamification**: 8-bit pixel art RPG character with equipment rewards and leveling
 - **AI-Powered Assessment**: Gemini 3 Flash for intelligent feedback
 - **Voice Tutor**: Gemini 2.5 Flash TTS with Malaysian accent
 - **Multi-Language UI**: Bahasa Malaysia, Simplified Chinese, English
@@ -93,7 +93,7 @@ Plan equipment rewards based on progression through Temas:
 
 ### Equipment Images
 
-Equipment images are AI-generated Minecraft 8-bit pixel art style using Gemini 2.5 Flash. All 25 equipment pieces (5 tiers × 5 pieces) have been pre-generated and stored in Supabase.
+Equipment images are AI-generated 8-bit pixel art style using Gemini 2.5 Flash. All 25 equipment pieces (5 tiers × 5 pieces) have been pre-generated and stored in Supabase.
 
 **Storage location**: `{SUPABASE_URL}/storage/v1/object/public/images/equipment/{equipment_id}.png`
 
@@ -125,7 +125,7 @@ curl -X POST https://your-app.vercel.app/api/generate-equipment \
   -d '{"startIndex": 5, "count": 5}'
 ```
 
-**Adding New Equipment Tiers** (e.g., Netherite):
+**Adding New Equipment Tiers** (e.g., Darksteel):
 
 1. Edit `src/app/api/generate-equipment/route.ts` and add new items to `EQUIPMENT_LIST`
 2. Run the generation API for the new items
@@ -134,9 +134,9 @@ curl -X POST https://your-app.vercel.app/api/generate-equipment \
 
 ### Pet System
 
-Pets are Minecraft mob companions that kids can collect and display next to their avatar. Pets are awarded when a kid completes ALL activities in a theme.
+Pets are fantasy creature companions that kids can collect and display next to their avatar. Pets are awarded when a kid completes ALL activities in a theme.
 
-Pet images are AI-generated Minecraft 8-bit pixel art style using Gemini 2.5 Flash. All 25 pets (5 rarities × 5 pets) have been pre-generated and stored in Supabase.
+Pet images are AI-generated 8-bit pixel art style using Gemini 2.5 Flash. All 25 pets (5 rarities × 5 pets) have been pre-generated and stored in Supabase.
 
 **Pet Rarity Tiers**:
 | Rarity | Examples | When to Award |
@@ -412,7 +412,7 @@ END $$;
 
 1. **Batch size**: Generate images/audio in batches of 5 to avoid API timeouts
 2. **Rate limiting**: The API has 2-second delays between generations
-3. **Image style**: Vocabulary images are kawaii/cute cartoon style; equipment and pet images are Minecraft 8-bit pixel art
+3. **Image style**: Vocabulary images are kawaii/cute cartoon style; equipment and pet images are 8-bit warrior RPG pixel art
 4. **Multilingual**: Always provide names/descriptions in ms, zh, en
 5. **Equipment progression**: Plan rewards to give sense of progression (see Equipment Reward Tiers table)
 6. **Writing + Dictation**: For writing activities, also create a dictation activity with same words

@@ -126,7 +126,7 @@ export default async function LeaderboardPage({
       <header className="w-full p-4 flex justify-between items-center">
         <Link href={kidId ? `/${locale}/dashboard?kid=${kidId}` : `/${locale}/kids`} className="flex items-center gap-3">
           <img src="/logo.jpeg" alt="MYLearnt" className="h-12 w-auto rounded-lg" />
-          <span className="text-white font-bold text-xl drop-shadow-lg minecraft-font">MYLearnt</span>
+          <span className="text-white font-bold text-xl drop-shadow-lg pixel-font">MYLearnt</span>
         </Link>
         <div className="flex items-center gap-4">
           <LanguageSwitcher />
@@ -144,7 +144,7 @@ export default async function LeaderboardPage({
         <div className="max-w-4xl mx-auto">
           {/* Title */}
           <div className="text-center mb-6">
-            <h1 className="text-3xl font-bold text-white drop-shadow-lg minecraft-font flex items-center justify-center gap-3">
+            <h1 className="text-3xl font-bold text-white drop-shadow-lg pixel-font flex items-center justify-center gap-3">
               <span className="text-4xl">🏆</span>
               {pageTitle}
             </h1>
@@ -156,7 +156,7 @@ export default async function LeaderboardPage({
           </div>
 
           {/* Leaderboard Table */}
-          <div className="minecraft-card overflow-hidden">
+          <div className="pixel-card overflow-hidden">
             {/* Table Header */}
             <div className="bg-[#5D8731] text-white px-4 py-3 grid grid-cols-12 gap-2 text-xs font-bold">
               <div className="col-span-1 text-center">{rankLabel}</div>

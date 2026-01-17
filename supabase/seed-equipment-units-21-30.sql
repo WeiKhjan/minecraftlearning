@@ -3,45 +3,45 @@
 -- Phase 4: Mythic Tiers - Legendary boss and dimensional gear
 
 -- =====================================================
--- UNIT 21: Ender Tier (Legendary)
--- Theme: End dimension purple with teleportation powers
+-- UNIT 21: Voidstone Tier (Legendary)
+-- Theme: Dark void dimension with teleportation powers
 -- =====================================================
 
 INSERT INTO equipment (id, name, name_en, name_ms, name_zh, slot, tier, rarity, image_url, required_level, unit_number, color_primary, color_secondary) VALUES
 -- Unit 21 Equipment
-('e1010001-0001-0001-0021-000000000001', 'Ender Helmet', 'Ender Helmet', 'Topi Ender', '末影头盔', 'helmet', 'ender', 'legendary', '/equipment/ender_helmet.png', 21, 21, '#301934', '#9400D3'),
-('e1010001-0001-0001-0021-000000000002', 'Ender Chestplate', 'Ender Chestplate', 'Baju Ender', '末影胸甲', 'chestplate', 'ender', 'legendary', '/equipment/ender_chestplate.png', 21, 21, '#301934', '#9400D3'),
-('e1010001-0001-0001-0021-000000000003', 'Ender Leggings', 'Ender Leggings', 'Seluar Ender', '末影护腿', 'leggings', 'ender', 'legendary', '/equipment/ender_leggings.png', 21, 21, '#301934', '#9400D3'),
-('e1010001-0001-0001-0021-000000000004', 'Ender Boots', 'Ender Boots', 'Kasut Ender', '末影靴', 'boots', 'ender', 'legendary', '/equipment/ender_boots.png', 21, 21, '#301934', '#9400D3'),
-('e1010001-0001-0001-0021-000000000005', 'Ender Sword', 'Ender Sword', 'Pedang Ender', '末影剑', 'weapon', 'ender', 'legendary', '/equipment/ender_sword.png', 21, 21, '#301934', '#9400D3'),
-('e1010001-0001-0001-0021-000000000006', 'Ender Pickaxe', 'Ender Pickaxe', 'Beliung Ender', '末影镐', 'tool', 'ender', 'legendary', '/equipment/ender_pickaxe.png', 21, 21, '#301934', '#9400D3'),
-('e1010001-0001-0001-0021-000000000007', 'Ender Bow', 'Ender Bow', 'Busur Ender', '末影弓', 'ranged', 'ender', 'legendary', '/equipment/ender_bow.png', 21, 21, '#301934', '#9400D3'),
+('e1010001-0001-0001-0021-000000000001', 'Voidstone Helmet', 'Voidstone Helmet', 'Topi Batu Hampa', '虚空石头盔', 'helmet', 'voidstone', 'legendary', '/equipment/voidstone_helmet.png', 21, 21, '#301934', '#9400D3'),
+('e1010001-0001-0001-0021-000000000002', 'Voidstone Chestplate', 'Voidstone Chestplate', 'Baju Batu Hampa', '虚空石胸甲', 'chestplate', 'voidstone', 'legendary', '/equipment/voidstone_chestplate.png', 21, 21, '#301934', '#9400D3'),
+('e1010001-0001-0001-0021-000000000003', 'Voidstone Leggings', 'Voidstone Leggings', 'Seluar Batu Hampa', '虚空石护腿', 'leggings', 'voidstone', 'legendary', '/equipment/voidstone_leggings.png', 21, 21, '#301934', '#9400D3'),
+('e1010001-0001-0001-0021-000000000004', 'Voidstone Boots', 'Voidstone Boots', 'Kasut Batu Hampa', '虚空石靴', 'boots', 'voidstone', 'legendary', '/equipment/voidstone_boots.png', 21, 21, '#301934', '#9400D3'),
+('e1010001-0001-0001-0021-000000000005', 'Voidstone Sword', 'Voidstone Sword', 'Pedang Batu Hampa', '虚空石剑', 'weapon', 'voidstone', 'legendary', '/equipment/voidstone_sword.png', 21, 21, '#301934', '#9400D3'),
+('e1010001-0001-0001-0021-000000000006', 'Voidstone Pickaxe', 'Voidstone Pickaxe', 'Beliung Batu Hampa', '虚空石镐', 'tool', 'voidstone', 'legendary', '/equipment/voidstone_pickaxe.png', 21, 21, '#301934', '#9400D3'),
+('e1010001-0001-0001-0021-000000000007', 'Voidstone Bow', 'Voidstone Bow', 'Busur Batu Hampa', '虚空石弓', 'ranged', 'voidstone', 'legendary', '/equipment/voidstone_bow.png', 21, 21, '#301934', '#9400D3'),
 
 -- =====================================================
--- UNIT 22: Dragon Tier (Legendary)
+-- UNIT 22: Dragonscale Tier (Legendary)
 -- Theme: Dragon scales and wings with fearsome power
 -- =====================================================
 
-('e1010001-0001-0001-0022-000000000001', 'Dragon Helmet', 'Dragon Helmet', 'Topi Naga', '龙头盔', 'helmet', 'dragon', 'legendary', '/equipment/dragon_helmet.png', 22, 22, '#800080', '#228B22'),
-('e1010001-0001-0001-0022-000000000002', 'Dragon Chestplate', 'Dragon Chestplate', 'Baju Naga', '龙胸甲', 'chestplate', 'dragon', 'legendary', '/equipment/dragon_chestplate.png', 22, 22, '#800080', '#228B22'),
-('e1010001-0001-0001-0022-000000000003', 'Dragon Leggings', 'Dragon Leggings', 'Seluar Naga', '龙护腿', 'leggings', 'dragon', 'legendary', '/equipment/dragon_leggings.png', 22, 22, '#800080', '#228B22'),
-('e1010001-0001-0001-0022-000000000004', 'Dragon Boots', 'Dragon Boots', 'Kasut Naga', '龙靴', 'boots', 'dragon', 'legendary', '/equipment/dragon_boots.png', 22, 22, '#800080', '#228B22'),
-('e1010001-0001-0001-0022-000000000005', 'Dragon Sword', 'Dragon Sword', 'Pedang Naga', '龙剑', 'weapon', 'dragon', 'legendary', '/equipment/dragon_sword.png', 22, 22, '#800080', '#228B22'),
-('e1010001-0001-0001-0022-000000000006', 'Dragon Pickaxe', 'Dragon Pickaxe', 'Beliung Naga', '龙镐', 'tool', 'dragon', 'legendary', '/equipment/dragon_pickaxe.png', 22, 22, '#800080', '#228B22'),
-('e1010001-0001-0001-0022-000000000007', 'Dragon Shield', 'Dragon Shield', 'Perisai Naga', '龙盾', 'shield', 'dragon', 'legendary', '/equipment/dragon_shield.png', 22, 22, '#800080', '#228B22'),
+('e1010001-0001-0001-0022-000000000001', 'Dragonscale Helmet', 'Dragonscale Helmet', 'Topi Sisik Naga', '龙鳞头盔', 'helmet', 'dragonscale', 'legendary', '/equipment/dragonscale_helmet.png', 22, 22, '#800080', '#228B22'),
+('e1010001-0001-0001-0022-000000000002', 'Dragonscale Chestplate', 'Dragonscale Chestplate', 'Baju Sisik Naga', '龙鳞胸甲', 'chestplate', 'dragonscale', 'legendary', '/equipment/dragonscale_chestplate.png', 22, 22, '#800080', '#228B22'),
+('e1010001-0001-0001-0022-000000000003', 'Dragonscale Leggings', 'Dragonscale Leggings', 'Seluar Sisik Naga', '龙鳞护腿', 'leggings', 'dragonscale', 'legendary', '/equipment/dragonscale_leggings.png', 22, 22, '#800080', '#228B22'),
+('e1010001-0001-0001-0022-000000000004', 'Dragonscale Boots', 'Dragonscale Boots', 'Kasut Sisik Naga', '龙鳞靴', 'boots', 'dragonscale', 'legendary', '/equipment/dragonscale_boots.png', 22, 22, '#800080', '#228B22'),
+('e1010001-0001-0001-0022-000000000005', 'Dragonscale Sword', 'Dragonscale Sword', 'Pedang Sisik Naga', '龙鳞剑', 'weapon', 'dragonscale', 'legendary', '/equipment/dragonscale_sword.png', 22, 22, '#800080', '#228B22'),
+('e1010001-0001-0001-0022-000000000006', 'Dragonscale Pickaxe', 'Dragonscale Pickaxe', 'Beliung Sisik Naga', '龙鳞镐', 'tool', 'dragonscale', 'legendary', '/equipment/dragonscale_pickaxe.png', 22, 22, '#800080', '#228B22'),
+('e1010001-0001-0001-0022-000000000007', 'Dragonscale Shield', 'Dragonscale Shield', 'Perisai Sisik Naga', '龙鳞盾', 'shield', 'dragonscale', 'legendary', '/equipment/dragonscale_shield.png', 22, 22, '#800080', '#228B22'),
 
 -- =====================================================
--- UNIT 23: Wither Tier (Legendary)
--- Theme: Dark skeleton boss with withering decay
+-- UNIT 23: Darkbone Tier (Legendary)
+-- Theme: Dark bone gear with ominous power
 -- =====================================================
 
-('e1010001-0001-0001-0023-000000000001', 'Wither Helmet', 'Wither Helmet', 'Topi Wither', '凋零头盔', 'helmet', 'wither', 'legendary', '/equipment/wither_helmet.png', 23, 23, '#1C1C1C', '#696969'),
-('e1010001-0001-0001-0023-000000000002', 'Wither Chestplate', 'Wither Chestplate', 'Baju Wither', '凋零胸甲', 'chestplate', 'wither', 'legendary', '/equipment/wither_chestplate.png', 23, 23, '#1C1C1C', '#696969'),
-('e1010001-0001-0001-0023-000000000003', 'Wither Leggings', 'Wither Leggings', 'Seluar Wither', '凋零护腿', 'leggings', 'wither', 'legendary', '/equipment/wither_leggings.png', 23, 23, '#1C1C1C', '#696969'),
-('e1010001-0001-0001-0023-000000000004', 'Wither Boots', 'Wither Boots', 'Kasut Wither', '凋零靴', 'boots', 'wither', 'legendary', '/equipment/wither_boots.png', 23, 23, '#1C1C1C', '#696969'),
-('e1010001-0001-0001-0023-000000000005', 'Wither Sword', 'Wither Sword', 'Pedang Wither', '凋零剑', 'weapon', 'wither', 'legendary', '/equipment/wither_sword.png', 23, 23, '#1C1C1C', '#696969'),
-('e1010001-0001-0001-0023-000000000006', 'Wither Pickaxe', 'Wither Pickaxe', 'Beliung Wither', '凋零镐', 'tool', 'wither', 'legendary', '/equipment/wither_pickaxe.png', 23, 23, '#1C1C1C', '#696969'),
-('e1010001-0001-0001-0023-000000000007', 'Wither Crossbow', 'Wither Crossbow', 'Busur Silang Wither', '凋零弩', 'ranged', 'wither', 'legendary', '/equipment/wither_crossbow.png', 23, 23, '#1C1C1C', '#696969'),
+('e1010001-0001-0001-0023-000000000001', 'Darkbone Helmet', 'Darkbone Helmet', 'Topi Tulang Gelap', '暗骨头盔', 'helmet', 'darkbone', 'legendary', '/equipment/darkbone_helmet.png', 23, 23, '#1C1C1C', '#696969'),
+('e1010001-0001-0001-0023-000000000002', 'Darkbone Chestplate', 'Darkbone Chestplate', 'Baju Tulang Gelap', '暗骨胸甲', 'chestplate', 'darkbone', 'legendary', '/equipment/darkbone_chestplate.png', 23, 23, '#1C1C1C', '#696969'),
+('e1010001-0001-0001-0023-000000000003', 'Darkbone Leggings', 'Darkbone Leggings', 'Seluar Tulang Gelap', '暗骨护腿', 'leggings', 'darkbone', 'legendary', '/equipment/darkbone_leggings.png', 23, 23, '#1C1C1C', '#696969'),
+('e1010001-0001-0001-0023-000000000004', 'Darkbone Boots', 'Darkbone Boots', 'Kasut Tulang Gelap', '暗骨靴', 'boots', 'darkbone', 'legendary', '/equipment/darkbone_boots.png', 23, 23, '#1C1C1C', '#696969'),
+('e1010001-0001-0001-0023-000000000005', 'Darkbone Sword', 'Darkbone Sword', 'Pedang Tulang Gelap', '暗骨剑', 'weapon', 'darkbone', 'legendary', '/equipment/darkbone_sword.png', 23, 23, '#1C1C1C', '#696969'),
+('e1010001-0001-0001-0023-000000000006', 'Darkbone Pickaxe', 'Darkbone Pickaxe', 'Beliung Tulang Gelap', '暗骨镐', 'tool', 'darkbone', 'legendary', '/equipment/darkbone_pickaxe.png', 23, 23, '#1C1C1C', '#696969'),
+('e1010001-0001-0001-0023-000000000007', 'Darkbone Crossbow', 'Darkbone Crossbow', 'Busur Silang Tulang Gelap', '暗骨弩', 'ranged', 'darkbone', 'legendary', '/equipment/darkbone_crossbow.png', 23, 23, '#1C1C1C', '#696969'),
 
 -- =====================================================
 -- UNIT 24: Phoenix Tier (Legendary)

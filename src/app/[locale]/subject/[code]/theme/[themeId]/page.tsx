@@ -159,7 +159,7 @@ export default async function ThemePage({
       <header className="w-full p-4 flex justify-between items-center">
         <Link href={`/${locale}/dashboard?kid=${kidId}`} className="flex items-center gap-3">
           <img src="/logo.jpeg" alt="MYLearnt" className="h-12 w-auto rounded-lg" />
-          <span className="text-white font-bold text-xl drop-shadow-lg minecraft-font">MYLearnt</span>
+          <span className="text-white font-bold text-xl drop-shadow-lg pixel-font">MYLearnt</span>
         </Link>
         <div className="flex items-center gap-4">
           {/* Avatar + Character Link */}
@@ -213,7 +213,7 @@ export default async function ThemePage({
           </div>
 
           {/* Theme Header */}
-          <div className="minecraft-card mb-6">
+          <div className="pixel-card mb-6">
             <div className="flex items-center gap-4">
               <div
                 className="w-16 h-16 rounded-lg flex items-center justify-center text-4xl"
@@ -246,7 +246,7 @@ export default async function ThemePage({
                     key={activity.id}
                     href={isLocked ? '#' : `/${locale}/activity/${activity.id}?kid=${kidId}`}
                     prefetch={!isLocked}
-                    className={`minecraft-card block transition-all ${
+                    className={`pixel-card block transition-all ${
                       isLocked
                         ? 'opacity-60 cursor-not-allowed'
                         : 'hover:scale-[1.02] cursor-pointer'
@@ -301,7 +301,7 @@ export default async function ThemePage({
                 );
               })
             ) : (
-              <div className="minecraft-card text-center py-8">
+              <div className="pixel-card text-center py-8">
                 <p className="text-gray-600">
                   {locale === 'ms' ? 'Tiada aktiviti lagi' : locale === 'zh' ? '暂无活动' : 'No activities yet'}
                 </p>

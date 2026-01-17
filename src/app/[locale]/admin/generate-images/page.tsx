@@ -109,7 +109,7 @@ export default function GenerateImagesPage() {
         </div>
 
         {/* Stats Card */}
-        <div className="minecraft-card mb-6">
+        <div className="pixel-card mb-6">
           <div className="grid grid-cols-4 gap-4 text-center">
             <div>
               <p className="text-3xl font-bold text-gray-800">{totalWords}</p>
@@ -131,7 +131,7 @@ export default function GenerateImagesPage() {
         </div>
 
         {/* Controls */}
-        <div className="minecraft-card mb-6">
+        <div className="pixel-card mb-6">
           <div className="flex items-center gap-4 mb-4">
             <label className="text-gray-700">
               Batch Size:
@@ -161,7 +161,7 @@ export default function GenerateImagesPage() {
             <button
               onClick={generateBatch}
               disabled={generating || currentIndex >= totalWords}
-              className={`minecraft-button px-6 py-2 ${generating ? 'opacity-50' : ''}`}
+              className={`pixel-button px-6 py-2 ${generating ? 'opacity-50' : ''}`}
             >
               {generating ? 'Generating...' : `Generate Batch (${batchSize})`}
             </button>
@@ -189,7 +189,7 @@ export default function GenerateImagesPage() {
         </div>
 
         {/* Vocabulary Preview */}
-        <div className="minecraft-card mb-6">
+        <div className="pixel-card mb-6">
           <h2 className="text-xl font-bold text-gray-800 mb-4">Vocabulary List</h2>
           <div className="max-h-60 overflow-y-auto">
             <div className="grid grid-cols-3 gap-2">
@@ -216,7 +216,7 @@ export default function GenerateImagesPage() {
 
         {/* Results */}
         {results.length > 0 && (
-          <div className="minecraft-card">
+          <div className="pixel-card">
             <h2 className="text-xl font-bold text-gray-800 mb-4">Generated Images</h2>
             <div className="grid grid-cols-4 gap-4">
               {results.map((result, idx) => (

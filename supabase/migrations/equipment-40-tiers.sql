@@ -9,13 +9,13 @@ ALTER TABLE equipment DROP CONSTRAINT IF EXISTS equipment_tier_check;
 
 ALTER TABLE equipment ADD CONSTRAINT equipment_tier_check CHECK (tier IN (
   -- Classic Tiers (Units 1-6)
-  'wood', 'leather', 'stone', 'chain', 'iron', 'gold', 'diamond', 'netherite',
+  'wood', 'leather', 'stone', 'chain', 'iron', 'gold', 'diamond', 'darksteel',
   -- Enchanted Tiers (Units 7-12)
-  'enchanted_iron', 'enchanted_gold', 'enchanted_diamond', 'enchanted_netherite', 'prismarine', 'amethyst',
+  'enchanted_iron', 'enchanted_gold', 'enchanted_diamond', 'enchanted_darksteel', 'seafoam', 'amethyst',
   -- Elemental Tiers (Units 13-20)
-  'blaze', 'frost', 'storm', 'emerald', 'obsidian', 'redstone', 'lapis', 'glowstone',
+  'blaze', 'frost', 'storm', 'emerald', 'obsidian', 'crimsonite', 'lapis', 'luminite',
   -- Mythic Tiers (Units 21-30)
-  'ender', 'dragon', 'wither', 'phoenix', 'titan', 'shadow', 'radiant', 'ancient', 'celestial', 'void',
+  'voidstone', 'dragonscale', 'darkbone', 'phoenix', 'titan', 'shadow', 'radiant', 'ancient', 'celestial', 'void',
   -- Ultimate Tiers (Units 31-40)
   'heroic', 'mythical', 'immortal', 'divine', 'cosmic', 'eternal', 'ascended', 'supreme', 'omega', 'infinity'
 ));

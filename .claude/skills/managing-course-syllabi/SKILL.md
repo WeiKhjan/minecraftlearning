@@ -5,7 +5,7 @@ description: Manages and generates course syllabus content for the MYLearnt educ
 
 # Managing Course Syllabi
 
-Creates and manages educational content for the MYLearnt Minecraft-themed learning platform.
+Creates and manages educational content for the MYLearnt 8-bit warrior RPG-themed learning platform.
 
 ## Quick Start
 

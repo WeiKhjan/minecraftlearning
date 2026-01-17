@@ -156,7 +156,7 @@ Generate a short, encouraging message (1 sentence) for a primary school kid name
 They have completed ${currentStreak} activities in a row!
 Language: ${locale === 'ms' ? 'Bahasa Malaysia' : locale === 'zh' ? 'Simplified Chinese' : 'English'}
 
-Make it fun and motivating! You can mention Minecraft themes like mining, crafting, or adventures.
+Make it fun and motivating! You can mention 8-bit RPG themes like quests, treasure hunting, or heroic adventures.
 Return ONLY the message text, no quotes or formatting.
 `;
 
