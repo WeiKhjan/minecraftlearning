@@ -53,7 +53,7 @@ export default async function CharacterPage({
   ] = await Promise.all([
     supabase
       .from('kid_equipped')
-      .select('*, helmet:helmet_id(*), chestplate:chestplate_id(*), leggings:leggings_id(*), boots:boots_id(*), weapon:weapon_id(*), pet:pet_id(*)')
+      .select('*, helmet:helmet_id(*), chestplate:chestplate_id(*), leggings:leggings_id(*), boots:boots_id(*), weapon:weapon_id(*), tool:tool_id(*), ranged:ranged_id(*), shield:shield_id(*), pet:pet_id(*)')
       .eq('kid_id', kidId)
       .maybeSingle(),
     supabase
@@ -90,7 +90,7 @@ export default async function CharacterPage({
     const { data: newEquipped } = await supabase
       .from('kid_equipped')
       .insert({ kid_id: kidId })
-      .select('*, helmet:helmet_id(*), chestplate:chestplate_id(*), leggings:leggings_id(*), boots:boots_id(*), weapon:weapon_id(*), pet:pet_id(*)')
+      .select('*, helmet:helmet_id(*), chestplate:chestplate_id(*), leggings:leggings_id(*), boots:boots_id(*), weapon:weapon_id(*), tool:tool_id(*), ranged:ranged_id(*), shield:shield_id(*), pet:pet_id(*)')
       .single();
     equipped = newEquipped;
   }
