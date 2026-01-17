@@ -76,7 +76,7 @@ export default function WritingActivity({ content, avatarUrl, locale, onComplete
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-2">
       {/* Loading Overlay during analysis */}
       <LoadingOverlay
         isLoading={isAnalyzing}
@@ -86,7 +86,7 @@ export default function WritingActivity({ content, avatarUrl, locale, onComplete
       />
 
       {/* Instruction */}
-      <p className="text-center text-gray-600">
+      <p className="text-center text-gray-600 text-sm">
         {isLetterMode
           ? (locale === 'ms' ? 'Tulis huruf yang ditunjukkan' :
               locale === 'zh' ? '写出显示的字母' :
@@ -99,44 +99,44 @@ export default function WritingActivity({ content, avatarUrl, locale, onComplete
 
       {/* Progress */}
       <div className="flex justify-center items-center gap-2">
-        <span className="text-sm text-gray-500">
+        <span className="text-xs text-gray-500">
           {completedItems.size}/{items.length}
         </span>
-        <div className="w-48 h-2 bg-gray-200 rounded-full">
+        <div className="w-32 h-1.5 bg-gray-200 rounded-full">
           <div
-            className="h-2 bg-[#5D8731] rounded-full transition-all"
+            className="h-1.5 bg-[#5D8731] rounded-full transition-all"
             style={{ width: `${(completedItems.size / items.length) * 100}%` }}
           />
         </div>
       </div>
 
       {/* Current Item Display */}
-      <div className={`text-center py-6 rounded-lg transition-all ${
+      <div className={`text-center py-3 rounded-lg transition-all ${
         feedback === 'correct' ? 'bg-green-500' :
         feedback === 'wrong' ? 'bg-red-500' :
         'bg-[#5D8731]'
       } text-white`}>
-        <div className="flex items-center justify-center gap-4">
-          <p className={`font-bold ${isLetterMode ? 'text-6xl' : 'text-4xl'}`}>{currentItem}</p>
+        <div className="flex items-center justify-center gap-3">
+          <p className={`font-bold ${isLetterMode ? 'text-4xl' : 'text-3xl'}`}>{currentItem}</p>
           <VoiceTutorButton
             text={currentItem}
             locale={locale}
-            size="md"
+            size="sm"
             contentType={isLetterMode ? 'letter' : 'word'}
           />
         </div>
         {currentWord && (
-          <p className="text-sm opacity-80 mt-2">({getWordMeaning()})</p>
+          <p className="text-xs opacity-80 mt-1">({getWordMeaning()})</p>
         )}
 
         {/* Feedback message */}
         {feedback === 'correct' && (
-          <p className="mt-2 text-lg font-bold animate-bounce">
+          <p className="mt-1 text-base font-bold animate-bounce">
             {locale === 'ms' ? 'Betul! Bagus!' : locale === 'zh' ? '正确！很好！' : 'Correct! Great!'}
           </p>
         )}
         {feedback === 'wrong' && (
-          <p className="mt-2 text-lg font-bold">
+          <p className="mt-1 text-base font-bold">
             {locale === 'ms' ? 'Cuba lagi!' : locale === 'zh' ? '再试一次！' : 'Try again!'}
           </p>
         )}
@@ -150,15 +150,16 @@ export default function WritingActivity({ content, avatarUrl, locale, onComplete
         disabled={feedback !== null}
         contentType={isLetterMode ? 'letter' : 'word'}
         onAnalyzingChange={setIsAnalyzing}
+        compact={true}
       />
 
       {/* Completed Items */}
       {completedItems.size > 0 && (
-        <div className="flex flex-wrap justify-center gap-2">
+        <div className="flex flex-wrap justify-center gap-1.5">
           {Array.from(completedItems).map(idx => (
             <span
               key={idx}
-              className="bg-green-500 text-white px-3 py-1 rounded font-bold"
+              className="bg-green-500 text-white px-2 py-0.5 rounded text-sm font-bold"
             >
               {items[idx]} ✓
             </span>
@@ -168,7 +169,7 @@ export default function WritingActivity({ content, avatarUrl, locale, onComplete
 
       {/* Mistakes Counter */}
       {mistakes > 0 && (
-        <p className="text-center text-sm text-red-500">
+        <p className="text-center text-xs text-red-500">
           {locale === 'ms' ? 'Kesilapan: ' : locale === 'zh' ? '错误：' : 'Mistakes: '}{mistakes}
         </p>
       )}
