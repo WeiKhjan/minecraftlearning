@@ -12,6 +12,11 @@ const intlMiddleware = createMiddleware({
 export async function middleware(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
 
+  // Skip middleware for static PWA files
+  if (pathname === '/manifest.json' || pathname === '/sw.js') {
+    return NextResponse.next();
+  }
+
   // Skip i18n middleware for auth callback routes
   if (pathname.startsWith('/auth/')) {
     return await updateSession(request);
