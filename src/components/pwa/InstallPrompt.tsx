@@ -39,11 +39,6 @@ export function InstallPrompt() {
 
     window.addEventListener('beforeinstallprompt', handler);
 
-    // Register service worker
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('/sw.js').catch(console.error);
-    }
-
     return () => {
       window.removeEventListener('beforeinstallprompt', handler);
     };

@@ -33,11 +33,7 @@ export async function middleware(request: NextRequest) {
 
 export const config = {
   matcher: [
-    // Only match locale routes and auth routes
-    // Skip all static files and API routes
-    '/(ms|zh|en)/:path*',
-    '/auth/:path*',
-    // Match root to redirect to default locale
-    '/',
+    // Match all paths except static files
+    '/((?!_next/static|_next/image|favicon.ico|manifest.json|sw.js|.*\\.(?:svg|png|jpg|jpeg|gif|webp|css|js|json|mp4|mp3|wav|woff|woff2|ttf|eot)$).*)',
   ],
 };

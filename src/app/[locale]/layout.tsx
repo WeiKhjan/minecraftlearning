@@ -4,6 +4,7 @@ import { notFound } from 'next/navigation';
 import { routing } from '@/i18n/routing';
 import { Geist, Geist_Mono } from 'next/font/google';
 import { InstallPrompt } from '@/components/pwa/InstallPrompt';
+import { ServiceWorkerRegistration } from '@/components/pwa/ServiceWorkerRegistration';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -37,6 +38,7 @@ export default async function LocaleLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen`}
       >
+        <ServiceWorkerRegistration />
         <NextIntlClientProvider messages={messages}>
           {/* Landscape orientation hint for mobile */}
           <div className="landscape-hint md:hidden">
