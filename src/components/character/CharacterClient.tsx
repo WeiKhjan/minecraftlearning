@@ -742,7 +742,7 @@ export default function CharacterClient({
               {inventory.length > 0 ? (
                 inventory.map(inv => (
                   <div key={inv.id} className="flex items-center gap-2 p-2 bg-white rounded-lg border border-gray-200">
-                    <div className="w-10 h-10 rounded flex items-center justify-center" style={{ backgroundColor: tierBgColors[inv.equipment.tier] }}>
+                    <div className="w-10 h-10 rounded flex items-center justify-center" style={{ backgroundColor: getTierBgColor(inv.equipment.tier) }}>
                       <Image src={getEquipmentImageUrl(inv.equipment.tier, inv.equipment.slot)} alt={getEquipmentName(inv.equipment, locale)} width={32} height={32} className="object-contain" />
                     </div>
                     <div className="flex-1 min-w-0">
