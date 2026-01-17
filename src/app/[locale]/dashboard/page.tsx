@@ -194,31 +194,18 @@ export default async function DashboardPage({
           <span className="text-white font-bold text-xl drop-shadow-lg minecraft-font">MYLearnt</span>
         </Link>
         <div className="flex items-center gap-4">
-          {/* Avatar + Character Link */}
-          <div className="flex items-center gap-2">
-            {kid.generated_avatar_url && (
-              <Link href={`/${locale}/character?kid=${kidId}`} prefetch={true}>
-                <div className="w-10 h-10 rounded-full overflow-hidden border-2 border-white/50 hover:border-white transition-all">
-                  <img
-                    src={kid.generated_avatar_url}
-                    alt={kid.name}
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-              </Link>
-            )}
-            <Link
-              href={`/${locale}/character?kid=${kidId}`}
-              prefetch={true}
-              className="flex items-center gap-1 bg-white/20 hover:bg-white/30 px-3 py-1.5 rounded-full text-white text-sm transition-all"
-              title={locale === 'ms' ? 'Watak Saya' : locale === 'zh' ? '我的角色' : 'My Character'}
-            >
-              <span>🧑</span>
-              <span className="hidden sm:inline">
-                {locale === 'ms' ? 'Watak' : locale === 'zh' ? '角色' : 'Character'}
-              </span>
+          {/* Avatar Link to Character Page */}
+          {kid.generated_avatar_url && (
+            <Link href={`/${locale}/character?kid=${kidId}`} prefetch={true} title={locale === 'ms' ? 'Watak Saya' : locale === 'zh' ? '我的角色' : 'My Character'}>
+              <div className="w-10 h-10 rounded-full overflow-hidden border-2 border-white/50 hover:border-white hover:scale-110 transition-all">
+                <img
+                  src={kid.generated_avatar_url}
+                  alt={kid.name}
+                  className="w-full h-full object-cover"
+                />
+              </div>
             </Link>
-          </div>
+          )}
           <LanguageSwitcher />
           <Link
             href={`/${locale}/kids`}
