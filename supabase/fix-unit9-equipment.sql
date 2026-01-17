@@ -12,7 +12,7 @@ INSERT INTO equipment (name, name_ms, name_zh, name_en, slot, tier, rarity, requ
 ('Chain Vest', 'Vest Rantai', '锁链背心', 'Chain Vest', 'chestplate', 'chain', 'common', 9, '/equipment/chain_vest.png'),
 ('Chain Pants', 'Seluar Rantai Panjang', '锁链长裤', 'Chain Pants', 'leggings', 'chain', 'common', 9, '/equipment/chain_pants.png'),
 ('Chain Shoes', 'Kasut Rantai Ringan', '锁链轻便鞋', 'Chain Shoes', 'boots', 'chain', 'common', 9, '/equipment/chain_shoes.png'),
-('Stone Axe', 'Kapak Batu', '石斧', 'Stone Axe', 'weapon', 'chain', 'common', 9, '/equipment/stone_axe.png')
+('Stone Axe', 'Kapak Batu', '石斧', 'Stone Axe', 'weapon', 'stone', 'common', 9, '/equipment/stone_weapon.png')
 ON CONFLICT DO NOTHING;
 
 -- =====================
