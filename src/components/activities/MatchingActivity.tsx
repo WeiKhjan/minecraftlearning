@@ -5,6 +5,49 @@ import VoiceTutorButton from '@/components/voice/VoiceTutorButton';
 import { getImageUrl } from '@/lib/utils';
 import type { ActivityContent, Locale, MatchingContent } from '@/types';
 
+// Emoji fallbacks for common vocabulary words
+const EMOJI_FALLBACKS: Record<string, string> = {
+  // Animals
+  ayam: '🐔', chicken: '🐔',
+  itik: '🦆', duck: '🦆',
+  unta: '🐪', camel: '🐪',
+  kucing: '🐱', cat: '🐱',
+  anjing: '🐕', dog: '🐕',
+  ikan: '🐟', fish: '🐟',
+  burung: '🐦', bird: '🐦',
+  gajah: '🐘', elephant: '🐘',
+  singa: '🦁', lion: '🦁',
+  arnab: '🐰', rabbit: '🐰',
+  // Food
+  oren: '🍊', orange: '🍊',
+  epal: '🍎', apple: '🍎',
+  pisang: '🍌', banana: '🍌',
+  nasi: '🍚', rice: '🍚',
+  roti: '🍞', bread: '🍞',
+  susu: '🥛', milk: '🥛',
+  air: '💧', water: '💧',
+  // People
+  emak: '👩', ibu: '👩', mother: '👩', mom: '👩',
+  ayah: '👨', bapa: '👨', father: '👨', dad: '👨',
+  adik: '👧', sister: '👧', brother: '👦',
+  kakak: '👧', abang: '👦',
+  nenek: '👵', grandmother: '👵',
+  datuk: '👴', grandfather: '👴',
+  // Objects
+  buku: '📚', book: '📚',
+  pen: '🖊️', pensil: '✏️', pencil: '✏️',
+  meja: '🪑', table: '🪑',
+  kerusi: '🪑', chair: '🪑',
+  rumah: '🏠', house: '🏠',
+  kereta: '🚗', car: '🚗',
+  bola: '⚽', ball: '⚽',
+  bunga: '🌸', flower: '🌸',
+  pokok: '🌳', tree: '🌳',
+  matahari: '☀️', sun: '☀️',
+  bulan: '🌙', moon: '🌙',
+  bintang: '⭐', star: '⭐',
+};
+
 interface MatchingActivityProps {
   content: ActivityContent;
   kidName: string;
@@ -18,6 +61,22 @@ interface NormalizedPair {
   image?: string;
   word: string; // The word to display
   audioUrl?: string; // Pre-generated audio URL
+  emoji?: string; // Fallback emoji
+}
+
+// Get emoji fallback from word
+function getEmojiFallback(word: string, image?: string): string | undefined {
+  // Extract word from image path if available (e.g., "/images/ayam.png" -> "ayam")
+  if (image) {
+    const match = image.match(/\/([^/]+)\.(png|jpg|jpeg|gif|webp)$/i);
+    if (match) {
+      const imageName = match[1].toLowerCase();
+      if (EMOJI_FALLBACKS[imageName]) return EMOJI_FALLBACKS[imageName];
+    }
+  }
+  // Try word directly
+  const lowerWord = word.toLowerCase();
+  return EMOJI_FALLBACKS[lowerWord];
 }
 
 export default function MatchingActivity({ content, locale, onComplete }: MatchingActivityProps) {
@@ -28,7 +87,8 @@ export default function MatchingActivity({ content, locale, onComplete }: Matchi
   const pairs: NormalizedPair[] = rawPairs.map(p => {
     const key = p.letter || p.syllable || p.word || '';
     const word = getLocalizedWord(p, locale);
-    return { key, image: p.image, word, audioUrl: p.audio_url };
+    const emoji = getEmojiFallback(word, p.image);
+    return { key, image: p.image, word, audioUrl: p.audio_url, emoji };
   });
 
   const [selectedKey, setSelectedKey] = useState<string | null>(null);
@@ -183,10 +243,27 @@ export default function MatchingActivity({ content, locale, onComplete }: Matchi
                   }
                 `}
               >
-                {pair.image ? (
-                  <img src={getImageUrl(pair.image)} alt="" className="w-12 h-12 object-contain" />
-                ) : (
-                  <span className="text-3xl">📷</span>
+                {pair.emoji ? (
+                  <span className="text-4xl">{pair.emoji}</span>
+                ) : pair.image ? (
+                  <img
+                    src={getImageUrl(pair.image)}
+                    alt=""
+                    className="w-12 h-12 object-contain"
+                    onError={(e) => {
+                      // Hide broken image
+                      e.currentTarget.style.display = 'none';
+                      // Show fallback text
+                      const fallback = e.currentTarget.nextElementSibling;
+                      if (fallback) fallback.classList.remove('hidden');
+                    }}
+                  />
+                ) : null}
+                {pair.image && !pair.emoji && (
+                  <span className="hidden text-sm font-medium text-gray-600">{pair.word}</span>
+                )}
+                {!pair.image && !pair.emoji && (
+                  <span className="text-sm font-medium text-gray-600">{pair.word}</span>
                 )}
               </button>
             );
