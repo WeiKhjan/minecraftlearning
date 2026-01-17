@@ -719,7 +719,7 @@ export default function CharacterClient({
                   getInventoryForSlot(selectedSlot).map(equipment => (
                     <button key={equipment.id} onClick={() => handleEquip(equipment)} disabled={isUpdating}
                       className="w-full flex items-center gap-2 p-2 bg-white hover:bg-gray-50 rounded-lg border border-gray-200 hover:border-[#5D8731] transition-all disabled:opacity-50 text-left">
-                      <div className="w-10 h-10 rounded flex items-center justify-center" style={{ backgroundColor: tierBgColors[equipment.tier] }}>
+                      <div className="w-10 h-10 rounded flex items-center justify-center" style={{ backgroundColor: getTierBgColor(equipment.tier) }}>
                         <Image src={getEquipmentImageUrl(equipment.tier, equipment.slot)} alt={getEquipmentName(equipment, locale)} width={32} height={32} className="object-contain" />
                       </div>
                       <div className="flex-1 min-w-0">
