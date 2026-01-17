@@ -18,6 +18,12 @@ export const metadata: Metadata = {
   description: 'A gamified learning platform for Malaysian primary school kids',
   keywords: ['education', 'learning', 'kids', '8-bit', 'pixel art', 'rpg', 'malaysia', 'primary school'],
   authors: [{ name: 'MYLearnt' }],
+  manifest: '/manifest.json',
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: 'black-translucent',
+    title: 'MYLearnt',
+  },
   openGraph: {
     title: 'MYLearnt',
     description: 'A gamified learning platform for Malaysian primary school kids',
