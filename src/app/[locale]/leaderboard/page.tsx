@@ -2,9 +2,20 @@ import { createClient } from '@/lib/supabase/server';
 import { redirect } from 'next/navigation';
 import { getTranslations } from 'next-intl/server';
 import Link from 'next/link';
-import Image from 'next/image';
 import LanguageSwitcher from '@/components/i18n/LanguageSwitcher';
 import type { Locale } from '@/types';
+
+// Type for leaderboard kid data from RPC function
+interface LeaderboardKid {
+  id: string;
+  name: string;
+  avatar_seed: string | null;
+  generated_avatar_url: string | null;
+  level: number;
+  total_xp: number;
+  grade: string;
+  school: string | null;
+}
 
 // Grade display mapping
 const gradeLabels: Record<string, { ms: string; zh: string; en: string }> = {
@@ -160,7 +171,7 @@ export default async function LeaderboardPage({
 
             {/* Table Body */}
             <div className="divide-y divide-gray-100 max-h-[60vh] overflow-y-auto">
-              {allKids?.map((kid, index) => {
+              {(allKids as LeaderboardKid[] | null)?.map((kid: LeaderboardKid, index: number) => {
                 const rank = index + 1;
                 const rankStyle = getRankStyle(rank);
                 const stats = statsMap.get(kid.id) || { completed: 0, stars: 0 };
