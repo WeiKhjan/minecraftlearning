@@ -32,8 +32,7 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: [
-    // Match all paths except static files
-    '/((?!_next/static|_next/image|favicon.ico|manifest.json|sw.js|.*\\.(?:svg|png|jpg|jpeg|gif|webp|css|js|json|mp4|mp3|wav|woff|woff2|ttf|eot)$).*)',
-  ],
+  // Match all routes except static files (files with extensions) and internal routes
+  // The pattern .*\\..* matches any path containing a dot (static files)
+  matcher: ['/((?!api|_next|_vercel|.*\\..*).*)'],
 };
