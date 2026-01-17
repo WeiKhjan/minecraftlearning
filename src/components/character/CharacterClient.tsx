@@ -389,6 +389,9 @@ export default function CharacterClient({
         leggings: equipped?.leggings ? { name: equipped.leggings.name, tier: equipped.leggings.tier } : null,
         boots: equipped?.boots ? { name: equipped.boots.name, tier: equipped.boots.tier } : null,
         weapon: equipped?.weapon ? { name: equipped.weapon.name, tier: equipped.weapon.tier } : null,
+        tool: equipped?.tool ? { name: equipped.tool.name, tier: equipped.tool.tier } : null,
+        ranged: equipped?.ranged ? { name: equipped.ranged.name, tier: equipped.ranged.tier } : null,
+        shield: equipped?.shield ? { name: equipped.shield.name, tier: equipped.shield.tier } : null,
       };
 
       // Include equipped pet in avatar generation
