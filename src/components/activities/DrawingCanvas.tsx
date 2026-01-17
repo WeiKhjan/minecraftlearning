@@ -11,6 +11,7 @@ interface DrawingCanvasProps {
   contentType?: 'letter' | 'word';  // Type of content
   onAnalyzingChange?: (isAnalyzing: boolean) => void;  // Callback for parent loading overlay
   showWatermark?: boolean;  // Whether to show faint guide text (default: true, set false for dictation)
+  compact?: boolean;  // Use smaller height for single-page layout
 }
 
 interface Point {
@@ -26,6 +27,7 @@ export default function DrawingCanvas({
   contentType,
   onAnalyzingChange,
   showWatermark = true,
+  compact = false,
 }: DrawingCanvasProps) {
   // Auto-detect content type if not provided
   const isWord = contentType === 'word' || expectedLetter.length > 1;
@@ -235,15 +237,20 @@ export default function DrawingCanvas({
     }
   }, [hasDrawn, expectedLetter, locale, isWord, onRecognized, onAnalyzingChange]);
 
+  // Determine canvas height based on content type and compact mode
+  const canvasHeight = compact
+    ? (isWord ? 'h-36' : 'h-32')
+    : (isWord ? 'h-56' : 'h-48');
+
   return (
-    <div className="space-y-4">
+    <div className={compact ? "space-y-1" : "space-y-4"}>
       {/* Canvas - taller for words */}
       <div className="relative">
         <canvas
           ref={canvasRef}
           className={`w-full bg-white rounded-lg border-4 ${
             disabled ? 'border-gray-300 opacity-50' : 'border-[#5D8731]'
-          } touch-none ${isWord ? 'h-56' : 'h-48'}`}
+          } touch-none ${canvasHeight}`}
           style={{ touchAction: 'none' }}
           onMouseDown={handleStart}
           onMouseMove={handleMove}
@@ -271,7 +278,7 @@ export default function DrawingCanvas({
       </div>
 
       {/* Instructions */}
-      <p className="text-center text-sm text-gray-500">
+      <p className={`text-center text-gray-500 ${compact ? 'text-xs' : 'text-sm'}`}>
         {isWord
           ? (locale === 'ms' ? 'Tulis perkataan di atas' :
               locale === 'zh' ? '在上面写单词' :
@@ -283,18 +290,18 @@ export default function DrawingCanvas({
       </p>
 
       {/* Buttons */}
-      <div className="flex justify-center gap-4">
+      <div className={`flex justify-center ${compact ? 'gap-2' : 'gap-4'}`}>
         <button
           onClick={handleClear}
           disabled={disabled || isAnalyzing || !hasDrawn}
-          className="px-6 py-2 bg-gray-200 hover:bg-gray-300 text-gray-700 rounded-lg font-bold transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+          className={`${compact ? 'px-4 py-1.5 text-sm' : 'px-6 py-2'} bg-gray-200 hover:bg-gray-300 text-gray-700 rounded-lg font-bold transition-all disabled:opacity-50 disabled:cursor-not-allowed`}
         >
           {locale === 'ms' ? 'Padam' : locale === 'zh' ? '清除' : 'Clear'}
         </button>
         <button
           onClick={handleSubmit}
           disabled={disabled || isAnalyzing || !hasDrawn}
-          className="px-6 py-2 bg-[#5D8731] hover:bg-[#4A6B27] text-white rounded-lg font-bold transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+          className={`${compact ? 'px-4 py-1.5 text-sm' : 'px-6 py-2'} bg-[#5D8731] hover:bg-[#4A6B27] text-white rounded-lg font-bold transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2`}
         >
           {isAnalyzing && <span className="animate-spin">⏳</span>}
           {locale === 'ms' ? 'Hantar' : locale === 'zh' ? '提交' : 'Submit'}

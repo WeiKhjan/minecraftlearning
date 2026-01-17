@@ -26,7 +26,7 @@ export default function DictationActivity({ content, avatarUrl, locale, onComple
   const [hasPlayed, setHasPlayed] = useState(false);
   const [isPlayingPregen, setIsPlayingPregen] = useState(false);
 
-  const { speakDirect, stop, isLoading: isSpeaking } = useVoiceTutor({ locale });
+  const { speakDirect, stop, isLoading: isSpeaking, error: ttsError } = useVoiceTutor({ locale });
 
   const currentWord = words[currentIndex];
 
@@ -119,10 +119,16 @@ export default function DictationActivity({ content, avatarUrl, locale, onComple
     en: 'Listen Again',
   };
 
+  const audioErrorText = {
+    ms: 'Tidak dapat memainkan audio. Cuba lagi.',
+    zh: '无法播放音频。请重试。',
+    en: 'Unable to play audio. Please try again.',
+  };
+
   const isPlayingAudio = isSpeaking || isPlayingPregen;
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-2">
       <LoadingOverlay
         isLoading={isAnalyzing || isPlayingAudio}
         avatarUrl={avatarUrl}
@@ -130,37 +136,37 @@ export default function DictationActivity({ content, avatarUrl, locale, onComple
         message={isAnalyzing ? analyzingMessage[locale] : speakingMessage[locale]}
       />
 
-      {/* Instruction */}
-      <p className="text-center text-gray-600">
-        {instructionText[locale]}
-      </p>
-
-      {/* Progress */}
-      <div className="flex justify-center items-center gap-2">
-        <span className="text-sm text-gray-500">
-          {completedItems.size}/{words.length}
-        </span>
-        <div className="w-48 h-2 bg-gray-200 rounded-full">
-          <div
-            className="h-2 bg-[#5D8731] rounded-full transition-all"
-            style={{ width: `${(completedItems.size / words.length) * 100}%` }}
-          />
+      {/* Instruction + Progress in one row */}
+      <div className="flex justify-between items-center">
+        <p className="text-sm text-gray-600">
+          {instructionText[locale]}
+        </p>
+        <div className="flex items-center gap-2">
+          <span className="text-xs text-gray-500">
+            {completedItems.size}/{words.length}
+          </span>
+          <div className="w-24 h-1.5 bg-gray-200 rounded-full">
+            <div
+              className="h-1.5 bg-[#5D8731] rounded-full transition-all"
+              style={{ width: `${(completedItems.size / words.length) * 100}%` }}
+            />
+          </div>
         </div>
       </div>
 
-      {/* Audio Play Section */}
-      <div className={`text-center py-8 rounded-lg transition-all ${
+      {/* Audio Play Section - Compact */}
+      <div className={`text-center py-3 rounded-lg transition-all ${
         feedback === 'correct' ? 'bg-green-500' :
         feedback === 'wrong' ? 'bg-red-500' :
         'bg-[#5D8731]'
       } text-white`}>
         {feedback === null && (
-          <>
+          <div className="flex items-center justify-center gap-4">
             <button
               onClick={handlePlayAudio}
               disabled={isPlayingAudio}
               className={`
-                w-24 h-24 rounded-full flex items-center justify-center mx-auto
+                w-14 h-14 rounded-full flex items-center justify-center
                 transition-all duration-200
                 ${isPlayingAudio
                   ? 'bg-white/30 animate-pulse'
@@ -168,37 +174,44 @@ export default function DictationActivity({ content, avatarUrl, locale, onComple
                 }
               `}
             >
-              <span className="text-5xl">{isPlayingAudio ? '🔊' : '🔈'}</span>
+              <span className="text-3xl">{isPlayingAudio ? '🔊' : '🔈'}</span>
             </button>
-            <p className="mt-4 text-lg font-bold">
+            <p className="text-base font-bold">
               {hasPlayed ? playAgainText[locale] : playButtonText[locale]}
             </p>
-          </>
+          </div>
         )}
 
         {feedback === 'correct' && (
-          <div className="py-4">
-            <p className="text-4xl mb-2">{currentWord.word}</p>
-            <p className="text-lg font-bold animate-bounce">
+          <div className="py-2">
+            <p className="text-2xl mb-1">{currentWord.word}</p>
+            <p className="text-base font-bold animate-bounce">
               {locale === 'ms' ? 'Betul! Bagus!' : locale === 'zh' ? '正确！很好！' : 'Correct! Great!'}
             </p>
           </div>
         )}
 
         {feedback === 'wrong' && (
-          <div className="py-4">
-            <p className="text-lg font-bold">
+          <div className="py-2">
+            <p className="text-base font-bold">
               {locale === 'ms' ? 'Cuba lagi!' : locale === 'zh' ? '再试一次！' : 'Try again!'}
             </p>
             <button
               onClick={handlePlayAudio}
-              className="mt-2 bg-white/20 hover:bg-white/30 px-4 py-2 rounded-lg"
+              className="mt-1 bg-white/20 hover:bg-white/30 px-3 py-1 rounded-lg text-sm"
             >
               🔊 {playAgainText[locale]}
             </button>
           </div>
         )}
       </div>
+
+      {/* TTS Error Message */}
+      {ttsError && (
+        <div className="bg-red-100 border border-red-400 text-red-700 px-3 py-2 rounded text-center text-sm">
+          {audioErrorText[locale]}
+        </div>
+      )}
 
       {/* Drawing Canvas - no watermark for dictation (child should only hear, not see) */}
       <DrawingCanvas
@@ -209,36 +222,37 @@ export default function DictationActivity({ content, avatarUrl, locale, onComple
         contentType="word"
         onAnalyzingChange={setIsAnalyzing}
         showWatermark={false}
+        compact
       />
 
       {/* Hint - show after playing */}
       {!hasPlayed && (
-        <p className="text-center text-sm text-gray-500">
+        <p className="text-center text-xs text-gray-500">
           {locale === 'ms' ? 'Tekan butang untuk mendengar perkataan' :
             locale === 'zh' ? '点击按钮听单词' :
             'Tap the button to hear the word'}
         </p>
       )}
 
-      {/* Completed Items */}
-      {completedItems.size > 0 && (
-        <div className="flex flex-wrap justify-center gap-2">
-          {Array.from(completedItems).map(idx => (
-            <span
-              key={idx}
-              className="bg-green-500 text-white px-3 py-1 rounded font-bold"
-            >
-              {words[idx]?.word} ✓
+      {/* Completed Items + Mistakes in one row */}
+      {(completedItems.size > 0 || mistakes > 0) && (
+        <div className="flex justify-between items-center text-xs">
+          <div className="flex flex-wrap gap-1">
+            {Array.from(completedItems).map(idx => (
+              <span
+                key={idx}
+                className="bg-green-500 text-white px-2 py-0.5 rounded text-xs font-bold"
+              >
+                {words[idx]?.word} ✓
+              </span>
+            ))}
+          </div>
+          {mistakes > 0 && (
+            <span className="text-red-500">
+              {locale === 'ms' ? 'Salah: ' : locale === 'zh' ? '错误：' : 'Wrong: '}{mistakes}
             </span>
-          ))}
+          )}
         </div>
-      )}
-
-      {/* Mistakes Counter */}
-      {mistakes > 0 && (
-        <p className="text-center text-sm text-red-500">
-          {locale === 'ms' ? 'Kesilapan: ' : locale === 'zh' ? '错误：' : 'Mistakes: '}{mistakes}
-        </p>
       )}
     </div>
   );

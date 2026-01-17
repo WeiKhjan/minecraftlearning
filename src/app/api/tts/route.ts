@@ -100,7 +100,14 @@ export async function POST(request: NextRequest) {
 
       if (!response.ok) {
         const errorText = await response.text();
-        console.error(`[TTS] Voice ${voice} API error:`, errorText);
+        console.error(`[TTS] Voice ${voice} API error (${response.status}):`, errorText);
+        // If API key is invalid or model not found, don't try other voices
+        if (response.status === 400 || response.status === 403 || response.status === 404) {
+          return NextResponse.json(
+            { error: `TTS API error: ${response.status}`, code: 'API_ERROR', details: errorText },
+            { status: response.status }
+          );
+        }
         continue; // Try next voice
       }
 
