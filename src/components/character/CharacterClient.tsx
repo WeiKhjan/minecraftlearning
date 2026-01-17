@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import { createClient } from '@/lib/supabase/client';
 import type { Kid, Equipment, KidInventory, Locale, EquipmentSlot, EquipmentTier, Pet, KidPet, PetRarity } from '@/types';
+import { TIER_COLORS } from '@/types';
 
 // Image base URLs
 const PET_IMAGE_BASE = 'https://glwxvgxgquwfgwbwqbiz.supabase.co/storage/v1/object/public/images/pets';
@@ -14,45 +15,19 @@ const EQUIPMENT_IMAGE_BASE = 'https://glwxvgxgquwfgwbwqbiz.supabase.co/storage/v
 
 // Get equipment image URL based on tier and slot
 function getEquipmentImageUrl(tier: EquipmentTier, slot: EquipmentSlot): string {
-  const slotToName: Record<EquipmentSlot, string> = {
-    helmet: 'helmet',
-    chestplate: 'chestplate',
-    leggings: 'leggings',
-    boots: 'boots',
-    weapon: 'sword',
-  };
-
-  const tierToSwordPrefix: Record<EquipmentTier, string> = {
-    leather: 'wooden',
-    chain: 'stone',
-    iron: 'iron',
-    gold: 'gold',
-    diamond: 'diamond',
-  };
-
-  if (slot === 'weapon') {
-    return `${EQUIPMENT_IMAGE_BASE}/${tierToSwordPrefix[tier]}_sword.png`;
-  }
-  return `${EQUIPMENT_IMAGE_BASE}/${tier}_${slotToName[slot]}.png`;
+  // Images are stored as {tier}_{slot}.png
+  return `${EQUIPMENT_IMAGE_BASE}/${tier}_${slot}.png`;
 }
 
-// Tier colors for equipment
-const tierColors: Record<EquipmentTier, string> = {
-  leather: '#8B4513',
-  chain: '#A9A9A9',
-  iron: '#C0C0C0',
-  gold: '#FFD700',
-  diamond: '#5DADE2',
-};
+// Get tier color from TIER_COLORS
+function getTierColor(tier: EquipmentTier): string {
+  return TIER_COLORS[tier]?.primary || '#808080';
+}
 
-// Tier background colors (lighter)
-const tierBgColors: Record<EquipmentTier, string> = {
-  leather: '#D4A574',
-  chain: '#D0D0D0',
-  iron: '#E8E8E8',
-  gold: '#FFF3B0',
-  diamond: '#B8E4F0',
-};
+// Get tier background color (lighter version)
+function getTierBgColor(tier: EquipmentTier): string {
+  return TIER_COLORS[tier]?.secondary || '#D0D0D0';
+}
 
 // Rarity colors
 const rarityColors: Record<string, string> = {
@@ -207,7 +182,7 @@ function EquipmentSlotBox({
       `}
       style={{
         boxShadow: 'inset -2px -2px 0 #373737, inset 2px 2px 0 #C6C6C6',
-        backgroundColor: item ? tierBgColors[item.tier] : '#8B8B8B',
+        backgroundColor: item ? getTierBgColor(item.tier) : '#8B8B8B',
       }}
       title={item ? getEquipmentName(item, locale) : slotName}
     >
@@ -232,7 +207,7 @@ function EquipmentSlotBox({
       {item && (
         <div
           className="absolute -bottom-1 -right-1 w-4 h-4 rounded-full flex items-center justify-center text-[8px] font-bold text-white border border-white shadow-md"
-          style={{ backgroundColor: tierColors[item.tier] }}
+          style={{ backgroundColor: getTierColor(item.tier) }}
         >
           {item.tier.charAt(0).toUpperCase()}
         </div>
@@ -260,13 +235,16 @@ export default function CharacterClient({
   const [generatedAvatar, setGeneratedAvatar] = useState<string | null>(kid.generated_avatar_url);
   const [generateError, setGenerateError] = useState<string | null>(null);
 
-  const slots: EquipmentSlot[] = ['helmet', 'chestplate', 'leggings', 'boots', 'weapon'];
-  const slotNames: Record<EquipmentSlot, string> = {
+  const slots: EquipmentSlot[] = ['helmet', 'chestplate', 'leggings', 'boots', 'weapon', 'tool', 'ranged', 'shield'];
+  const slotNames: Partial<Record<EquipmentSlot, string>> = {
     helmet: translations.helmet,
     chestplate: translations.chestplate,
     leggings: translations.leggings,
     boots: translations.boots,
     weapon: translations.weapon,
+    tool: 'Tool',
+    ranged: 'Ranged',
+    shield: 'Shield',
   };
 
   const getEquippedItem = (slot: EquipmentSlot): Equipment | null => {
@@ -625,7 +603,7 @@ export default function CharacterClient({
                   key={slot}
                   item={getEquippedItem(slot)}
                   slot={slot}
-                  slotName={slotNames[slot]}
+                  slotName={slotNames[slot] || slot}
                   isSelected={selectedSlot === slot}
                   onClick={() => { setSelectedSlot(selectedSlot === slot ? null : slot); setIsPetSlotSelected(false); }}
                   locale={locale}
@@ -639,7 +617,7 @@ export default function CharacterClient({
             {selectedSlot && getEquippedItem(selectedSlot) && (
               <button onClick={() => handleUnequip(selectedSlot)} disabled={isUpdating}
                 className="w-full px-3 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg disabled:opacity-50 font-bold text-sm transition-all shadow-md">
-                {translations.unequip} {slotNames[selectedSlot]}
+                {translations.unequip} {slotNames[selectedSlot] || selectedSlot}
               </button>
             )}
             {isPetSlotSelected && getEquippedPet() && (
@@ -682,11 +660,11 @@ export default function CharacterClient({
                 const item = getEquippedItem(slot);
                 return item ? (
                   <div key={slot} className="w-7 h-7 rounded flex items-center justify-center"
-                    style={{ backgroundColor: tierBgColors[item.tier] }} title={slotNames[slot]}>
-                    <Image src={getEquipmentImageUrl(item.tier, slot)} alt={slotNames[slot]} width={20} height={20} className="object-contain" />
+                    style={{ backgroundColor: getTierBgColor(item.tier) }} title={slotNames[slot] || slot}>
+                    <Image src={getEquipmentImageUrl(item.tier, slot)} alt={slotNames[slot] || slot} width={20} height={20} className="object-contain" />
                   </div>
                 ) : (
-                  <div key={slot} className="w-7 h-7 rounded bg-gray-200 flex items-center justify-center" title={slotNames[slot]}>
+                  <div key={slot} className="w-7 h-7 rounded bg-gray-200 flex items-center justify-center" title={slotNames[slot] || slot}>
                     <span className="text-gray-400 text-[10px]">-</span>
                   </div>
                 );
