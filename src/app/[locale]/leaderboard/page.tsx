@@ -65,32 +65,29 @@ export default async function LeaderboardPage({
     redirect(`/${locale}/login`);
   }
 
-  // Fetch all kids for the leaderboard, ordered by XP (descending)
+  // Fetch all kids for the leaderboard using RLS-bypassing function
   const { data: allKids, error: kidsError } = await supabase
-    .from('kids')
-    .select('id, name, avatar_seed, generated_avatar_url, level, total_xp, grade, school')
-    .order('total_xp', { ascending: false });
+    .rpc('get_leaderboard');
 
   if (kidsError) {
     console.error('Error fetching leaderboard:', kidsError);
   }
 
-  // Fetch progress stats for all kids
-  const kidIds = allKids?.map(k => k.id) || [];
-  const { data: progressData } = await supabase
-    .from('kid_progress')
-    .select('kid_id, status, stars')
-    .in('kid_id', kidIds);
+  // Fetch progress stats using RLS-bypassing function
+  const { data: statsData, error: statsError } = await supabase
+    .rpc('get_leaderboard_stats');
 
-  // Calculate stats per kid
+  if (statsError) {
+    console.error('Error fetching leaderboard stats:', statsError);
+  }
+
+  // Build stats map from function results
   const statsMap = new Map<string, { completed: number; stars: number }>();
-  progressData?.forEach(p => {
-    const existing = statsMap.get(p.kid_id) || { completed: 0, stars: 0 };
-    if (p.status === 'completed') {
-      existing.completed += 1;
-      existing.stars += p.stars || 0;
-    }
-    statsMap.set(p.kid_id, existing);
+  statsData?.forEach((s: { kid_id: string; completed_count: number; total_stars: number }) => {
+    statsMap.set(s.kid_id, {
+      completed: Number(s.completed_count) || 0,
+      stars: Number(s.total_stars) || 0,
+    });
   });
 
   // Get total activities count
