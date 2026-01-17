@@ -69,6 +69,9 @@ interface CharacterClientProps {
     leggings?: Equipment | null;
     boots?: Equipment | null;
     weapon?: Equipment | null;
+    tool?: Equipment | null;
+    ranged?: Equipment | null;
+    shield?: Equipment | null;
     pet?: Pet | null;
   } | null;
   inventory: (KidInventory & { equipment: Equipment })[];
