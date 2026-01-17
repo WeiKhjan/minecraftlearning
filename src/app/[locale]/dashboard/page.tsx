@@ -206,6 +206,18 @@ export default async function DashboardPage({
               </div>
             </Link>
           )}
+          {/* Leaderboard Button */}
+          <Link
+            href={`/${locale}/leaderboard?kid=${kidId}`}
+            prefetch={true}
+            className="flex items-center gap-1 bg-yellow-500 hover:bg-yellow-400 px-3 py-1.5 rounded-full text-white text-sm font-bold transition-all hover:scale-105 shadow-md"
+            title={locale === 'ms' ? 'Papan Pendahulu' : locale === 'zh' ? '排行榜' : 'Leaderboard'}
+          >
+            <span>🏆</span>
+            <span className="hidden sm:inline">
+              {locale === 'ms' ? 'Kedudukan' : locale === 'zh' ? '排行' : 'Rankings'}
+            </span>
+          </Link>
           <LanguageSwitcher />
           <Link
             href={`/${locale}/kids`}
