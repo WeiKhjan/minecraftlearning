@@ -11,17 +11,7 @@ const EQUIPMENT_IMAGE_BASE = 'https://glwxvgxgquwfgwbwqbiz.supabase.co/storage/v
 
 // Get equipment image URL based on tier and slot
 function getEquipmentImageUrl(tier: EquipmentTier, slot: EquipmentSlot): string {
-  const tierToSwordPrefix: Record<EquipmentTier, string> = {
-    leather: 'wooden',
-    chain: 'stone',
-    iron: 'iron',
-    gold: 'gold',
-    diamond: 'diamond',
-  };
-
-  if (slot === 'weapon') {
-    return `${EQUIPMENT_IMAGE_BASE}/${tierToSwordPrefix[tier]}_sword.png`;
-  }
+  // Images are stored as {tier}_{slot}.png
   return `${EQUIPMENT_IMAGE_BASE}/${tier}_${slot}.png`;
 }
 
