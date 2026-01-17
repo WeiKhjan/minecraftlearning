@@ -76,7 +76,7 @@ export default function WritingActivity({ content, avatarUrl, locale, onComplete
   };
 
   return (
-    <div className="space-y-2">
+    <div className="space-y-1.5">
       {/* Loading Overlay during analysis */}
       <LoadingOverlay
         isLoading={isAnalyzing}
@@ -85,59 +85,52 @@ export default function WritingActivity({ content, avatarUrl, locale, onComplete
         message={analyzingMessage[locale]}
       />
 
-      {/* Instruction */}
-      <p className="text-center text-gray-600 text-sm">
-        {isLetterMode
-          ? (locale === 'ms' ? 'Tulis huruf yang ditunjukkan' :
-              locale === 'zh' ? '写出显示的字母' :
-              'Write the letter shown')
-          : (locale === 'ms' ? 'Tulis perkataan yang ditunjukkan' :
-              locale === 'zh' ? '写出显示的单词' :
-              'Write the word shown')
-        }
-      </p>
-
-      {/* Progress */}
-      <div className="flex justify-center items-center gap-2">
+      {/* Progress - inline with instruction */}
+      <div className="flex justify-center items-center gap-3">
         <span className="text-xs text-gray-500">
-          {completedItems.size}/{items.length}
+          {isLetterMode
+            ? (locale === 'ms' ? 'Tulis huruf' : locale === 'zh' ? '写字母' : 'Write letter')
+            : (locale === 'ms' ? 'Tulis perkataan' : locale === 'zh' ? '写单词' : 'Write word')}
         </span>
-        <div className="w-32 h-1.5 bg-gray-200 rounded-full">
-          <div
-            className="h-1.5 bg-[#5D8731] rounded-full transition-all"
-            style={{ width: `${(completedItems.size / items.length) * 100}%` }}
-          />
+        <div className="flex items-center gap-1.5">
+          <div className="w-24 h-1.5 bg-gray-200 rounded-full">
+            <div
+              className="h-1.5 bg-[#5D8731] rounded-full transition-all"
+              style={{ width: `${(completedItems.size / items.length) * 100}%` }}
+            />
+          </div>
+          <span className="text-xs text-gray-500">{completedItems.size}/{items.length}</span>
         </div>
       </div>
 
-      {/* Current Item Display */}
-      <div className={`text-center py-3 rounded-lg transition-all ${
+      {/* Current Item Display - more compact */}
+      <div className={`text-center py-2 rounded-lg transition-all ${
         feedback === 'correct' ? 'bg-green-500' :
         feedback === 'wrong' ? 'bg-red-500' :
         'bg-[#5D8731]'
       } text-white`}>
-        <div className="flex items-center justify-center gap-3">
-          <p className={`font-bold ${isLetterMode ? 'text-4xl' : 'text-3xl'}`}>{currentItem}</p>
+        <div className="flex items-center justify-center gap-2">
+          <p className={`font-bold ${isLetterMode ? 'text-3xl' : 'text-2xl'}`}>{currentItem}</p>
           <VoiceTutorButton
             text={currentItem}
             locale={locale}
             size="sm"
             contentType={isLetterMode ? 'letter' : 'word'}
           />
+          {currentWord && (
+            <span className="text-xs opacity-80">({getWordMeaning()})</span>
+          )}
         </div>
-        {currentWord && (
-          <p className="text-xs opacity-80 mt-1">({getWordMeaning()})</p>
-        )}
 
         {/* Feedback message */}
         {feedback === 'correct' && (
-          <p className="mt-1 text-base font-bold animate-bounce">
-            {locale === 'ms' ? 'Betul! Bagus!' : locale === 'zh' ? '正确！很好！' : 'Correct! Great!'}
+          <p className="text-sm font-bold animate-bounce">
+            {locale === 'ms' ? 'Betul!' : locale === 'zh' ? '正确！' : 'Correct!'}
           </p>
         )}
         {feedback === 'wrong' && (
-          <p className="mt-1 text-base font-bold">
-            {locale === 'ms' ? 'Cuba lagi!' : locale === 'zh' ? '再试一次！' : 'Try again!'}
+          <p className="text-sm font-bold">
+            {locale === 'ms' ? 'Cuba lagi!' : locale === 'zh' ? '再试！' : 'Try again!'}
           </p>
         )}
       </div>

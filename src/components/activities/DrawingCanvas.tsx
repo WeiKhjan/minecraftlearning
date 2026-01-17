@@ -238,8 +238,9 @@ export default function DrawingCanvas({
   }, [hasDrawn, expectedLetter, locale, isWord, onRecognized, onAnalyzingChange]);
 
   // Determine canvas height based on content type and compact mode
+  // Compact mode uses viewport height for better tablet optimization
   const canvasHeight = compact
-    ? (isWord ? 'h-36' : 'h-32')
+    ? 'h-[35vh] min-h-[180px]'
     : (isWord ? 'h-56' : 'h-48');
 
   return (
