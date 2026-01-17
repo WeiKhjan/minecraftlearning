@@ -290,7 +290,7 @@ export default function ActivityClient({
       </header>
 
       {/* Main Content */}
-      <div className="flex-1 px-4 py-6 flex items-center justify-center">
+      <div className="flex-1 px-4 py-3 flex items-start justify-center overflow-y-auto">
         <div className="max-w-2xl w-full">
           {/* Intro Screen */}
           {gameState === 'intro' && (
@@ -342,8 +342,8 @@ export default function ActivityClient({
 
           {/* Playing Screen */}
           {gameState === 'playing' && (
-            <div className="pixel-card">
-              <h2 className="text-xl font-bold text-gray-800 mb-4 text-center">
+            <div className="pixel-card py-3 px-4">
+              <h2 className="text-lg font-bold text-gray-800 mb-2 text-center">
                 {title}
               </h2>
               {renderActivity()}

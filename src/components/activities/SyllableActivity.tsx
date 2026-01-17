@@ -211,7 +211,7 @@ export default function SyllableActivity({ content, avatarUrl, locale, onComplet
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-2">
       {/* Loading Overlay during analysis */}
       <LoadingOverlay
         isLoading={activityState === 'analyzing'}
@@ -221,7 +221,7 @@ export default function SyllableActivity({ content, avatarUrl, locale, onComplet
       />
 
       {/* Instruction */}
-      <p className="text-center text-gray-600">
+      <p className="text-center text-gray-600 text-sm">
         {isWordMode
           ? (locale === 'ms' ? 'Tekan butang mikrofon dan sebut perkataan dengan kuat' :
               locale === 'zh' ? '按麦克风按钮并大声说出单词' :
@@ -233,12 +233,12 @@ export default function SyllableActivity({ content, avatarUrl, locale, onComplet
 
       {/* Progress */}
       <div className="flex justify-center items-center gap-2">
-        <span className="text-sm text-gray-500">
+        <span className="text-xs text-gray-500">
           {readSyllables.size}/{items.length}
         </span>
-        <div className="w-48 h-2 bg-gray-200 rounded-full">
+        <div className="w-32 h-1.5 bg-gray-200 rounded-full">
           <div
-            className="h-2 bg-[#5D8731] rounded-full transition-all"
+            className="h-1.5 bg-[#5D8731] rounded-full transition-all"
             style={{ width: `${(readSyllables.size / items.length) * 100}%` }}
           />
         </div>
@@ -246,23 +246,23 @@ export default function SyllableActivity({ content, avatarUrl, locale, onComplet
 
       {/* Current Item Display */}
       {currentIndex < items.length && activityState !== 'completed' && (
-        <div className={`text-white text-center py-8 rounded-lg relative transition-all ${
+        <div className={`text-white text-center py-4 rounded-lg relative transition-all ${
           activityState === 'correct' ? 'bg-green-500' :
           activityState === 'feedback' ? 'bg-orange-500' :
           'bg-[#5D8731]'
         }`}>
           {/* Word with Image (word mode) or Syllable (simple mode) */}
           {isWordMode && currentWord?.image && (
-            <div className="mb-4">
+            <div className="mb-2">
               <img
                 src={getImageUrl(currentWord.image)}
                 alt={currentWord.word}
-                className="w-32 h-32 mx-auto object-contain rounded-lg bg-white/10"
+                className="w-20 h-20 mx-auto object-contain rounded-lg bg-white/10"
               />
             </div>
           )}
-          <div className="flex items-center justify-center gap-4 mb-4">
-            <p className="text-6xl font-bold">{currentItem}</p>
+          <div className="flex items-center justify-center gap-3 mb-2">
+            <p className="text-4xl font-bold">{currentItem}</p>
             <VoiceTutorButton
               text={!isWordMode && data.voice_guides?.[currentIndex] ? data.voice_guides[currentIndex] : currentItem}
               locale={locale}
@@ -274,7 +274,7 @@ export default function SyllableActivity({ content, avatarUrl, locale, onComplet
           </div>
           {/* Show syllables breakdown in word mode */}
           {isWordMode && currentWord?.syllables && (
-            <p className="text-lg opacity-80 mb-2">
+            <p className="text-sm opacity-80 mb-1">
               ({currentWord.syllables.join(' - ')})
             </p>
           )}
@@ -282,7 +282,7 @@ export default function SyllableActivity({ content, avatarUrl, locale, onComplet
           {/* State-based content */}
           {activityState === 'ready' && (
             <>
-              <p className="text-sm opacity-80 mb-4">
+              <p className="text-xs opacity-80 mb-2">
                 {locale === 'ms' ? 'Tekan untuk mula bercakap' :
                   locale === 'zh' ? '点击开始说话' :
                   'Tap to start speaking'}
@@ -290,9 +290,9 @@ export default function SyllableActivity({ content, avatarUrl, locale, onComplet
               {isSpeechSupported ? (
                 <button
                   onClick={handleStartListening}
-                  className="bg-white text-[#5D8731] px-8 py-4 rounded-full font-bold text-lg hover:bg-gray-100 transition-all flex items-center gap-2 mx-auto"
+                  className="bg-white text-[#5D8731] px-6 py-2.5 rounded-full font-bold text-base hover:bg-gray-100 transition-all flex items-center gap-2 mx-auto"
                 >
-                  <span className="text-2xl">🎤</span>
+                  <span className="text-xl">🎤</span>
                   {locale === 'ms' ? 'Baca Sekarang' :
                     locale === 'zh' ? '现在朗读' :
                     'Read Now'}
@@ -309,9 +309,9 @@ export default function SyllableActivity({ content, avatarUrl, locale, onComplet
 
           {activityState === 'listening' && (
             <>
-              <div className="flex items-center justify-center gap-2 mb-2">
-                <div className="w-4 h-4 bg-red-500 rounded-full animate-pulse" />
-                <p className="text-lg font-bold">
+              <div className="flex items-center justify-center gap-2 mb-1">
+                <div className="w-3 h-3 bg-red-500 rounded-full animate-pulse" />
+                <p className="text-base font-bold">
                   {locale === 'ms' ? 'Mendengar...' :
                     locale === 'zh' ? '正在听...' :
                     'Listening...'}
@@ -319,17 +319,17 @@ export default function SyllableActivity({ content, avatarUrl, locale, onComplet
               </div>
 
               {/* Audio Visualizer - Sound Wave Chart */}
-              <div className="my-4 px-4">
+              <div className="my-2 px-4">
                 <AudioVisualizer
                   isListening={isListening}
-                  barCount={24}
+                  barCount={20}
                   barColor="#ffffff"
-                  height={50}
+                  height={35}
                 />
               </div>
 
               {transcript && (
-                <p className="mt-2 text-sm opacity-80">
+                <p className="text-xs opacity-80">
                   {locale === 'ms' ? 'Dikesan: ' : locale === 'zh' ? '检测到: ' : 'Detected: '}
                   &quot;{transcript}&quot;
                 </p>
@@ -350,29 +350,29 @@ export default function SyllableActivity({ content, avatarUrl, locale, onComplet
 
           {activityState === 'correct' && feedback && (
             <div className="animate-bounce-in">
-              <p className="text-4xl mb-2">✅</p>
-              <p className="text-xl font-bold">{getText(feedback.feedback)}</p>
+              <p className="text-3xl mb-1">✅</p>
+              <p className="text-base font-bold">{getText(feedback.feedback)}</p>
             </div>
           )}
 
           {activityState === 'feedback' && feedback && (
-            <div className="space-y-4">
-              <p className="text-lg">{getText(feedback.feedback)}</p>
+            <div className="space-y-2">
+              <p className="text-sm">{getText(feedback.feedback)}</p>
               {feedback.correction && (
-                <div className="bg-white/20 rounded-lg p-4 mx-4">
-                  <p className="text-sm opacity-80 mb-2">
+                <div className="bg-white/20 rounded-lg p-2 mx-4">
+                  <p className="text-xs opacity-80 mb-1">
                     {locale === 'ms' ? 'Dengar dan cuba lagi:' :
                       locale === 'zh' ? '听一听，再试一次:' :
                       'Listen and try again:'}
                   </p>
-                  <p className="text-xl font-bold">{getText(feedback.correction)}</p>
+                  <p className="text-base font-bold">{getText(feedback.correction)}</p>
                 </div>
               )}
-              <div className="flex justify-center gap-4 mt-4">
+              <div className="flex justify-center gap-3 mt-2">
                 <button
                   onClick={handleStartListening}
                   disabled={isPlayingSound}
-                  className="bg-white text-orange-500 px-6 py-3 rounded-full font-bold hover:bg-gray-100 transition-all disabled:opacity-50 flex items-center gap-2"
+                  className="bg-white text-orange-500 px-4 py-2 rounded-full font-bold text-sm hover:bg-gray-100 transition-all disabled:opacity-50 flex items-center gap-1"
                 >
                   <span>🎤</span>
                   {locale === 'ms' ? 'Cuba Lagi' : locale === 'zh' ? '再试一次' : 'Try Again'}
@@ -380,7 +380,7 @@ export default function SyllableActivity({ content, avatarUrl, locale, onComplet
                 {attempts >= 2 && (
                   <button
                     onClick={handleMoveToNext}
-                    className="bg-orange-700 text-white px-6 py-3 rounded-full font-bold hover:bg-orange-800 transition-all"
+                    className="bg-orange-700 text-white px-4 py-2 rounded-full font-bold text-sm hover:bg-orange-800 transition-all"
                   >
                     {locale === 'ms' ? 'Seterusnya' : locale === 'zh' ? '下一个' : 'Next'}
                   </button>
@@ -399,7 +399,7 @@ export default function SyllableActivity({ content, avatarUrl, locale, onComplet
       )}
 
       {/* Item Grid */}
-      <div className={`grid gap-2 ${isWordMode ? 'grid-cols-3 sm:grid-cols-5' : 'grid-cols-7'}`}>
+      <div className={`grid gap-1.5 ${isWordMode ? 'grid-cols-5' : 'grid-cols-7'}`}>
         {items.map((item, index) => {
           const isRead = readSyllables.has(index);
           const isCurrent = index === currentIndex;
@@ -411,13 +411,13 @@ export default function SyllableActivity({ content, avatarUrl, locale, onComplet
               onClick={() => handleSyllableClick(index)}
               disabled={isRead}
               className={`
-                py-3 px-2 rounded font-bold transition-all
-                ${isWordMode ? 'text-sm' : 'text-lg'}
+                py-1.5 px-1 rounded font-bold transition-all
+                ${isWordMode ? 'text-xs' : 'text-sm'}
                 ${isRead
                   ? 'bg-green-500 text-white cursor-default'
                   : isCurrent
-                    ? 'bg-[#5DADE2] text-white ring-4 ring-[#5DADE2]/50'
-                    : 'bg-white hover:bg-gray-100 text-gray-800 border-2 border-gray-300'
+                    ? 'bg-[#5DADE2] text-white ring-2 ring-[#5DADE2]/50'
+                    : 'bg-white hover:bg-gray-100 text-gray-800 border border-gray-300'
                 }
               `}
             >
@@ -425,11 +425,11 @@ export default function SyllableActivity({ content, avatarUrl, locale, onComplet
                 <img
                   src={getImageUrl(wordData.image)}
                   alt={item}
-                  className="w-12 h-12 mx-auto object-contain mb-1"
+                  className="w-8 h-8 mx-auto object-contain"
                 />
               )}
-              {item}
-              {isRead && <span className="ml-1">✓</span>}
+              <span className={isWordMode ? 'block truncate' : ''}>{item}</span>
+              {isRead && <span className="ml-0.5 text-xs">✓</span>}
             </button>
           );
         })}
@@ -437,9 +437,9 @@ export default function SyllableActivity({ content, avatarUrl, locale, onComplet
 
       {/* Completion Message */}
       {activityState === 'completed' && (
-        <div className="text-center space-y-4 animate-bounce-in">
-          <p className="text-6xl">🎉</p>
-          <p className="text-green-600 font-bold text-xl">
+        <div className="text-center space-y-2 animate-bounce-in">
+          <p className="text-4xl">🎉</p>
+          <p className="text-green-600 font-bold text-base">
             {isWordMode
               ? (locale === 'ms' ? 'Tahniah! Anda telah membaca semua perkataan!' :
                   locale === 'zh' ? '恭喜！你已经读完所有单词！' :
