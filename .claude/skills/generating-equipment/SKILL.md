@@ -1,11 +1,11 @@
 ---
 name: generating-equipment
-description: Generates Minecraft-style equipment items for the MYLearnt gamification system. Creates new armor pieces, weapons, and accessories for player characters. Handles equipment tiers (leather to diamond), slots (helmet, chestplate, leggings, boots, weapon), rarity levels, and AI image generation. Equipment serves as rewards for completing learning activities.
+description: Generates Minecraft-style equipment items for the MYLearnt gamification system. Creates new armor pieces, weapons, tools, and accessories for player characters. Handles 40 unique equipment tiers (wood to infinity), 8 slots (helmet, chestplate, leggings, boots, weapon, tool, ranged, shield), rarity levels, and AI image generation. Equipment serves as rewards for completing learning activities across 40 units.
 ---
 
 # Generating Equipment
 
-Creates Minecraft-themed equipment items for the MYLearnt reward system.
+Creates Minecraft-themed equipment items for the MYLearnt reward system with 40 unique tiers.
 
 ## Quick Start
 
@@ -13,33 +13,38 @@ Creates Minecraft-themed equipment items for the MYLearnt reward system.
 
 ```sql
 -- 1. Insert the equipment record
-INSERT INTO equipment (name, name_ms, name_zh, name_en, slot, tier, rarity, required_level)
+INSERT INTO equipment (name, name_ms, name_zh, name_en, slot, tier, rarity, required_level, unit_number, color_primary, color_secondary)
 VALUES (
-  'ruby_helmet',
-  'Topi Keledar Delima',
-  '红宝石头盔',
-  'Ruby Helmet',
+  'Phoenix Helmet',
+  'Topi Phoenix',
+  '凤凰头盔',
+  'Phoenix Helmet',
   'helmet',
-  'gold',
-  'epic',
-  15
+  'phoenix',
+  'legendary',
+  24,
+  24,
+  '#FF4500',
+  '#FFD700'
 ) RETURNING id;
 
 -- 2. Generate image via API (or manually upload)
 -- POST /api/generate-equipment with the equipment details
 
 -- 3. Update with image URL (IMPORTANT: use leading slash, no 'images' prefix)
-UPDATE equipment SET image_url = '/equipment/ruby_helmet.png' WHERE name = 'ruby_helmet';
+UPDATE equipment SET image_url = '/equipment/phoenix_helmet.png' WHERE name = 'Phoenix Helmet';
 ```
 
-### Quick Reference: Tier → Rarity → Level
-| Tier | Rarity | Level Range | Color |
-|------|--------|-------------|-------|
-| leather | common | 1-5 | Brown |
-| chain | common | 6-10 | Gray |
-| iron | rare | 11-15 | Silver |
-| gold | epic | 16-20 | Gold |
-| diamond | legendary | 21+ | Cyan |
+### Quick Reference: 40 Tier Progression System
+
+| Phase | Units | Tiers | Rarity |
+|-------|-------|-------|--------|
+| Classic | 1-6 | wood/leather, stone, iron, gold, diamond, netherite | common → epic |
+| Enchanted | 7-10 | enchanted_iron, enchanted_gold, enchanted_diamond, enchanted_netherite | rare → epic |
+| Advanced | 11-12 | prismarine, amethyst | epic |
+| Elemental | 13-20 | blaze, frost, storm, emerald, obsidian, redstone, lapis, glowstone | epic → legendary |
+| Mythic | 21-30 | ender, dragon, wither, phoenix, titan, shadow, radiant, ancient, celestial, void | legendary |
+| Ultimate | 31-40 | heroic, mythical, immortal, divine, cosmic, eternal, ascended, supreme, omega, infinity | legendary |
 
 ### CRITICAL: Database image_url Format
 
@@ -53,242 +58,231 @@ If you store `images/equipment/...`, it becomes `images/images/equipment/...` (b
 
 ---
 
+## Equipment Slot Types (8 slots)
+
+| Slot | Description | Equipment Type |
+|------|-------------|----------------|
+| `helmet` | Head armor | Caps, Helmets, Crowns |
+| `chestplate` | Body armor | Tunics, Chestplates |
+| `leggings` | Leg armor | Pants, Leggings |
+| `boots` | Foot armor | Boots, Shoes |
+| `weapon` | Primary weapon | Swords, Daggers, Tridents |
+| `tool` | Mining/utility tool | Pickaxes |
+| `ranged` | Ranged weapon | Bows, Crossbows |
+| `shield` | Defensive shield | Shields |
+
+---
+
+## Complete Tier System (40 Tiers)
+
+### Phase 1: Classic Minecraft Tiers (Units 1-6)
+
+| Unit | Tier | Rarity | Color Primary | Color Secondary | Theme |
+|------|------|--------|---------------|-----------------|-------|
+| 1 | wood/leather | common | #8B4513 | #D2691E | Basic starter gear |
+| 2 | stone | common | #808080 | #A9A9A9 | Sturdy cobblestone |
+| 3 | iron | rare | #D3D3D3 | #A9A9A9 | First metal tier |
+| 4 | gold | rare | #FFD700 | #FFA500 | Royal golden set |
+| 5 | diamond | epic | #00CED1 | #40E0D0 | Precious gems |
+| 6 | netherite | epic | #4A4A4A | #8B0000 | Nether-forged |
+
+### Phase 2: Enchanted Tiers (Units 7-12)
+
+| Unit | Tier | Rarity | Color Primary | Color Secondary | Theme |
+|------|------|--------|---------------|-----------------|-------|
+| 7 | enchanted_iron | rare | #D3D3D3 | #9370DB | Glowing iron with magic |
+| 8 | enchanted_gold | epic | #FFD700 | #9370DB | Shimmering golden magic |
+| 9 | enchanted_diamond | epic | #00CED1 | #9370DB | Sparkling enchantments |
+| 10 | enchanted_netherite | epic | #4A4A4A | #9370DB | Dark magical flames |
+| 11 | prismarine | epic | #5F9EA0 | #20B2AA | Ocean monument gear |
+| 12 | amethyst | epic | #9966CC | #E6E6FA | Crystal purple gear |
+
+### Phase 3: Elemental Tiers (Units 13-20)
+
+| Unit | Tier | Rarity | Color Primary | Color Secondary | Theme |
+|------|------|--------|---------------|-----------------|-------|
+| 13 | blaze | epic | #FF4500 | #FF8C00 | Fire/lava themed |
+| 14 | frost | epic | #87CEEB | #FFFFFF | Ice/snow themed |
+| 15 | storm | epic | #FFD700 | #4B0082 | Lightning/thunder |
+| 16 | emerald | legendary | #50C878 | #00FF00 | Rich green gems |
+| 17 | obsidian | legendary | #1C1C1C | #4B0082 | Dark volcanic glass |
+| 18 | redstone | legendary | #FF0000 | #8B0000 | Glowing red circuits |
+| 19 | lapis | legendary | #1E90FF | #00008B | Deep blue magic |
+| 20 | glowstone | legendary | #FFFF00 | #FFD700 | Bright luminous |
+
+### Phase 4: Mythic Tiers (Units 21-30)
+
+| Unit | Tier | Rarity | Color Primary | Color Secondary | Theme |
+|------|------|--------|---------------|-----------------|-------|
+| 21 | ender | legendary | #301934 | #9400D3 | End dimension purple |
+| 22 | dragon | legendary | #800080 | #228B22 | Dragon scales/wings |
+| 23 | wither | legendary | #1C1C1C | #696969 | Dark skeleton boss |
+| 24 | phoenix | legendary | #FF4500 | #FFD700 | Rebirth flames |
+| 25 | titan | legendary | #B8860B | #8B4513 | Giant's armor |
+| 26 | shadow | legendary | #2F2F2F | #4B0082 | Dark void energy |
+| 27 | radiant | legendary | #FFFACD | #FFD700 | Pure light |
+| 28 | ancient | legendary | #8B4513 | #D4AF37 | Old civilization |
+| 29 | celestial | legendary | #000080 | #C0C0C0 | Star/moon themed |
+| 30 | void | legendary | #0D0D0D | #4B0082 | Space/dimension |
+
+### Phase 5: Ultimate Tiers (Units 31-40)
+
+| Unit | Tier | Rarity | Color Primary | Color Secondary | Theme |
+|------|------|--------|---------------|-----------------|-------|
+| 31 | heroic | legendary | #DC143C | #FFD700 | Champion's gear |
+| 32 | mythical | legendary | #9400D3 | #FFD700 | Legendary artifacts |
+| 33 | immortal | legendary | #00FF00 | #FFFFFF | Undying power |
+| 34 | divine | legendary | #FFFFFF | #FFD700 | God-touched |
+| 35 | cosmic | legendary | #000080 | #FF69B4 | Universe power |
+| 36 | eternal | legendary | #C0C0C0 | #FFD700 | Timeless |
+| 37 | ascended | legendary | #87CEEB | #FFFFFF | Transcendent |
+| 38 | supreme | legendary | #FF0000 | #000000 | Ultimate power |
+| 39 | omega | legendary | #000000 | #FF0000 | Final form |
+| 40 | infinity | legendary | #FF69B4 | #00FFFF | MAXIMUM POWER! Rainbow/prismatic |
+
+---
+
 ## Degrees of Freedom
 
 | Area | Freedom Level | Guidelines |
 |------|---------------|------------|
-| **New Equipment Concepts** | 🟢 High | Creates themed equipment sets (holidays, subjects, achievements). Can propose creative new items like "Graduation Cap" or "Math Crown". |
-| **Visual Styling** | 🟢 High | Designs unique appearances within Minecraft pixel art style. Can vary colors, add thematic elements. |
+| **New Equipment Concepts** | 🟢 High | Creates themed equipment sets (holidays, subjects, achievements). Can propose creative new items. |
+| **Visual Styling** | 🟢 High | Designs unique appearances within Minecraft pixel art style. Uses tier colors. |
 | **Naming Creativity** | 🟢 High | Invents creative names in all 3 languages. Should be kid-friendly and thematic. |
-| **Tier Assignment** | 🟡 Medium | Follows tier progression guidelines. Can adjust based on context. |
+| **Tier Assignment** | 🟡 Medium | Follows tier progression guidelines. Must use valid tier from 40-tier system. |
 | **Rarity Mapping** | 🟡 Medium | Generally follows tier→rarity mapping. Can elevate for special items. |
 | **Database Schema** | 🔴 Low | Does not modify table structures. Uses existing fields only. |
-| **Slot Types** | 🔴 Low | Limited to: helmet, chestplate, leggings, boots, weapon. |
+| **Slot Types** | 🔴 Low | Limited to: helmet, chestplate, leggings, boots, weapon, tool, ranged, shield. |
 
 ---
-
-## Equipment System Overview
-
-Equipment motivates learners by providing visual character upgrades as rewards for completing activities.
-
-### Slot Types
-- `helmet` - Head armor
-- `chestplate` - Body armor
-- `leggings` - Leg armor
-- `boots` - Foot armor
-- `weapon` - Held weapon (sword, axe, etc.)
-
-### Tier Progression
-| Tier | Color/Material | Required Level | Rarity |
-|------|---------------|----------------|--------|
-| leather | Brown leather | 1-5 | common |
-| chain | Gray chainmail | 6-10 | common |
-| iron | Silver metal | 11-15 | rare |
-| gold | Golden | 16-20 | epic |
-| diamond | Cyan crystal | 21+ | legendary |
-
-### Rarity System
-- `common` - Basic items, no special effects
-- `rare` - Slight glow, better stats
-- `epic` - Purple aura, magical appearance
-- `legendary` - Golden glow with sparkles
 
 ## Database Schema
 
 ### equipment table
+
 ```sql
 CREATE TABLE equipment (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  name TEXT NOT NULL,              -- Internal identifier (e.g., 'iron_helmet')
-  name_ms TEXT NOT NULL,           -- Malay display name
-  name_zh TEXT NOT NULL,           -- Chinese display name
-  name_en TEXT NOT NULL,           -- English display name
-  slot TEXT NOT NULL,              -- helmet|chestplate|leggings|boots|weapon
-  tier TEXT NOT NULL,              -- leather|chain|iron|gold|diamond
+  name TEXT NOT NULL,              -- Display name (e.g., 'Leather Cap')
+  name_ms TEXT,                    -- Malay display name
+  name_zh TEXT,                    -- Chinese display name
+  name_en TEXT,                    -- English display name
+  slot TEXT NOT NULL,              -- helmet|chestplate|leggings|boots|weapon|tool|ranged|shield
+  tier TEXT NOT NULL,              -- See 40 tiers above
   rarity TEXT DEFAULT 'common',    -- common|rare|epic|legendary
   image_url TEXT,                  -- Supabase storage URL
   required_level INTEGER DEFAULT 1,
+  unit_number INTEGER,             -- Links to curriculum unit (1-40)
+  color_primary TEXT,              -- Hex color for UI display
+  color_secondary TEXT,            -- Secondary hex color for UI
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
 ```
 
-### Related Tables
-- `kid_inventory` - Equipment owned by kids
-- `kid_equipped` - Currently equipped items per slot
-- `activities.equipment_reward_id` - Links activity completion to equipment reward
-
-## Standard Equipment Set
-
-The base game includes 25 items (5 tiers × 5 slots):
-
-```
-leather_helmet, leather_chestplate, leather_leggings, leather_boots, wooden_sword
-chain_helmet, chain_chestplate, chain_leggings, chain_boots, stone_sword
-iron_helmet, iron_chestplate, iron_leggings, iron_boots, iron_sword
-gold_helmet, gold_chestplate, gold_leggings, gold_boots, gold_sword
-diamond_helmet, diamond_chestplate, diamond_leggings, diamond_boots, diamond_sword
-```
-
-## Creating New Equipment
-
-### Step 1: Defines Equipment Properties
+### Tier Constraint (40 tiers)
 
 ```sql
-INSERT INTO equipment (name, name_ms, name_zh, name_en, slot, tier, rarity, required_level)
-VALUES (
-  'emerald_helmet',
-  'Topi Keledar Zamrud',
-  '翡翠头盔',
-  'Emerald Helmet',
-  'helmet',
-  'diamond',
-  'legendary',
-  25
-);
+ALTER TABLE equipment ADD CONSTRAINT equipment_tier_check CHECK (tier IN (
+  -- Classic Tiers (Units 1-6)
+  'wood', 'leather', 'stone', 'chain', 'iron', 'gold', 'diamond', 'netherite',
+  -- Enchanted Tiers (Units 7-12)
+  'enchanted_iron', 'enchanted_gold', 'enchanted_diamond', 'enchanted_netherite', 'prismarine', 'amethyst',
+  -- Elemental Tiers (Units 13-20)
+  'blaze', 'frost', 'storm', 'emerald', 'obsidian', 'redstone', 'lapis', 'glowstone',
+  -- Mythic Tiers (Units 21-30)
+  'ender', 'dragon', 'wither', 'phoenix', 'titan', 'shadow', 'radiant', 'ancient', 'celestial', 'void',
+  -- Ultimate Tiers (Units 31-40)
+  'heroic', 'mythical', 'immortal', 'divine', 'cosmic', 'eternal', 'ascended', 'supreme', 'omega', 'infinity'
+));
 ```
 
-### Step 2: Generates Equipment Image
+### Slot Constraint (8 slots)
 
-Uses the API endpoint to generate Minecraft-style pixel art:
+```sql
+ALTER TABLE equipment ADD CONSTRAINT equipment_slot_check CHECK (slot IN (
+  'helmet', 'chestplate', 'leggings', 'boots', 'weapon', 'tool', 'ranged', 'shield'
+));
+```
 
-**Endpoint**: `POST /api/generate-equipment`
+### Related Tables
 
-The API uses this prompt structure for Gemini AI:
+- `kid_inventory` - Equipment owned by kids
+- `kid_equipped` - Currently equipped items per slot (includes tool_id, ranged_id, shield_id)
+- `activities.equipment_reward_id` - Links activity completion to equipment reward
+
+---
+
+## Equipment Set per Unit (7 items)
+
+Each unit rewards a complete themed set:
+
+1. **Helmet** - Head protection
+2. **Chestplate** - Body armor
+3. **Leggings** - Leg armor
+4. **Boots** - Foot armor
+5. **Sword** (weapon slot) - Primary weapon
+6. **Pickaxe** (tool slot) - Mining tool
+7. **Special** (ranged/shield) - Rotating: Bow/Crossbow (ranged) or Shield
+
+---
+
+## Image Generation Prompt Templates
+
+### Standard Prompt Structure
+
 ```
 Generate a Minecraft-style pixel art equipment icon.
-Subject: {tier} {material} {slot_description}
-Style: {slot_specific_style}
+Subject: {tier} {slot_description}
 Style Requirements:
 - Authentic Minecraft 8-bit/16-bit pixel art style
 - Clean blocky pixels, no anti-aliasing
-- {tier_color} color palette
+- Primary color: {color_primary}
+- Secondary color: {color_secondary}
+- {tier_specific_effects}
 - Item shown as inventory icon (like in Minecraft inventory)
 - Transparent or solid dark background
 - Single item centered, filling 80% of frame
 - NO text, NO labels
 ```
 
-### Step 3: Uploads Image to Storage
+### Tier-Specific Effects
 
-Images are stored in Supabase at:
-```
-images/equipment/{equipment_id}.png
-```
+| Tier Category | Special Effects |
+|--------------|-----------------|
+| Classic | None, basic materials |
+| Enchanted | Purple magical glow/shimmer |
+| Elemental | Element particles (fire, ice, lightning) |
+| Mythic | Auras, special patterns |
+| Ultimate | Glowing, ethereal, prismatic effects |
 
-### Step 4: Updates Equipment Record
+### Slot-Specific Descriptions
 
-```sql
--- CRITICAL: Use leading slash, NO 'images' prefix
-UPDATE equipment
-SET image_url = '/equipment/{equipment_id}.png'
-WHERE id = '{equipment_id}';
-```
+| Slot | Description |
+|------|-------------|
+| helmet | Head armor that covers the head, protective helmet |
+| chestplate | Body armor, protective torso armor with plating |
+| leggings | Leg armor pants with protective details |
+| boots | Armor boots that cover feet |
+| weapon | Sword/blade weapon with handle |
+| tool | Pickaxe mining tool with handle and head |
+| ranged | Bow or crossbow with string |
+| shield | Defensive shield with face design |
 
-> **WARNING**: Do NOT use `images/equipment/...` format. The app code prepends `images` automatically.
-> - ✅ Correct: `/equipment/leather_helmet.png`
-> - ❌ Wrong: `images/equipment/leather_helmet.png`
+---
 
-## Custom Equipment Ideas
+## Seed Files
 
-### Special Event Equipment (🟢 High Freedom)
-```javascript
-// Halloween Set
-{ name: 'pumpkin_helmet', tier: 'gold', rarity: 'epic', slot: 'helmet' }
-{ name: 'skeleton_chestplate', tier: 'iron', rarity: 'rare', slot: 'chestplate' }
+Equipment data is organized in seed files:
 
-// Chinese New Year Set
-{ name: 'dragon_helmet', tier: 'diamond', rarity: 'legendary', slot: 'helmet' }
-{ name: 'jade_sword', tier: 'diamond', rarity: 'legendary', slot: 'weapon' }
+| File | Units | Items |
+|------|-------|-------|
+| `supabase/seed-equipment-units-1-10.sql` | 1-10 | 70 |
+| `supabase/seed-equipment-units-11-20.sql` | 11-20 | 70 |
+| `supabase/seed-equipment-units-21-30.sql` | 21-30 | 70 |
+| `supabase/seed-equipment-units-31-40.sql` | 31-40 | 70 |
+| **Total** | **40** | **280** |
 
-// Back to School Set
-{ name: 'graduation_cap', tier: 'leather', rarity: 'common', slot: 'helmet' }
-{ name: 'pencil_sword', tier: 'chain', rarity: 'rare', slot: 'weapon' }
-
-// Hari Raya Set
-{ name: 'songkok_helmet', tier: 'gold', rarity: 'epic', slot: 'helmet' }
-{ name: 'ketupat_chestplate', tier: 'gold', rarity: 'epic', slot: 'chestplate' }
-```
-
-### Subject-Themed Equipment (🟢 High Freedom)
-```javascript
-// Math Master Set
-{ name: 'calculator_helmet', tier: 'iron', slot: 'helmet' }
-{ name: 'protractor_sword', tier: 'iron', slot: 'weapon' }
-
-// Language Arts Set
-{ name: 'book_helmet', tier: 'chain', slot: 'helmet' }
-{ name: 'quill_sword', tier: 'chain', slot: 'weapon' }
-
-// Science Set
-{ name: 'lab_goggles', tier: 'iron', slot: 'helmet' }
-{ name: 'beaker_weapon', tier: 'iron', slot: 'weapon' }
-```
-
-## Image Generation Prompt Templates
-
-### Helmet
-```
-{tier_color} {material} helmet/head armor that covers the head
-Style: protective helmet with {tier_specific} details
-```
-
-### Chestplate
-```
-{tier_color} {material} chestplate/body armor
-Style: protective torso armor with {tier_specific} plating
-```
-
-### Leggings
-```
-{tier_color} {material} leggings/leg armor
-Style: protective leg armor pants with {tier_specific} details
-```
-
-### Boots
-```
-{tier_color} {material} boots/shoes that cover feet
-Style: armor boots with {tier_specific} details
-```
-
-### Weapon (Sword)
-```
-{tier_color} {material} sword/blade weapon
-Style: Minecraft-style sword with handle and {tier_specific} blade
-```
-
-## Tier-Specific Details
-
-| Tier | Material Description | Color Palette | Special Effects |
-|------|---------------------|---------------|-----------------|
-| leather | "warm brown leather with visible stitching" | Brown, tan | None |
-| chain | "interlocking metal rings, chainmail texture" | Gray, silver | None |
-| iron | "polished steel plates with rivets" | Silver, metallic | Slight shine |
-| gold | "ornate golden metal with engravings" | Gold, yellow | Warm glow |
-| diamond | "crystalline blue diamond facets" | Cyan, blue | Magical shimmer |
-
-## Linking Equipment to Activities
-
-Sets `equipment_reward_id` when creating activities:
-
-```sql
--- First, creates the equipment
-INSERT INTO equipment (name, name_ms, name_zh, name_en, slot, tier, rarity, required_level)
-VALUES ('bronze_medal', 'Pingat Gangsa', '铜牌', 'Bronze Medal', 'chestplate', 'leather', 'common', 1)
-RETURNING id;
-
--- Then links to activity
-UPDATE activities
-SET equipment_reward_id = '{returned_id}'
-WHERE id = '{activity_id}';
-```
-
-## Best Practices
-
-1. **Balanced Progression**: Does not give diamond gear for easy activities
-2. **Thematic Consistency**: Matches equipment to subject/theme when possible
-3. **Visual Variety**: Varies colors and styles within same tier
-4. **Localized Names**: Always provides ms, zh, en translations
-5. **Level Requirements**: Higher tiers require higher kid levels
+---
 
 ## API Reference
 
@@ -314,6 +308,8 @@ POST /api/generate-equipment
 }
 ```
 
+---
+
 ## Storage Structure
 
 ```
@@ -321,40 +317,58 @@ supabase-storage/
 └── images/
     └── equipment/
         ├── leather_helmet.png
-        ├── leather_chestplate.png
-        ├── iron_sword.png
+        ├── blaze_sword.png
+        ├── phoenix_chestplate.png
+        ├── infinity_shield.png
         └── ...
 ```
 
 ### Image URL Format
 
-**Supabase Storage Base URL:**
-```
-https://glwxvgxgquwfgwbwqbiz.supabase.co/storage/v1/object/public/images
-```
-
-**Full Equipment Image URL Pattern:**
-```
-https://glwxvgxgquwfgwbwqbiz.supabase.co/storage/v1/object/public/images/equipment/{equipment_name}.png
-```
-
-**Examples:**
-- Leather Boots: `https://glwxvgxgquwfgwbwqbiz.supabase.co/storage/v1/object/public/images/equipment/leather_boots.png`
-- Iron Helmet: `https://glwxvgxgquwfgwbwqbiz.supabase.co/storage/v1/object/public/images/equipment/iron_helmet.png`
-- Diamond Sword: `https://glwxvgxgquwfgwbwqbiz.supabase.co/storage/v1/object/public/images/equipment/diamond_sword.png`
-
 **Database `image_url` Column:**
 Store the relative path in the database (the app constructs the full URL):
 ```sql
 -- Store relative path
-UPDATE equipment SET image_url = '/equipment/leather_boots.png' WHERE name = 'leather_boots';
+UPDATE equipment SET image_url = '/equipment/phoenix_helmet.png' WHERE name = 'Phoenix Helmet';
 
 -- The app automatically constructs:
--- {SUPABASE_URL}/storage/v1/object/public/images/equipment/leather_boots.png
+-- {SUPABASE_URL}/storage/v1/object/public/images/equipment/phoenix_helmet.png
 ```
 
-**Environment Variable:**
-The Supabase URL is available via `process.env.NEXT_PUBLIC_SUPABASE_URL`
+---
+
+## TypeScript Types
+
+```typescript
+export type EquipmentSlot = 'helmet' | 'chestplate' | 'leggings' | 'boots' | 'weapon' | 'tool' | 'ranged' | 'shield';
+
+export type EquipmentTier =
+  // Classic Tiers (Units 1-6)
+  | 'wood' | 'leather' | 'stone' | 'chain' | 'iron' | 'gold' | 'diamond' | 'netherite'
+  // Enchanted Tiers (Units 7-12)
+  | 'enchanted_iron' | 'enchanted_gold' | 'enchanted_diamond' | 'enchanted_netherite' | 'prismarine' | 'amethyst'
+  // Elemental Tiers (Units 13-20)
+  | 'blaze' | 'frost' | 'storm' | 'emerald' | 'obsidian' | 'redstone' | 'lapis' | 'glowstone'
+  // Mythic Tiers (Units 21-30)
+  | 'ender' | 'dragon' | 'wither' | 'phoenix' | 'titan' | 'shadow' | 'radiant' | 'ancient' | 'celestial' | 'void'
+  // Ultimate Tiers (Units 31-40)
+  | 'heroic' | 'mythical' | 'immortal' | 'divine' | 'cosmic' | 'eternal' | 'ascended' | 'supreme' | 'omega' | 'infinity';
+
+export type EquipmentRarity = 'common' | 'rare' | 'epic' | 'legendary';
+```
+
+---
+
+## Best Practices
+
+1. **Balanced Progression**: Higher units get more powerful tiers
+2. **Thematic Consistency**: Match equipment visuals to tier theme
+3. **Color Accuracy**: Use the defined color_primary and color_secondary
+4. **Localized Names**: Always provide ms, zh, en translations
+5. **Unit Tracking**: Set unit_number to link equipment to curriculum
+6. **7 Items Per Unit**: Maintain consistent set size
+
+---
 
 ## Related Skills
 

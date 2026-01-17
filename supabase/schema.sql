@@ -59,7 +59,7 @@ CREATE TABLE IF NOT EXISTS subjects (
 INSERT INTO subjects (code, name_ms, name_zh, name_en, icon, color, order_index) VALUES
   ('bm', 'Bahasa Malaysia', '马来语', 'Bahasa Malaysia', '🇲🇾', '#FFD700', 1),
   ('bc', 'Bahasa Cina', '华语', 'Chinese', '🇨🇳', '#FF4444', 2),
-  ('en', 'Bahasa Inggeris', '英语', 'English', '🇬🇧', '#4169E1', 3),
+  ('en', 'Bahasa Inggeris', '英语', 'English', 'EN', '#4169E1', 3),
   ('math', 'Matematik', '数学', 'Mathematics', '🔢', '#32CD32', 4)
 ON CONFLICT (code) DO NOTHING;
 

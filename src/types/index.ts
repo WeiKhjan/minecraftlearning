@@ -6,9 +6,19 @@ export type Grade = 'primary_1' | 'primary_2' | 'primary_3' | 'primary_4' | 'pri
 
 export type SubjectCode = 'bm' | 'bc' | 'en' | 'math';
 
-export type EquipmentSlot = 'helmet' | 'chestplate' | 'leggings' | 'boots' | 'weapon';
+export type EquipmentSlot = 'helmet' | 'chestplate' | 'leggings' | 'boots' | 'weapon' | 'tool' | 'ranged' | 'shield';
 
-export type EquipmentTier = 'leather' | 'chain' | 'iron' | 'gold' | 'diamond';
+export type EquipmentTier =
+  // Classic Tiers (Units 1-6)
+  | 'wood' | 'leather' | 'stone' | 'chain' | 'iron' | 'gold' | 'diamond' | 'netherite'
+  // Enchanted Tiers (Units 7-12)
+  | 'enchanted_iron' | 'enchanted_gold' | 'enchanted_diamond' | 'enchanted_netherite' | 'prismarine' | 'amethyst'
+  // Elemental Tiers (Units 13-20)
+  | 'blaze' | 'frost' | 'storm' | 'emerald' | 'obsidian' | 'redstone' | 'lapis' | 'glowstone'
+  // Mythic Tiers (Units 21-30)
+  | 'ender' | 'dragon' | 'wither' | 'phoenix' | 'titan' | 'shadow' | 'radiant' | 'ancient' | 'celestial' | 'void'
+  // Ultimate Tiers (Units 31-40)
+  | 'heroic' | 'mythical' | 'immortal' | 'divine' | 'cosmic' | 'eternal' | 'ascended' | 'supreme' | 'omega' | 'infinity';
 
 export type EquipmentRarity = 'common' | 'rare' | 'epic' | 'legendary';
 
@@ -205,6 +215,9 @@ export interface Equipment {
   rarity: EquipmentRarity;
   image_url: string;
   required_level: number;
+  unit_number: number | null;
+  color_primary: string | null;
+  color_secondary: string | null;
 }
 
 // Kid Inventory
@@ -224,6 +237,9 @@ export interface KidEquipped {
   leggings_id: string | null;
   boots_id: string | null;
   weapon_id: string | null;
+  tool_id: string | null;
+  ranged_id: string | null;
+  shield_id: string | null;
   pet_id: string | null;
 }
 
@@ -314,3 +330,59 @@ export interface LocalizedText {
 export function getLocalizedValue<T extends LocalizedText>(obj: T, locale: Locale): string {
   return obj[locale];
 }
+
+// Equipment Slot Display Order
+export const EQUIPMENT_SLOT_ORDER: EquipmentSlot[] = [
+  'helmet', 'chestplate', 'leggings', 'boots', 'weapon', 'tool', 'ranged', 'shield'
+];
+
+// Tier Color Mapping for UI Display
+export const TIER_COLORS: Record<EquipmentTier, { primary: string; secondary: string }> = {
+  // Classic Tiers
+  wood: { primary: '#8B4513', secondary: '#A0522D' },
+  leather: { primary: '#8B4513', secondary: '#D2691E' },
+  stone: { primary: '#808080', secondary: '#A9A9A9' },
+  chain: { primary: '#C0C0C0', secondary: '#808080' },
+  iron: { primary: '#D3D3D3', secondary: '#A9A9A9' },
+  gold: { primary: '#FFD700', secondary: '#FFA500' },
+  diamond: { primary: '#00CED1', secondary: '#40E0D0' },
+  netherite: { primary: '#4A4A4A', secondary: '#8B0000' },
+  // Enchanted Tiers
+  enchanted_iron: { primary: '#D3D3D3', secondary: '#9370DB' },
+  enchanted_gold: { primary: '#FFD700', secondary: '#9370DB' },
+  enchanted_diamond: { primary: '#00CED1', secondary: '#9370DB' },
+  enchanted_netherite: { primary: '#4A4A4A', secondary: '#9370DB' },
+  prismarine: { primary: '#5F9EA0', secondary: '#20B2AA' },
+  amethyst: { primary: '#9966CC', secondary: '#E6E6FA' },
+  // Elemental Tiers
+  blaze: { primary: '#FF4500', secondary: '#FF8C00' },
+  frost: { primary: '#87CEEB', secondary: '#FFFFFF' },
+  storm: { primary: '#FFD700', secondary: '#4B0082' },
+  emerald: { primary: '#50C878', secondary: '#00FF00' },
+  obsidian: { primary: '#1C1C1C', secondary: '#4B0082' },
+  redstone: { primary: '#FF0000', secondary: '#8B0000' },
+  lapis: { primary: '#1E90FF', secondary: '#00008B' },
+  glowstone: { primary: '#FFFF00', secondary: '#FFD700' },
+  // Mythic Tiers
+  ender: { primary: '#301934', secondary: '#9400D3' },
+  dragon: { primary: '#800080', secondary: '#228B22' },
+  wither: { primary: '#1C1C1C', secondary: '#696969' },
+  phoenix: { primary: '#FF4500', secondary: '#FFD700' },
+  titan: { primary: '#B8860B', secondary: '#8B4513' },
+  shadow: { primary: '#2F2F2F', secondary: '#4B0082' },
+  radiant: { primary: '#FFFACD', secondary: '#FFD700' },
+  ancient: { primary: '#8B4513', secondary: '#D4AF37' },
+  celestial: { primary: '#000080', secondary: '#C0C0C0' },
+  void: { primary: '#0D0D0D', secondary: '#4B0082' },
+  // Ultimate Tiers
+  heroic: { primary: '#DC143C', secondary: '#FFD700' },
+  mythical: { primary: '#9400D3', secondary: '#FFD700' },
+  immortal: { primary: '#00FF00', secondary: '#FFFFFF' },
+  divine: { primary: '#FFFFFF', secondary: '#FFD700' },
+  cosmic: { primary: '#000080', secondary: '#FF69B4' },
+  eternal: { primary: '#C0C0C0', secondary: '#FFD700' },
+  ascended: { primary: '#87CEEB', secondary: '#FFFFFF' },
+  supreme: { primary: '#FF0000', secondary: '#000000' },
+  omega: { primary: '#000000', secondary: '#FF0000' },
+  infinity: { primary: '#FF69B4', secondary: '#00FFFF' }, // Rainbow/prismatic
+};
