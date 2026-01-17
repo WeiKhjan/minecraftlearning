@@ -40,24 +40,17 @@ export async function POST(request: NextRequest) {
       .replace(/^(say|speak|read|pronounce|tell)[:\s]*/i, '')
       .trim();
 
-    // For short text (words less than 4 chars), make it more pronounceable
-    if (cleanText.length <= 3) {
-      // Single letters
-      const letterIntro = {
-        ms: `Huruf ${cleanText.toUpperCase()}`,
-        zh: `字母 ${cleanText.toUpperCase()}`,
-        en: `The letter ${cleanText.toUpperCase()}`,
-      };
-      cleanText = letterIntro[locale as keyof typeof letterIntro] || letterIntro.en;
-    } else if (cleanText.length <= 6) {
-      // Short words - spell them out slowly
-      const wordIntro = {
-        ms: `Perkataan: ${cleanText}`,
-        zh: `单词：${cleanText}`,
-        en: `The word: ${cleanText}`,
-      };
-      cleanText = wordIntro[locale as keyof typeof wordIntro] || wordIntro.en;
+    // Keep text simple - don't add prefixes that might confuse the TTS model
+    // The model works better with plain text
+    // For very short text, just repeat it for clarity
+    if (cleanText.length <= 2) {
+      // Single letters - repeat for clarity
+      cleanText = `${cleanText.toUpperCase()}. ${cleanText.toUpperCase()}.`;
+    } else if (cleanText.length <= 4) {
+      // Very short words - say twice slowly
+      cleanText = `${cleanText}. ${cleanText}.`;
     }
+    // For longer text, use as-is without prefixes
 
     const primaryVoice = VOICE_CONFIG[locale as keyof typeof VOICE_CONFIG] || VOICE_CONFIG.ms;
 
@@ -92,6 +85,10 @@ export async function POST(request: NextRequest) {
                     voiceName: voice,
                   },
                 },
+                // Add language hint based on locale
+                ...(locale === 'zh' && { languageCode: 'cmn-CN' }),
+                ...(locale === 'ms' && { languageCode: 'ms-MY' }),
+                ...(locale === 'en' && { languageCode: 'en-US' }),
               },
             },
           }),
