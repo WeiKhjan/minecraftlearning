@@ -441,7 +441,7 @@ Make it perfect for teaching young children vocabulary!`;
     // Upload to Supabase
     const supabase = getSupabaseAdmin();
     const imageBuffer = Buffer.from(imageData, 'base64');
-    const sanitizedWord = word.toLowerCase().replace(/\s+/g, '_').replace(/[^a-z0-9_]/g, '');
+    const sanitizedWord = word.toLowerCase().replace(/\s+/g, '_').replace(/-/g, '_').replace(/[^a-z0-9_]/g, '');
     const fileName = `vocab/${sanitizedWord}.png`;
 
     const { error: uploadError } = await supabase.storage
