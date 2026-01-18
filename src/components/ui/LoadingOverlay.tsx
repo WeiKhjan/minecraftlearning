@@ -40,7 +40,7 @@ export default function LoadingOverlay({
   return (
     <div
       className={`fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm transition-opacity duration-300 ${
-        isLoading ? 'opacity-100' : 'opacity-0'
+        isLoading ? 'opacity-100' : 'opacity-0 pointer-events-none'
       }`}
     >
       <div className="flex flex-col items-center gap-6">
