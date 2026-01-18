@@ -171,6 +171,186 @@ const VOCABULARY_LIST = [
   { word: 'merawat', meaning_en: 'treating', category: 'action' },
   { word: 'membantu', meaning_en: 'helping', category: 'action' },
   { word: 'membasuh', meaning_en: 'rinsing', category: 'action' },
+
+  // =====================
+  // Unit 10: Berhati-hati Selalu (Always Be Careful)
+  // =====================
+  { word: 'berhati-hati', meaning_en: 'be careful', category: 'action' },
+  { word: 'cermat', meaning_en: 'meticulous', category: 'action' },
+  { word: 'bijak', meaning_en: 'wise', category: 'person' },
+  { word: 'selamat', meaning_en: 'safe', category: 'object' },
+  { word: 'bahaya', meaning_en: 'danger', category: 'object' },
+  { word: 'awas', meaning_en: 'beware', category: 'action' },
+  { word: 'jaga', meaning_en: 'guard/watch', category: 'action' },
+  { word: 'lindungi', meaning_en: 'protect', category: 'action' },
+
+  // =====================
+  // Unit 11: Selamat Sentiasa (Always Safe)
+  // =====================
+  { word: 'tali pinggang keledar', meaning_en: 'seat belt', category: 'object' },
+  { word: 'berhenti', meaning_en: 'stop', category: 'action' },
+  { word: 'lalu lintas', meaning_en: 'traffic', category: 'place' },
+  { word: 'lampu isyarat', meaning_en: 'traffic light', category: 'object' },
+  { word: 'zebra crossing', meaning_en: 'zebra crossing', category: 'place' },
+  { word: 'helmet', meaning_en: 'helmet', category: 'clothing' },
+  { word: 'bas sekolah', meaning_en: 'school bus', category: 'vehicle' },
+  { word: 'pemandu', meaning_en: 'driver', category: 'person' },
+
+  // =====================
+  // Unit 12: Jadikan Teladan (Be a Role Model)
+  // =====================
+  { word: 'teladan', meaning_en: 'role model', category: 'person' },
+  { word: 'tanggungjawab', meaning_en: 'responsibility', category: 'action' },
+  { word: 'jujur', meaning_en: 'honest', category: 'person' },
+  { word: 'rajin', meaning_en: 'diligent', category: 'person' },
+  { word: 'sopan', meaning_en: 'polite', category: 'person' },
+  { word: 'hormat', meaning_en: 'respect', category: 'action' },
+  { word: 'tolong', meaning_en: 'help', category: 'action' },
+  { word: 'berkongsi', meaning_en: 'sharing', category: 'action' },
+
+  // =====================
+  // Unit 13: Meriahnya Perayaan (Festive Celebrations - Hari Gawai)
+  // =====================
+  { word: 'Hari Gawai', meaning_en: 'Gawai Festival', category: 'place' },
+  { word: 'tuak', meaning_en: 'rice wine', category: 'food' },
+  { word: 'ayam pansuh', meaning_en: 'bamboo chicken', category: 'food' },
+  { word: 'umai', meaning_en: 'raw fish salad', category: 'food' },
+  { word: 'sape', meaning_en: 'traditional lute', category: 'object' },
+  { word: 'rumah panjang', meaning_en: 'longhouse', category: 'place' },
+  { word: 'ngajat', meaning_en: 'warrior dance', category: 'action' },
+  { word: 'pakaian tradisional', meaning_en: 'traditional costume', category: 'clothing' },
+
+  // =====================
+  // Unit 14: Sambutan Perayaan (Celebration Continued)
+  // =====================
+  { word: 'ketupat', meaning_en: 'rice cake in woven palm leaf', category: 'food' },
+  { word: 'rendang', meaning_en: 'spicy meat dish', category: 'food' },
+  { word: 'pelita', meaning_en: 'oil lamp', category: 'object' },
+  { word: 'bunga api', meaning_en: 'fireworks', category: 'object' },
+  { word: 'mercun', meaning_en: 'firecracker', category: 'object' },
+  { word: 'kuih raya', meaning_en: 'festive cookies', category: 'food' },
+  { word: 'duit raya', meaning_en: 'festive money packet', category: 'object' },
+  { word: 'baju kurung', meaning_en: 'traditional Malay dress', category: 'clothing' },
+
+  // =====================
+  // Unit 15: Wah, Cantiknya! (How Beautiful! - Arts)
+  // =====================
+  { word: 'lukisan', meaning_en: 'painting', category: 'object' },
+  { word: 'warna', meaning_en: 'color', category: 'object' },
+  { word: 'berus', meaning_en: 'brush', category: 'object' },
+  { word: 'kanvas', meaning_en: 'canvas', category: 'object' },
+  { word: 'cat air', meaning_en: 'watercolor', category: 'object' },
+  { word: 'palet', meaning_en: 'palette', category: 'object' },
+  { word: 'pelukis', meaning_en: 'painter', category: 'person' },
+  { word: 'cantik', meaning_en: 'beautiful', category: 'object' },
+
+  // =====================
+  // Unit 16: Pameran Kartun Malaysia (Malaysian Cartoon Exhibition)
+  // =====================
+  { word: 'kartunis', meaning_en: 'cartoonist', category: 'person' },
+  { word: 'Datuk Lat', meaning_en: 'Datuk Lat cartoonist', category: 'person' },
+  { word: 'Budak Kampung', meaning_en: 'Kampung Boy comic', category: 'object' },
+  { word: 'komik', meaning_en: 'comic', category: 'object' },
+  { word: 'watak', meaning_en: 'character', category: 'person' },
+  { word: 'pameran', meaning_en: 'exhibition', category: 'place' },
+  { word: 'galeri', meaning_en: 'gallery', category: 'place' },
+  { word: 'kreatif', meaning_en: 'creative', category: 'action' },
+
+  // =====================
+  // Unit 17: Bendera Malaysia (Malaysian Flag)
+  // =====================
+  { word: 'bendera', meaning_en: 'flag', category: 'object' },
+  { word: 'Jalur Gemilang', meaning_en: 'Malaysian flag', category: 'object' },
+  { word: 'bulan', meaning_en: 'moon/crescent', category: 'nature' },
+  { word: 'bintang', meaning_en: 'star', category: 'nature' },
+  { word: 'merah', meaning_en: 'red', category: 'object' },
+  { word: 'putih', meaning_en: 'white', category: 'object' },
+  { word: 'kuning', meaning_en: 'yellow', category: 'object' },
+  { word: 'jalur', meaning_en: 'stripe', category: 'object' },
+
+  // =====================
+  // Unit 18: Negaraku Istimewa (My Special Country)
+  // =====================
+  { word: 'gunung', meaning_en: 'mountain', category: 'nature' },
+  { word: 'Gunung Kinabalu', meaning_en: 'Mount Kinabalu', category: 'nature' },
+  { word: 'laut', meaning_en: 'sea', category: 'nature' },
+  { word: 'pulau', meaning_en: 'island', category: 'nature' },
+  { word: 'hutan', meaning_en: 'forest', category: 'nature' },
+  { word: 'sungai', meaning_en: 'river', category: 'nature' },
+  { word: 'pantai', meaning_en: 'beach', category: 'nature' },
+  { word: 'negeri', meaning_en: 'state', category: 'place' },
+
+  // =====================
+  // Unit 19: Mesra Plastik (Plastic Friendly - Recycling)
+  // =====================
+  { word: 'botol plastik', meaning_en: 'plastic bottle', category: 'object' },
+  { word: 'kitar semula', meaning_en: 'recycle', category: 'action' },
+  { word: 'potong', meaning_en: 'cut', category: 'action' },
+  { word: 'masukkan', meaning_en: 'insert/put in', category: 'action' },
+  { word: 'pasu bunga', meaning_en: 'flower vase', category: 'object' },
+  { word: 'tanah', meaning_en: 'soil', category: 'nature' },
+  { word: 'pokok bunga', meaning_en: 'flower plant', category: 'nature' },
+  { word: 'hiasan', meaning_en: 'decoration', category: 'object' },
+
+  // =====================
+  // Unit 20: Hemat dan Mudah (Thrifty and Easy)
+  // =====================
+  { word: 'tin', meaning_en: 'can/tin', category: 'object' },
+  { word: 'kertas', meaning_en: 'paper', category: 'object' },
+  { word: 'kaca', meaning_en: 'glass', category: 'object' },
+  { word: 'beg plastik', meaning_en: 'plastic bag', category: 'object' },
+  { word: 'jimat', meaning_en: 'save/economize', category: 'action' },
+  { word: 'guna semula', meaning_en: 'reuse', category: 'action' },
+  { word: 'kurangkan', meaning_en: 'reduce', category: 'action' },
+  { word: 'beg kain', meaning_en: 'cloth bag', category: 'object' },
+
+  // =====================
+  // Unit 21: Jaga Alam Sekitar (Take Care of Environment)
+  // =====================
+  { word: 'sampah', meaning_en: 'garbage/trash', category: 'object' },
+  { word: 'tong kitar semula', meaning_en: 'recycling bin', category: 'object' },
+  { word: 'alam sekitar', meaning_en: 'environment', category: 'nature' },
+  { word: 'pencemaran', meaning_en: 'pollution', category: 'nature' },
+  { word: 'bersih', meaning_en: 'clean', category: 'action' },
+  { word: 'hijau', meaning_en: 'green', category: 'nature' },
+  { word: 'pokok', meaning_en: 'tree', category: 'nature' },
+  { word: 'buang', meaning_en: 'throw away', category: 'action' },
+
+  // =====================
+  // Unit 22: Kolaj Ciptaan Saya (My Collage Creation)
+  // =====================
+  { word: 'kolaj', meaning_en: 'collage', category: 'object' },
+  { word: 'gunting', meaning_en: 'scissors', category: 'object' },
+  { word: 'gam', meaning_en: 'glue', category: 'object' },
+  { word: 'kertas warna', meaning_en: 'colored paper', category: 'object' },
+  { word: 'majalah', meaning_en: 'magazine', category: 'object' },
+  { word: 'tampal', meaning_en: 'paste/stick', category: 'action' },
+  { word: 'cipta', meaning_en: 'create', category: 'action' },
+  { word: 'kreativiti', meaning_en: 'creativity', category: 'action' },
+
+  // =====================
+  // Unit 23: Corak dan Warna (Patterns and Colors)
+  // =====================
+  { word: 'corak', meaning_en: 'pattern', category: 'object' },
+  { word: 'corak batik', meaning_en: 'batik pattern', category: 'object' },
+  { word: 'bunga', meaning_en: 'flower', category: 'nature' },
+  { word: 'daun', meaning_en: 'leaf', category: 'nature' },
+  { word: 'geometri', meaning_en: 'geometric shapes', category: 'object' },
+  { word: 'garisan', meaning_en: 'lines', category: 'object' },
+  { word: 'bulatan', meaning_en: 'circles', category: 'object' },
+  { word: 'segi empat', meaning_en: 'squares', category: 'object' },
+
+  // =====================
+  // Unit 24: Ayu Tunggal - Batik
+  // =====================
+  { word: 'batik', meaning_en: 'batik fabric', category: 'clothing' },
+  { word: 'canting', meaning_en: 'batik wax pen tool', category: 'object' },
+  { word: 'lilin', meaning_en: 'wax', category: 'object' },
+  { word: 'kain', meaning_en: 'cloth/fabric', category: 'clothing' },
+  { word: 'pewarna', meaning_en: 'dye', category: 'object' },
+  { word: 'motif', meaning_en: 'motif/design', category: 'object' },
+  { word: 'tradisional', meaning_en: 'traditional', category: 'object' },
+  { word: 'warisan', meaning_en: 'heritage', category: 'object' },
 ];
 
 // Create Supabase client with service role
