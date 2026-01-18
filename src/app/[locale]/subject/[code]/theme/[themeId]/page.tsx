@@ -53,6 +53,17 @@ function getEquipmentName(equipment: Equipment | null, locale: Locale): string {
   }
 }
 
+function getPetName(pet: Pet | null | undefined, locale: Locale): string {
+  if (!pet) return '';
+  if (typeof pet.name === 'string') return pet.name;
+  switch (locale) {
+    case 'ms': return pet.name.ms || pet.name.en;
+    case 'zh': return pet.name.zh || pet.name.en;
+    case 'en': return pet.name.en;
+    default: return pet.name.en;
+  }
+}
+
 export default async function ThemePage({
   params,
   searchParams,
@@ -221,7 +232,7 @@ export default async function ThemePage({
                     src={(theme as Theme & { pet?: Pet }).pet!.image_url!.startsWith('/')
                       ? `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/images${(theme as Theme & { pet?: Pet }).pet!.image_url}`
                       : (theme as Theme & { pet?: Pet }).pet!.image_url!}
-                    alt={(theme as Theme & { pet?: Pet }).pet!.name}
+                    alt={getPetName((theme as Theme & { pet?: Pet }).pet, locale as Locale)}
                     className="w-14 h-14 object-contain pixelated"
                   />
                 </div>
