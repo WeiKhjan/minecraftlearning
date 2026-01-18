@@ -395,7 +395,18 @@ export default function ActivityClient({
                   <p className="text-lg font-bold text-yellow-700 mb-2">
                     🎁 {translations.reward}!
                   </p>
-                  <p className="text-gray-700">
+                  {activity.equipment.image_url && (
+                    <div className="flex justify-center mb-2">
+                      <img
+                        src={activity.equipment.image_url.startsWith('/')
+                          ? `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/images${activity.equipment.image_url}`
+                          : activity.equipment.image_url}
+                        alt={activity.equipment.name_ms || activity.equipment.name}
+                        className="w-20 h-20 object-contain pixelated"
+                      />
+                    </div>
+                  )}
+                  <p className="text-gray-700 font-medium">
                     {activity.equipment.name_ms || activity.equipment.name}
                   </p>
                 </div>
