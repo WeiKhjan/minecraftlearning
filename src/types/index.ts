@@ -10,9 +10,9 @@ export type EquipmentSlot = 'helmet' | 'chestplate' | 'leggings' | 'boots' | 'we
 
 export type EquipmentTier =
   // Classic Tiers (Units 1-6)
-  | 'wood' | 'leather' | 'stone' | 'chain' | 'iron' | 'gold' | 'diamond' | 'netherite'
+  | 'wood' | 'leather' | 'stone' | 'chain' | 'iron' | 'gold' | 'diamond' | 'netherite' | 'darksteel'
   // Enchanted Tiers (Units 7-12)
-  | 'enchanted_iron' | 'enchanted_gold' | 'enchanted_diamond' | 'enchanted_netherite' | 'seafoam' | 'amethyst'
+  | 'enchanted_iron' | 'enchanted_gold' | 'enchanted_diamond' | 'enchanted_netherite' | 'enchanted_darksteel' | 'seafoam' | 'amethyst'
   // Elemental Tiers (Units 13-20)
   | 'blaze' | 'frost' | 'storm' | 'emerald' | 'obsidian' | 'crimsonite' | 'lapis' | 'luminite'
   // Mythic Tiers (Units 21-30)
@@ -26,7 +26,7 @@ export type PetMobType = 'passive' | 'neutral' | 'hostile' | 'utility';
 
 export type PetRarity = 'common' | 'uncommon' | 'rare' | 'epic' | 'legendary';
 
-export type ActivityType = 'alphabet' | 'matching' | 'syllable' | 'writing' | 'speaking' | 'singing' | 'math' | 'dictation';
+export type ActivityType = 'alphabet' | 'matching' | 'syllable' | 'writing' | 'speaking' | 'singing' | 'math' | 'dictation' | 'sequencing';
 
 export type ProgressStatus = 'locked' | 'available' | 'in_progress' | 'completed';
 
@@ -103,7 +103,7 @@ export interface Activity {
 // Activity Content Types
 export interface ActivityContent {
   type: ActivityType;
-  data: AlphabetContent | MatchingContent | SyllableContent | WritingContent | SpeakingContent | SingingContent | MathContent | DictationContent;
+  data: AlphabetContent | MatchingContent | SyllableContent | WritingContent | SpeakingContent | SingingContent | MathContent | DictationContent | SequencingContent;
 }
 
 export interface AlphabetContent {
@@ -201,6 +201,23 @@ export interface DictationContent {
     meaning_en: string;
     audio_url?: string; // Pre-generated audio URL
   }[];
+}
+
+export interface SequencingContent {
+  title?: string;
+  instruction?: {
+    ms: string;
+    zh: string;
+    en: string;
+  };
+  steps: {
+    order: number;
+    text_ms: string;
+    text_zh: string;
+    text_en: string;
+    image?: string;
+  }[];
+  context_image?: string;
 }
 
 // Equipment
@@ -347,8 +364,10 @@ export const TIER_COLORS: Record<EquipmentTier, { primary: string; secondary: st
   gold: { primary: '#FFD700', secondary: '#FFA500' },
   diamond: { primary: '#00CED1', secondary: '#40E0D0' },
   netherite: { primary: '#4A4A4A', secondary: '#8B0000' },
+  darksteel: { primary: '#4A4A4A', secondary: '#8B0000' },
   // Enchanted Tiers
   enchanted_iron: { primary: '#D3D3D3', secondary: '#9370DB' },
+  enchanted_darksteel: { primary: '#4A4A4A', secondary: '#9370DB' },
   enchanted_gold: { primary: '#FFD700', secondary: '#9370DB' },
   enchanted_diamond: { primary: '#00CED1', secondary: '#9370DB' },
   enchanted_netherite: { primary: '#4A4A4A', secondary: '#9370DB' },

@@ -43,6 +43,7 @@ VALUES (
 | `speaking` | 20 | Phrase repetition |
 | `math` | 20 | Arithmetic exercises |
 | `dictation` | 20 | Listen and spell |
+| `sequencing` | 15 | Step-by-step procedural learning |
 
 ---
 
@@ -254,6 +255,46 @@ Tests listening and writing skills.
         "audio_url": null
       }
     ]
+  }
+}
+```
+
+### 8. sequencing
+For learning procedural/step-by-step instructions. Users arrange steps in the correct order.
+```json
+{
+  "type": "sequencing",
+  "data": {
+    "title": "Membuat Pasu Bunga",
+    "instruction": {
+      "ms": "Susun langkah mengikut turutan yang betul",
+      "zh": "按正确顺序排列步骤",
+      "en": "Arrange steps in the correct order"
+    },
+    "steps": [
+      {
+        "order": 1,
+        "text_ms": "Potong bahagian atas botol",
+        "text_zh": "剪掉瓶子上部",
+        "text_en": "Cut the top of the bottle",
+        "image": "/images/vocab/potong_botol.png"
+      },
+      {
+        "order": 2,
+        "text_ms": "Masukkan tanah ke dalam botol",
+        "text_zh": "将土放入瓶中",
+        "text_en": "Put soil into the bottle",
+        "image": "/images/vocab/masuk_tanah.png"
+      },
+      {
+        "order": 3,
+        "text_ms": "Tanam pokok bunga",
+        "text_zh": "种植花卉",
+        "text_en": "Plant the flower",
+        "image": "/images/vocab/tanam_bunga.png"
+      }
+    ],
+    "context_image": "/images/activities/recycling_craft.png"
   }
 }
 ```

@@ -12,6 +12,7 @@ import WritingActivity from './WritingActivity';
 import SpeakingActivity from './SpeakingActivity';
 import SingingActivity from './SingingActivity';
 import DictationActivity from './DictationActivity';
+import SequencingActivity from './SequencingActivity';
 import Confetti from '@/components/effects/Confetti';
 import LoadingOverlay from '@/components/ui/LoadingOverlay';
 import { useSoundEffects } from '@/hooks/useSoundEffects';
@@ -223,6 +224,8 @@ export default function ActivityClient({
         return <SingingActivity {...activityProps} />;
       case 'dictation':
         return <DictationActivity {...activityProps} />;
+      case 'sequencing':
+        return <SequencingActivity {...activityProps} />;
       default:
         return (
           <div className="text-center py-8">
@@ -305,7 +308,8 @@ export default function ActivityClient({
                   activity.type === 'writing' ? '✏️' :
                   activity.type === 'speaking' ? '🎤' :
                   activity.type === 'singing' ? '🎵' :
-                  activity.type === 'dictation' ? '👂' : '📚'}
+                  activity.type === 'dictation' ? '👂' :
+                  activity.type === 'sequencing' ? '📋' : '📚'}
               </div>
 
               <h1 className="text-2xl font-bold text-gray-800 mb-2">
