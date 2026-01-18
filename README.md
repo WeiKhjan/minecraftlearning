@@ -2,24 +2,70 @@
 
 A gamified learning platform for Malaysian primary school kids (Primary 1-6) with 8-bit Warrior Quest pixel art RPG theming.
 
+**Live Site**: [https://mylearnt.aitomate.it.com](https://mylearnt.aitomate.it.com)
+
 ## Features
 
 - **Multi-Subject Learning**: Bahasa Malaysia, Bahasa Cina, English, Mathematics
-- **Gamification**: 8-bit pixel art RPG character with equipment rewards and leveling
-- **AI-Powered Assessment**: Gemini 3 Flash for intelligent feedback
-- **Voice Tutor**: Gemini 2.5 Flash TTS with Malaysian accent
+- **Gamification**: 8-bit pixel art RPG character with 40 equipment tiers, pets, and leveling system
+- **AI-Powered Assessment**: Google Gemini for intelligent feedback and pronunciation scoring
+- **Voice Tutor**: Gemini 2.0 Flash TTS with Malaysian accent support
+- **AI Avatar Generator**: Create unique character portraits based on equipped items
 - **Multi-Language UI**: Bahasa Malaysia, Simplified Chinese, English
 - **Multiple Kids**: One parent account can manage multiple children
-- **Admin Dashboard**: Monitor all students progress
+- **Admin Dashboard**: Monitor all students' progress and manage content
 
 ## Tech Stack
 
-- **Frontend**: Next.js 14 (App Router) + TypeScript + Tailwind CSS
+- **Frontend**: Next.js 15 (App Router) + TypeScript + Tailwind CSS
 - **Database**: Supabase (PostgreSQL)
 - **Authentication**: Google OAuth via Supabase Auth
-- **AI**: Google Gemini 3 Flash + Gemini 2.5 Flash TTS
+- **AI Models**:
+  - Google Gemini 2.0 Flash (assessment, image generation)
+  - Google Gemini 2.0 Flash TTS (voice tutor)
+- **Storage**: Supabase Storage (images, audio)
 - **Hosting**: Vercel
+- **Domain**: Cloudflare DNS
 - **i18n**: next-intl
+
+## Activity Types
+
+| Type | Description |
+|------|-------------|
+| Alphabet | Letter/character recognition with images |
+| Syllable | Syllable reading and word building practice |
+| Matching | Match words to images |
+| Writing | Character/word tracing practice |
+| Dictation | Listen and spell words |
+| Speaking | Pronunciation practice with AI feedback |
+| Singing | Learn through songs with lyrics |
+| Math | Mathematics problems and exercises |
+
+## Equipment System (40 Tiers)
+
+Equipment rewards progress through 40 unique tiers across 8 slots:
+
+**Slots**: Helmet, Chestplate, Leggings, Boots, Weapon, Tool, Ranged, Shield
+
+**Tier Progression**:
+
+| Category | Tiers |
+|----------|-------|
+| Classic (Units 1-6) | Wood, Leather, Stone, Chain, Iron, Gold, Diamond, Netherite |
+| Enchanted (Units 7-12) | Enchanted Iron, Enchanted Gold, Enchanted Diamond, Enchanted Netherite, Seafoam, Amethyst |
+| Elemental (Units 13-20) | Blaze, Frost, Storm, Emerald, Obsidian, Crimsonite, Lapis, Luminite |
+| Mythic (Units 21-30) | Voidstone, Dragonscale, Darkbone, Phoenix, Titan, Shadow, Radiant, Ancient, Celestial, Void |
+| Ultimate (Units 31-40) | Heroic, Mythical, Immortal, Divine, Cosmic, Eternal, Ascended, Supreme, Omega, Infinity |
+
+**Image Storage**: `{SUPABASE_URL}/storage/v1/object/public/images/equipment/{tier}_{slot}.png`
+
+## Pet System
+
+Pets are creature companions awarded when kids complete ALL activities in a theme.
+
+**Rarities**: Common, Uncommon, Rare, Epic, Legendary
+
+**Image Storage**: `{SUPABASE_URL}/storage/v1/object/public/images/pets/{pet_id}.png`
 
 ## Getting Started
 
@@ -28,397 +74,135 @@ A gamified learning platform for Malaysian primary school kids (Primary 1-6) wit
 - Node.js 18+
 - npm or yarn
 - Supabase account
-- Google AI Studio API key
+- Google AI Studio API key (Gemini)
 
 ### Installation
 
-1. Clone the repository
-2. Install dependencies: `npm install`
-3. Copy `.env.example` to `.env.local` and fill in values
-4. Run database schema in Supabase SQL Editor
-5. Run `npm run dev`
+```bash
+# Clone the repository
+git clone https://github.com/WeiKhjan/minecraftlearning.git
+cd minecraft-learning
 
-## Environment Variables
+# Install dependencies
+npm install
 
-See `.env.example` for required variables.
+# Copy environment variables
+cp .env.example .env.local
+# Fill in your Supabase and Gemini API keys
+
+# Run development server
+npm run dev
+```
+
+### Environment Variables
+
+See `.env.example` for required variables:
+- `NEXT_PUBLIC_SUPABASE_URL`
+- `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+- `SUPABASE_SERVICE_ROLE_KEY`
+- `GEMINI_API_KEY`
 
 ## Database Setup
 
-1. Run `supabase/schema.sql` in Supabase SQL Editor
-2. Run `supabase/seed.sql` for initial content
-3. Enable Google OAuth in Supabase Authentication
+1. Create a new Supabase project
+2. Run schema migrations in `supabase/migrations/`
+3. Run seed files in `supabase/` for initial content
+4. Enable Google OAuth in Supabase Authentication
+5. Create storage buckets: `images`, `audio`
 
-## Making a User Admin
+### Making a User Admin
 
 ```sql
-UPDATE parents SET is_admin = true WHERE email = 'admin@example.com';
+UPDATE parents SET is_admin = true WHERE email = 'your-email@example.com';
 ```
 
-## Creating New Lessons
+## API Endpoints
 
-This guide explains how to add new learning content (Units/Activities) to the app.
+### Content Generation APIs
 
-### Content Structure
+| Endpoint | Description |
+|----------|-------------|
+| `/api/generate-equipment` | Generate equipment images (8-bit pixel art) |
+| `/api/generate-pets` | Generate pet images (8-bit pixel art) |
+| `/api/generate-vocab-batch` | Generate vocabulary images (kawaii style) |
+| `/api/generate-audio` | Generate TTS audio clips |
+| `/api/generate-avatar` | Generate AI character portraits |
 
-```
-Subject (BM/BC/EN/Math)
-└── Grade (1-6)
-    └── Tema (Theme, e.g., "Tema 1: Sayangi Keluarga")
-        └── Unit (e.g., "Unit 2: Mari Sayang")
-            └── Activity (e.g., "BA:6 Mari Ajuk dan Sebut")
-```
-
-### Activity Types
-
-| Type | Code | Description | Content Structure |
-|------|------|-------------|-------------------|
-| Alphabet | `alphabet` | Letter/character recognition | `{ letters: [...], images: [...] }` |
-| Syllable | `syllable` | Syllable reading practice | `{ pairs: [{ word, syllables, image_url }] }` |
-| Matching | `matching` | Match words to images | `{ pairs: [{ word, image_url }] }` |
-| Writing | `writing` | Tracing/writing practice | `{ words: [{ word, image_url }] }` |
-| Dictation | `dictation` | Listen and spell | `{ words: [{ word, image_url }] }` |
-| Speaking | `speaking` | Pronunciation practice | `{ sentences: [{ text, translation }] }` |
-
-### Equipment Reward Tiers
-
-Plan equipment rewards based on progression through Temas:
-
-| Tier | Equipment | Suggested Usage |
-|------|-----------|-----------------|
-| Leather | Helmet, Chestplate, Leggings, Boots, Wooden Sword | Tutorial/Tema 0 |
-| Chain | Helmet, Chestplate, Leggings, Boots, Stone Sword | Tema 1 Unit 1-2 early activities |
-| Iron | Helmet, Chestplate, Leggings, Boots, Iron Sword | Tema 1 Unit 2-3 mid activities |
-| Gold | Helmet, Chestplate, Leggings, Boots, Gold Sword | Tema 1 Unit 3 late activities |
-| Diamond | Helmet, Chestplate, Leggings, Boots, Diamond Sword | Tema 2+ |
-
-### Equipment Images
-
-Equipment images are AI-generated 8-bit pixel art style using Gemini 2.5 Flash. All 25 equipment pieces (5 tiers × 5 pieces) have been pre-generated and stored in Supabase.
-
-**Storage location**: `{SUPABASE_URL}/storage/v1/object/public/images/equipment/{equipment_id}.png`
-
-**Equipment IDs**:
-| Tier | Helmet | Chestplate | Leggings | Boots | Sword |
-|------|--------|------------|----------|-------|-------|
-| Leather | `leather_helmet` | `leather_chestplate` | `leather_leggings` | `leather_boots` | `wooden_sword` |
-| Chain | `chain_helmet` | `chain_chestplate` | `chain_leggings` | `chain_boots` | `stone_sword` |
-| Iron | `iron_helmet` | `iron_chestplate` | `iron_leggings` | `iron_boots` | `iron_sword` |
-| Gold | `gold_helmet` | `gold_chestplate` | `gold_leggings` | `gold_boots` | `gold_sword` |
-| Diamond | `diamond_helmet` | `diamond_chestplate` | `diamond_leggings` | `diamond_boots` | `diamond_sword` |
-
-**Regenerating Equipment Images** (if needed):
-
-Use the equipment generation API at `src/app/api/generate-equipment/route.ts`:
+### Usage Example
 
 ```bash
-# Check equipment list
-curl https://your-app.vercel.app/api/generate-equipment
+# Check items needing generation
+curl https://mylearnt.aitomate.it.com/api/generate-equipment
 
-# Generate in batches of 5
-curl -X POST https://your-app.vercel.app/api/generate-equipment \
+# Generate in batches
+curl -X POST https://mylearnt.aitomate.it.com/api/generate-equipment \
   -H "Content-Type: application/json" \
-  -d '{"startIndex": 0, "count": 5}'
-
-# Continue with next batches (0-4, 5-9, 10-14, 15-19, 20-24)
-curl -X POST https://your-app.vercel.app/api/generate-equipment \
-  -H "Content-Type: application/json" \
-  -d '{"startIndex": 5, "count": 5}'
+  -d '{"startIndex": 0, "count": 5, "unitStart": 1, "unitEnd": 10}'
 ```
 
-**Adding New Equipment Tiers** (e.g., Darksteel):
+## Project Structure
 
-1. Edit `src/app/api/generate-equipment/route.ts` and add new items to `EQUIPMENT_LIST`
-2. Run the generation API for the new items
-3. Update `src/types/index.ts` to add the new tier to `EquipmentTier` type
-4. Update components (`CharacterClient.tsx`, `dashboard/page.tsx`) to handle the new tier colors
-
-### Pet System
-
-Pets are fantasy creature companions that kids can collect and display next to their avatar. Pets are awarded when a kid completes ALL activities in a theme.
-
-Pet images are AI-generated 8-bit pixel art style using Gemini 2.5 Flash. All 25 pets (5 rarities × 5 pets) have been pre-generated and stored in Supabase.
-
-**Pet Rarity Tiers**:
-| Rarity | Examples | When to Award |
-|--------|----------|---------------|
-| Common | Chicken, Cow, Pig, Sheep, Rabbit | Early themes |
-| Uncommon | Cat, Wolf, Fox, Parrot, Turtle | Mid themes |
-| Rare | Bee, Panda, Axolotl, Ocelot, Llama | Later themes |
-| Epic | Skeleton, Zombie, Creeper, Spider, Slime | Advanced themes |
-| Legendary | Iron Golem, Snow Golem, Allay, Ender Dragon, Wither | Final/special themes |
-
-**Storage location**: `{SUPABASE_URL}/storage/v1/object/public/images/pets/{pet_id}.png`
-
-**Pet IDs by Rarity**:
-| Rarity | Pet 1 | Pet 2 | Pet 3 | Pet 4 | Pet 5 |
-|--------|-------|-------|-------|-------|-------|
-| Common | `chicken` | `cow` | `pig` | `sheep` | `rabbit` |
-| Uncommon | `cat` | `wolf` | `fox` | `parrot` | `turtle` |
-| Rare | `bee` | `panda` | `axolotl` | `ocelot` | `llama` |
-| Epic | `skeleton` | `zombie` | `creeper` | `spider` | `slime` |
-| Legendary | `iron_golem` | `snow_golem` | `allay` | `ender_dragon` | `wither` |
-
-**Regenerating Pet Images** (if needed):
-
-Use the pet generation API at `src/app/api/generate-pets/route.ts`:
-
-```bash
-# Check pet list
-curl https://your-app.vercel.app/api/generate-pets
-
-# Generate in batches of 5
-curl -X POST https://your-app.vercel.app/api/generate-pets \
-  -H "Content-Type: application/json" \
-  -d '{"startIndex": 0, "count": 5}'
-
-# Continue with next batches (0-4, 5-9, 10-14, 15-19, 20-24)
-curl -X POST https://your-app.vercel.app/api/generate-pets \
-  -H "Content-Type: application/json" \
-  -d '{"startIndex": 5, "count": 5}'
+```
+minecraft-learning/
+├── src/
+│   ├── app/
+│   │   ├── [locale]/          # Localized pages (ms, zh, en)
+│   │   │   ├── dashboard/     # Main dashboard
+│   │   │   ├── character/     # Character & equipment
+│   │   │   ├── learn/         # Learning activities
+│   │   │   └── admin/         # Admin panel
+│   │   └── api/               # API routes
+│   ├── components/            # React components
+│   ├── lib/                   # Utilities & Supabase client
+│   └── types/                 # TypeScript types
+├── supabase/
+│   ├── migrations/            # Database migrations
+│   └── seed-*.sql             # Seed data files
+├── messages/                  # i18n translation files
+└── public/                    # Static assets
 ```
 
-**Assigning Pet Rewards to Themes**:
+## Adding New Content
 
-In your seed SQL, add a `pet_reward` to themes:
+### Step 1: Create Vocabulary Images
+
+1. Add words to `/api/generate-vocab-batch` vocabulary list
+2. Run the API to generate images
+3. Images stored at: `images/vocab/{word}.png`
+
+### Step 2: Create Seed SQL
 
 ```sql
-UPDATE themes
-SET pet_reward = 'wolf'
-WHERE id = 'your-theme-uuid';
-```
-
-Or when creating a new theme:
-
-```sql
-INSERT INTO themes (subject_id, code, name_ms, name_zh, name_en, pet_reward)
+-- Example: Adding a new activity
+INSERT INTO activities (theme_id, type, title_ms, title_zh, title_en, content, xp_reward, equipment_reward_id)
 VALUES (
-  'subject-uuid',
-  'tema_2',
-  '{"ms": "Tema 2", "zh": "主题2", "en": "Theme 2"}',
-  'panda'  -- Pet reward for completing all activities in this theme
+  'theme-uuid',
+  'matching',
+  'Padankan Gambar',
+  '配对图片',
+  'Match Pictures',
+  '{"pairs": [{"word": "kucing", "image_url": "https://..."}]}'::jsonb,
+  50,
+  'equipment-uuid'
 );
 ```
 
-**How Pet Rewards Work**:
-1. Kid completes an activity
-2. System checks if all activities in the theme are now completed
-3. If all completed AND theme has a `pet_reward`, the pet is awarded
-4. Pet appears in kid's pet collection and can be equipped
-
-### Voice Audio (TTS) System
-
-Voice audio clips for speaking, syllable, and dictation activities can be pre-generated to save API costs and avoid rate limits. Audio is generated using Gemini 2.5 Flash TTS and stored in Supabase.
-
-**Storage location**: `{SUPABASE_URL}/storage/v1/object/public/audio/{type}/{activity_id}/{index}.mp3`
-
-**Supported Activity Types**:
-| Type | Content Field | Audio Storage Path |
-|------|---------------|-------------------|
-| Speaking | `phrases[].audio_url` | `audio/speaking/{activity_id}/{index}.mp3` |
-| Syllable | `audio_urls[]` | `audio/syllable/{activity_id}/{index}.mp3` |
-| Dictation | `words[].audio_url` | `audio/dictation/{activity_id}/{index}.mp3` |
-
-**Setup** (one-time):
-1. Create an `audio` storage bucket in Supabase Dashboard > Storage
-2. Set the bucket to public (for playback access)
-
-**Generating Audio Clips**:
-
-Use the audio generation API at `src/app/api/generate-audio/route.ts`:
+### Step 3: Generate Audio (for speaking/dictation)
 
 ```bash
-# Check all audio items that need generation
-curl https://your-app.vercel.app/api/generate-audio
-
-# Generate in batches of 5
-curl -X POST https://your-app.vercel.app/api/generate-audio \
+curl -X POST https://mylearnt.aitomate.it.com/api/generate-audio \
   -H "Content-Type: application/json" \
   -d '{"startIndex": 0, "count": 5}'
-
-# Continue with next batches
-curl -X POST https://your-app.vercel.app/api/generate-audio \
-  -H "Content-Type: application/json" \
-  -d '{"startIndex": 5, "count": 5}'
 ```
 
-**How Pre-generated Audio Works**:
-1. The API scans all speaking, syllable, and dictation activities in the database
-2. For each text item (phrase, syllable, or word), it generates TTS audio
-3. Audio is uploaded to Supabase storage
-4. Components automatically use pre-generated audio when available
-5. Falls back to live TTS API if pre-generated audio is not available or fails
+## Deployment
 
-**Benefits**:
-- Reduces API costs (generate once, use many times)
-- Avoids TTS rate limits during lessons
-- Faster audio playback (no API call needed)
-- Works offline once cached by browser
+The app auto-deploys to Vercel on push to `main` branch.
 
-### Step-by-Step: Adding New Lessons
-
-#### Step 1: Analyze Learning Materials
-
-1. Place learning material images in: `Learning Materials/{Subject}/{Tema} {Unit Name}/`
-2. Review each page and categorize content:
-   - Syllable exercises → `syllable` activity
-   - Word-picture matching → `matching` activity
-   - Writing/tracing exercises → `writing` + `dictation` activities
-   - Sentence reading → `speaking` activity
-
-#### Step 2: Extract Vocabulary Words
-
-Create a list of all vocabulary words with:
-- `word`: The Malay/Chinese/English word
-- `meaning_en`: English meaning (for image generation prompt)
-- `category`: food, animal, object, place, person, action, vehicle, nature, body, clothing
-
-#### Step 3: Update Image Generation API
-
-Edit `src/app/api/generate-vocab-batch/route.ts`:
-
-```typescript
-const VOCABULARY_LIST = [
-  // Add your new words here
-  { word: 'baju', meaning_en: 'shirt/clothes', category: 'clothing' },
-  { word: 'roti', meaning_en: 'bread', category: 'food' },
-  // ... more words
-];
-```
-
-#### Step 4: Generate Vocabulary Images
-
-Option A: Use Admin UI
-1. Deploy changes to Vercel (push to git)
-2. Go to: `https://your-app.vercel.app/en/admin/generate-images`
-3. Click "Generate All Remaining"
-
-Option B: Use API directly
-```bash
-# Check vocabulary list
-curl https://your-app.vercel.app/api/generate-vocab-batch
-
-# Generate in batches of 5
-curl -X POST https://your-app.vercel.app/api/generate-vocab-batch \
-  -H "Content-Type: application/json" \
-  -d '{"startIndex": 0, "count": 5}'
-
-# Continue with next batch
-curl -X POST https://your-app.vercel.app/api/generate-vocab-batch \
-  -H "Content-Type: application/json" \
-  -d '{"startIndex": 5, "count": 5}'
-```
-
-Images are stored at: `{SUPABASE_URL}/storage/v1/object/public/images/vocab/{word}.png`
-
-#### Step 5: Create Seed SQL
-
-Create a new SQL file in `supabase/` (e.g., `seed-tema2.sql`):
-
-```sql
--- Get theme ID
-DO $$
-DECLARE
-  v_theme_id UUID;
-  v_unit_id UUID;
-BEGIN
-  -- Get or create theme
-  SELECT id INTO v_theme_id FROM themes
-  WHERE subject = 'bm' AND grade_level = 1 AND theme_order = 1;
-
-  -- Create Unit
-  INSERT INTO units (theme_id, name, description, unit_order)
-  VALUES (v_theme_id,
-    '{"ms": "Unit 4: Nama Unit", "zh": "单元4：...", "en": "Unit 4: ..."}',
-    '{"ms": "Deskripsi", "zh": "描述", "en": "Description"}',
-    4
-  ) RETURNING id INTO v_unit_id;
-
-  -- Create Activities
-  INSERT INTO activities (unit_id, name, description, activity_type, content, activity_order, equipment_reward)
-  VALUES (
-    v_unit_id,
-    '{"ms": "BA:XX Nama Aktiviti", "zh": "...", "en": "..."}',
-    '{"ms": "Deskripsi", "zh": "...", "en": "..."}',
-    'matching',
-    '{
-      "pairs": [
-        {"word": "kata1", "image_url": "https://xxx.supabase.co/storage/v1/object/public/images/vocab/kata1.png"},
-        {"word": "kata2", "image_url": "https://xxx.supabase.co/storage/v1/object/public/images/vocab/kata2.png"}
-      ]
-    }'::jsonb,
-    1,
-    'diamond_helmet'
-  );
-
-END $$;
-```
-
-#### Step 6: Run Seed SQL
-
-1. Go to Supabase Dashboard > SQL Editor
-2. Paste and run your seed SQL file
-3. Verify in the app that new content appears
-
-### Content Examples
-
-#### Syllable Activity Content
-```json
-{
-  "pairs": [
-    { "word": "baju", "syllables": ["ba", "ju"], "image_url": "https://..." },
-    { "word": "roti", "syllables": ["ro", "ti"], "image_url": "https://..." }
-  ]
-}
-```
-
-#### Matching Activity Content
-```json
-{
-  "pairs": [
-    { "word": "kucing", "image_url": "https://..." },
-    { "word": "anjing", "image_url": "https://..." }
-  ]
-}
-```
-
-#### Writing/Dictation Activity Content
-```json
-{
-  "words": [
-    { "word": "nasi", "image_url": "https://..." },
-    { "word": "air", "image_url": "https://..." }
-  ]
-}
-```
-
-#### Speaking Activity Content
-```json
-{
-  "sentences": [
-    { "text": "Saya suka makan nasi.", "translation": "I like to eat rice." },
-    { "text": "Ini kucing saya.", "translation": "This is my cat." }
-  ]
-}
-```
-
-### Existing Seed Files
-
-| File | Content |
-|------|---------|
-| `supabase/seed.sql` | Tema 1 Unit 1 (initial content) |
-| `supabase/seed-unit2-unit3.sql` | Tema 1 Unit 2 & Unit 3 |
-
-### Tips
-
-1. **Batch size**: Generate images/audio in batches of 5 to avoid API timeouts
-2. **Rate limiting**: The API has 2-second delays between generations
-3. **Image style**: Vocabulary images are kawaii/cute cartoon style; equipment and pet images are 8-bit warrior RPG pixel art
-4. **Multilingual**: Always provide names/descriptions in ms, zh, en
-5. **Equipment progression**: Plan rewards to give sense of progression (see Equipment Reward Tiers table)
-6. **Writing + Dictation**: For writing activities, also create a dictation activity with same words
-7. **Equipment images**: All 25 equipment images are pre-generated. Use equipment IDs from the table above for `equipment_reward` field
-8. **Pet images**: All 25 pet images are pre-generated. Use pet IDs from the table above for `pet_reward` field on themes
-9. **Voice audio**: After adding new speaking/syllable/dictation activities, run the audio generation API to pre-generate TTS clips
+**Domain Setup**:
+1. DNS managed by Cloudflare
+2. CNAME record: `mylearnt` → `cname.vercel-dns.com`
+3. Domain added in Vercel project settings
 
 ## License
 
