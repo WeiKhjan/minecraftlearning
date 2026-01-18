@@ -11,12 +11,12 @@ const TIER_CONFIGS: Record<string, { color: string; effects: string }> = {
   iron: { color: 'shiny silver iron', effects: 'polished metal with rivets' },
   gold: { color: 'shiny golden', effects: 'ornate golden engravings' },
   diamond: { color: 'glowing cyan diamond', effects: 'crystalline facets with shimmer' },
-  darksteel: { color: 'dark grey-black darksteel', effects: 'dark metal with red accents' },
+  netherite: { color: 'dark grey-black netherite', effects: 'dark metal with red accents from the nether' },
   // Enchanted Tiers
   enchanted_iron: { color: 'silver iron with purple glow', effects: 'magical purple shimmer particles' },
   enchanted_gold: { color: 'golden with purple glow', effects: 'magical purple shimmer particles' },
   enchanted_diamond: { color: 'cyan diamond with purple glow', effects: 'magical sparkles and enchantment glow' },
-  enchanted_darksteel: { color: 'dark darksteel with purple flames', effects: 'dark magical flames and glow' },
+  enchanted_netherite: { color: 'dark netherite with purple flames', effects: 'dark magical flames and glow' },
   seafoam: { color: 'teal-green seafoam', effects: 'ocean-themed with aquatic shimmer' },
   amethyst: { color: 'purple amethyst crystal', effects: 'crystalline purple glow' },
   // Elemental Tiers

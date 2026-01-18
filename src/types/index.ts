@@ -10,9 +10,9 @@ export type EquipmentSlot = 'helmet' | 'chestplate' | 'leggings' | 'boots' | 'we
 
 export type EquipmentTier =
   // Classic Tiers (Units 1-6)
-  | 'wood' | 'leather' | 'stone' | 'chain' | 'iron' | 'gold' | 'diamond' | 'darksteel'
+  | 'wood' | 'leather' | 'stone' | 'chain' | 'iron' | 'gold' | 'diamond' | 'netherite'
   // Enchanted Tiers (Units 7-12)
-  | 'enchanted_iron' | 'enchanted_gold' | 'enchanted_diamond' | 'enchanted_darksteel' | 'seafoam' | 'amethyst'
+  | 'enchanted_iron' | 'enchanted_gold' | 'enchanted_diamond' | 'enchanted_netherite' | 'seafoam' | 'amethyst'
   // Elemental Tiers (Units 13-20)
   | 'blaze' | 'frost' | 'storm' | 'emerald' | 'obsidian' | 'crimsonite' | 'lapis' | 'luminite'
   // Mythic Tiers (Units 21-30)
@@ -346,12 +346,12 @@ export const TIER_COLORS: Record<EquipmentTier, { primary: string; secondary: st
   iron: { primary: '#D3D3D3', secondary: '#A9A9A9' },
   gold: { primary: '#FFD700', secondary: '#FFA500' },
   diamond: { primary: '#00CED1', secondary: '#40E0D0' },
-  darksteel: { primary: '#4A4A4A', secondary: '#8B0000' },
+  netherite: { primary: '#4A4A4A', secondary: '#8B0000' },
   // Enchanted Tiers
   enchanted_iron: { primary: '#D3D3D3', secondary: '#9370DB' },
   enchanted_gold: { primary: '#FFD700', secondary: '#9370DB' },
   enchanted_diamond: { primary: '#00CED1', secondary: '#9370DB' },
-  enchanted_darksteel: { primary: '#4A4A4A', secondary: '#9370DB' },
+  enchanted_netherite: { primary: '#4A4A4A', secondary: '#9370DB' },
   seafoam: { primary: '#5F9EA0', secondary: '#20B2AA' },
   amethyst: { primary: '#9966CC', secondary: '#E6E6FA' },
   // Elemental Tiers
