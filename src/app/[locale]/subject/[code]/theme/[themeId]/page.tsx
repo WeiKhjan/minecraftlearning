@@ -278,16 +278,12 @@ export default async function ThemePage({
                     <div className="flex items-center gap-4">
                       {/* Activity Icon / Equipment Image */}
                       <div className={`w-14 h-14 rounded-lg flex items-center justify-center overflow-hidden ${
-                        isCompleted
-                          ? 'bg-[#5D8731]'
-                          : isLocked
-                            ? 'bg-gray-400'
-                            : 'bg-[#5DADE2]'
+                        isLocked
+                          ? 'bg-gray-400'
+                          : 'bg-[#5DADE2]'
                       }`}>
                         {isLocked ? (
                           <span className="text-2xl text-gray-600">🔒</span>
-                        ) : isCompleted ? (
-                          <span className="text-2xl text-white">✓</span>
                         ) : activity.equipment?.image_url ? (
                           <img
                             src={activity.equipment.image_url.startsWith('/')
@@ -330,8 +326,14 @@ export default async function ThemePage({
                       </div>
 
                       {/* Status/Arrow */}
-                      <div className="text-gray-400 text-2xl">
-                        {isCompleted ? '✓' : isLocked ? '' : '→'}
+                      <div className="flex items-center">
+                        {isCompleted ? (
+                          <div className="w-10 h-10 rounded-full bg-[#5D8731] flex items-center justify-center">
+                            <span className="text-white text-xl">✓</span>
+                          </div>
+                        ) : isLocked ? null : (
+                          <span className="text-gray-400 text-2xl">→</span>
+                        )}
                       </div>
                     </div>
                   </Link>
