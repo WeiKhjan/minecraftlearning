@@ -3,7 +3,7 @@ import { redirect, notFound } from 'next/navigation';
 import { getTranslations } from 'next-intl/server';
 import Link from 'next/link';
 import LanguageSwitcher from '@/components/i18n/LanguageSwitcher';
-import type { Activity, Theme, Subject, Equipment, Locale, ProgressStatus } from '@/types';
+import type { Activity, Theme, Subject, Equipment, Pet, Locale, ProgressStatus } from '@/types';
 
 // Activity type icons
 const activityIcons: Record<string, string> = {
@@ -92,7 +92,7 @@ export default async function ThemePage({
     kidQuery = kidQuery.eq('parent_id', user.id);
   }
 
-  // Parallel fetch: kid, subject, theme, and activities (all independent)
+  // Parallel fetch: kid, subject, theme with pet, and activities (all independent)
   const [
     { data: kid },
     { data: subject },
@@ -107,7 +107,7 @@ export default async function ThemePage({
       .single(),
     supabase
       .from('themes')
-      .select('*')
+      .select('*, pet:pet_reward(*)')
       .eq('id', themeId)
       .single(),
     supabase
@@ -215,12 +215,24 @@ export default async function ThemePage({
           {/* Theme Header */}
           <div className="pixel-card mb-6">
             <div className="flex items-center gap-4">
-              <div
-                className="w-16 h-16 rounded-lg flex items-center justify-center text-4xl"
-                style={{ backgroundColor: subject.color || '#5D8731' }}
-              >
-                {subject.icon}
-              </div>
+              {(theme as Theme & { pet?: Pet }).pet?.image_url ? (
+                <div className="w-16 h-16 rounded-lg overflow-hidden bg-gradient-to-br from-purple-100 to-blue-100 flex items-center justify-center">
+                  <img
+                    src={(theme as Theme & { pet?: Pet }).pet!.image_url!.startsWith('/')
+                      ? `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/images${(theme as Theme & { pet?: Pet }).pet!.image_url}`
+                      : (theme as Theme & { pet?: Pet }).pet!.image_url!}
+                    alt={(theme as Theme & { pet?: Pet }).pet!.name}
+                    className="w-14 h-14 object-contain pixelated"
+                  />
+                </div>
+              ) : (
+                <div
+                  className="w-16 h-16 rounded-lg flex items-center justify-center text-4xl"
+                  style={{ backgroundColor: subject.color || '#5D8731' }}
+                >
+                  {subject.icon}
+                </div>
+              )}
               <div>
                 <h1 className="text-2xl font-bold text-gray-800">
                   {getThemeName(theme, locale as Locale)}
@@ -253,15 +265,29 @@ export default async function ThemePage({
                     }`}
                   >
                     <div className="flex items-center gap-4">
-                      {/* Activity Icon */}
-                      <div className={`w-14 h-14 rounded-lg flex items-center justify-center text-2xl ${
+                      {/* Activity Icon / Equipment Image */}
+                      <div className={`w-14 h-14 rounded-lg flex items-center justify-center overflow-hidden ${
                         isCompleted
-                          ? 'bg-[#5D8731] text-white'
+                          ? 'bg-[#5D8731]'
                           : isLocked
-                            ? 'bg-gray-400 text-gray-600'
-                            : 'bg-[#5DADE2] text-white'
+                            ? 'bg-gray-400'
+                            : 'bg-[#5DADE2]'
                       }`}>
-                        {isLocked ? '🔒' : isCompleted ? '✓' : activityIcons[activity.type] || '📚'}
+                        {isLocked ? (
+                          <span className="text-2xl text-gray-600">🔒</span>
+                        ) : isCompleted ? (
+                          <span className="text-2xl text-white">✓</span>
+                        ) : activity.equipment?.image_url ? (
+                          <img
+                            src={activity.equipment.image_url.startsWith('/')
+                              ? `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/images${activity.equipment.image_url}`
+                              : activity.equipment.image_url}
+                            alt={getEquipmentName(activity.equipment, locale as Locale)}
+                            className="w-12 h-12 object-contain pixelated"
+                          />
+                        ) : (
+                          <span className="text-2xl text-white">{activityIcons[activity.type] || '📚'}</span>
+                        )}
                       </div>
 
                       {/* Activity Info */}
