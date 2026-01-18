@@ -14,6 +14,7 @@ const activityTypeIcons: Record<ActivityType, string> = {
   singing: '🎵',
   math: '🔢',
   dictation: '👂',
+  sequencing: '📋',
 };
 
 export default async function KidProgressPage({
