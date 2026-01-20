@@ -37,6 +37,7 @@ export default function DrawingCanvas({
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const lastPointRef = useRef<Point | null>(null);
   const prevLetterRef = useRef<string>(expectedLetter);
+  const rectRef = useRef<DOMRect | null>(null); // Cached canvas rect for performance
 
   // Draw faint guide text (letter or word)
   const drawGuideText = useCallback((ctx: CanvasRenderingContext2D, text: string, width: number, height: number, forWord: boolean) => {
@@ -63,6 +64,7 @@ export default function DrawingCanvas({
 
     // Set canvas size for high DPI displays
     const rect = canvas.getBoundingClientRect();
+    rectRef.current = rect; // Cache the rect for touch/mouse events
     const dpr = window.devicePixelRatio || 1;
     canvas.width = rect.width * dpr;
     canvas.height = rect.height * dpr;
@@ -85,14 +87,22 @@ export default function DrawingCanvas({
       setHasDrawn(false);
       prevLetterRef.current = expectedLetter;
     }
+
+    // Update cached rect on resize
+    const handleResize = () => {
+      if (canvasRef.current) {
+        rectRef.current = canvasRef.current.getBoundingClientRect();
+      }
+    };
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
   }, [expectedLetter, drawGuideText, isWord, showWatermark]);
 
-  // Get point from event
+  // Get point from event - uses cached rect for performance
   const getPoint = useCallback((e: React.TouchEvent | React.MouseEvent): Point | null => {
-    const canvas = canvasRef.current;
-    if (!canvas) return null;
-
-    const rect = canvas.getBoundingClientRect();
+    // Use cached rect to avoid layout thrashing on every touch/mouse move
+    const rect = rectRef.current;
+    if (!rect) return null;
 
     if ('touches' in e) {
       const touch = e.touches[0];
@@ -129,7 +139,7 @@ export default function DrawingCanvas({
     ctx.moveTo(point.x, point.y);
   }, [disabled, isAnalyzing, getPoint]);
 
-  // Continue drawing
+  // Continue drawing - style is set once in useEffect, not here
   const handleMove = useCallback((e: React.TouchEvent | React.MouseEvent) => {
     if (!isDrawing || disabled || isAnalyzing) return;
     e.preventDefault();
@@ -140,11 +150,6 @@ export default function DrawingCanvas({
     const canvas = canvasRef.current;
     const ctx = canvas?.getContext('2d');
     if (!ctx) return;
-
-    ctx.strokeStyle = '#333';
-    ctx.lineWidth = 8;
-    ctx.lineCap = 'round';
-    ctx.lineJoin = 'round';
 
     ctx.beginPath();
     ctx.moveTo(lastPointRef.current.x, lastPointRef.current.y);
