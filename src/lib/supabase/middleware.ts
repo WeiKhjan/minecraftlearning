@@ -54,5 +54,13 @@ export async function updateSession(request: NextRequest) {
     return NextResponse.redirect(url);
   }
 
+  // If user is logged in and visiting login page, redirect directly to kids page
+  if (session && pathWithoutLocale === '/login') {
+    const locale = pathname.match(/^\/(ms|zh|en)/)?.[1] || 'ms';
+    const url = request.nextUrl.clone();
+    url.pathname = `/${locale}/kids`;
+    return NextResponse.redirect(url);
+  }
+
   return supabaseResponse;
 }

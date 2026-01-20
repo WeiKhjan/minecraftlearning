@@ -11,8 +11,18 @@ export async function GET(request: Request) {
     const { error } = await supabase.auth.exchangeCodeForSession(code);
 
     if (!error) {
-      // Check if user has a profile
-      const { data: { user } } = await supabase.auth.getUser();
+      // Check if user has a profile - retry getUser to ensure session is fully established
+      let user = null;
+      let retries = 3;
+
+      while (retries > 0 && !user) {
+        const { data } = await supabase.auth.getUser();
+        user = data.user;
+        if (!user && retries > 1) {
+          await new Promise(resolve => setTimeout(resolve, 500));
+        }
+        retries--;
+      }
 
       if (user) {
         // Check if parent profile exists
@@ -23,8 +33,8 @@ export async function GET(request: Request) {
           .single();
 
         if (!parent) {
-          // Create parent profile
-          await supabase.from('parents').insert({
+          // Create parent profile with error handling
+          const { error: insertError } = await supabase.from('parents').insert({
             id: user.id,
             email: user.email,
             display_name: user.user_metadata?.full_name || user.email?.split('@')[0],
@@ -32,6 +42,10 @@ export async function GET(request: Request) {
             is_admin: false,
             last_login_at: new Date().toISOString(),
           });
+
+          if (insertError) {
+            console.error('Error creating parent profile:', insertError);
+          }
         } else {
           // Update last login time for existing users
           await supabase
